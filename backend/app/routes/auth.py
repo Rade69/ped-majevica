@@ -1,6 +1,6 @@
 # backend/app/routes/auth.py
 from flask import Blueprint, request, jsonify, redirect, make_response, session
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from app.services.user_service import get_user_by_username
 from app.extensions import db, bcrypt, limiter
 from app.models.user import User

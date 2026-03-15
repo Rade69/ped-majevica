@@ -124,12 +124,12 @@
                     <!-- Script Toggle (Ćirilica/Latinica) -->
                     <div class="flex gap-1 bg-white/10 rounded-lg p-1">
                         <button type="button" id="btn-cyrillic" onclick="switchScript('cyrillic')"
-                            class="script-btn active px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
+                            class="script-btn px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
                             aria-label="Пребаци на ћирилицу">
                             Ćir
                         </button>
                         <button type="button" id="btn-latin" onclick="switchScript('latin')"
-                            class="script-btn px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
+                            class="script-btn px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10 active"
                             aria-label="Prebaci na latinicu">
                             Lat
                         </button>
@@ -176,6 +176,21 @@
                 <a href="/#kontakt" class="mobile-nav-link block px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all text-base">
                     <i class="fas fa-envelope mr-3 text-base"></i> Kontakt
                 </a>
+                <!-- Script Toggle za Mobile -->
+                <div class="pt-4 border-t border-white/10 mt-2">
+                    <div class="flex gap-2 mb-3">
+                        <button type="button" id="btn-cyrillic-mobile" onclick="switchScript('cyrillic')"
+                            class="script-btn flex-1 py-2 rounded-lg text-white text-sm font-semibold transition-all"
+                            aria-label="Пребаци на ћирилицу">
+                            Ћирилица
+                        </button>
+                        <button type="button" id="btn-latin-mobile" onclick="switchScript('latin')"
+                            class="script-btn active flex-1 py-2 rounded-lg text-white text-sm font-semibold transition-all"
+                            aria-label="Prebaci na latinicu">
+                            Latinica
+                        </button>
+                    </div>
+                </div>
                 <div class="pt-4 border-t border-white/10">
                     <a href="/uclanite-se" class="block w-full text-center px-6 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold rounded-lg transition-all">
                         Priključi se
@@ -194,14 +209,38 @@
 
         // Script Toggle - Ćirilica/Latinica
         function switchScript(script) {
+        function switchScript(script) {
+            // Desktop buttons
             const cyrBtn = document.getElementById('btn-cyrillic');
             const latBtn = document.getElementById('btn-latin');
-
+            // Mobile buttons
+            const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
+            const latBtnMobile = document.getElementById('btn-latin-mobile');
+        function switchScript(script) {
+            // Desktop buttons
+            const cyrBtn = document.getElementById('btn-cyrillic');
+            const latBtn = document.getElementById('btn-latin');
+            // Mobile buttons
+            const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
+            const latBtnMobile = document.getElementById('btn-latin-mobile');
+        function switchScript(script) {
+            // Desktop buttons
+            const cyrBtn = document.getElementById('btn-cyrillic');
+            const latBtn = document.getElementById('btn-latin');
+            // Mobile buttons
+            const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
+            const latBtnMobile = document.getElementById('btn-latin-mobile');
             if (!cyrBtn || !latBtn) return;
 
             if (script === 'cyrillic') {
                 cyrBtn.classList.add('active', 'bg-white/20');
                 latBtn.classList.remove('active', 'bg-white/20');
+                
+                // Update mobile buttons
+                const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
+                const latBtnMobile = document.getElementById('btn-latin-mobile');
+                if (cyrBtnMobile) cyrBtnMobile.classList.add('active');
+                if (latBtnMobile) latBtnMobile.classList.remove('active');
                 
                 // Dodaj klasu za ćirilicu na body
                 document.body.classList.add('cyrillic');
@@ -214,6 +253,12 @@
             } else {
                 latBtn.classList.add('active', 'bg-white/20');
                 cyrBtn.classList.remove('active', 'bg-white/20');
+                
+                // Update mobile buttons
+                const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
+                const latBtnMobile = document.getElementById('btn-latin-mobile');
+                if (latBtnMobile) latBtnMobile.classList.add('active');
+                if (cyrBtnMobile) cyrBtnMobile.classList.remove('active');
                 
                 // Dodaj klasu za latinicu na body
                 document.body.classList.add('latin');

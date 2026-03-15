@@ -63,7 +63,8 @@
             box-shadow: 0 4px 14px rgba(0, 51, 102, 0.3);
         }
         .script-btn.active {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
     </style>
 </head>
@@ -207,34 +208,16 @@
             menu.classList.toggle('hidden');
         }
 
-        // Script Toggle - Ćirilica/Latinica
-        function switchScript(script) {
-        function switchScript(script) {
-            // Desktop buttons
-            const cyrBtn = document.getElementById('btn-cyrillic');
-            const latBtn = document.getElementById('btn-latin');
-            // Mobile buttons
-            const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
-            const latBtnMobile = document.getElementById('btn-latin-mobile');
+        // Script Toggle - koristi transliterator.js
         function switchScript(script) {
             // Desktop buttons
             const cyrBtn = document.getElementById('btn-cyrillic');
             const latBtn = document.getElementById('btn-latin');
-            // Mobile buttons
-            const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
-            const latBtnMobile = document.getElementById('btn-latin-mobile');
-        function switchScript(script) {
-            // Desktop buttons
-            const cyrBtn = document.getElementById('btn-cyrillic');
-            const latBtn = document.getElementById('btn-latin');
-            // Mobile buttons
-            const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
-            const latBtnMobile = document.getElementById('btn-latin-mobile');
             if (!cyrBtn || !latBtn) return;
 
             if (script === 'cyrillic') {
-                cyrBtn.classList.add('active', 'bg-white/20');
-                latBtn.classList.remove('active', 'bg-white/20');
+                cyrBtn.classList.add('active');
+                latBtn.classList.remove('active');
                 
                 // Update mobile buttons
                 const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
@@ -246,13 +229,9 @@
                 document.body.classList.add('cyrillic');
                 document.body.classList.remove('latin');
                 
-                // Sačuvaj izbor
-                localStorage.setItem('script', 'cyrillic');
-                
-                console.log('🔤 Prebacivanje na ćirilicu');
             } else {
-                latBtn.classList.add('active', 'bg-white/20');
-                cyrBtn.classList.remove('active', 'bg-white/20');
+                latBtn.classList.add('active');
+                cyrBtn.classList.remove('active');
                 
                 // Update mobile buttons
                 const cyrBtnMobile = document.getElementById('btn-cyrillic-mobile');
@@ -263,17 +242,15 @@
                 // Dodaj klasu za latinicu na body
                 document.body.classList.add('latin');
                 document.body.classList.remove('cyrillic');
-                
-                // Sačuvaj izbor
-                localStorage.setItem('script', 'latin');
-                
-                console.log('🔤 Prebacivanje na latinicu');
             }
             
-            // Ako postoji transliterator, koristi ga
+            // Koristi transliterator za konverziju teksta
             if (typeof transliterator !== 'undefined') {
-                transliterator.setScript(script);
+                transliterator.togglePageScript(script);
             }
+            
+            // Sačuvaj izbor
+            localStorage.setItem('ped-script-preference', script);
         }
 
         // Dark Mode Toggle
@@ -306,14 +283,13 @@
                 }
             }
             
-            // Load saved script
-            const savedScript = localStorage.getItem('script') || 'latin';
-            if (savedScript === 'cyrillic') {
-                document.body.classList.add('cyrillic');
-                document.body.classList.remove('latin');
-            } else {
-                document.body.classList.add('latin');
-                document.body.classList.remove('cyrillic');
+            // Load saved script preference
+            if (typeof transliterator !== 'undefined') {
+                transliterator.applyPreference();
+                
+                // Update button states based on saved preference
+                const savedScript = transliterator.getPreference();
+                switchScript(savedScript);
             }
         })();
     </script>

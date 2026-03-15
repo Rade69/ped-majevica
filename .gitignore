@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Flask
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Pytest cache
+.pytest_cache/
+
+# Environment (CRITICAL - never commit .env files!)
+.env
+.env.local
+.env.production
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node modules
+node_modules/
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.tar.xz
+*.tar.gz
+*.zip
+
+# Lighthouse CI
+.lighthouseci/
+
+# Claude settings
+.claude/
+
+# Uploads (user generated content)
+uploads/
+backend/uploads/
+
+# Build artifacts
+frontend/assets/css/output.css
+frontend/assets/css/output.min.css
+*.min.css
+
+# Production logs
+/var/log/

@@ -1,0 +1,68 @@
+{
+    "JANUAR": [
+        {
+            "datum": "03/04.01.2026",
+            "naziv_aktivnosti": "AD-Novogodišnja šetnja na Majevici i druženje u domu",
+            "organizator_vodic": "PED \"Majevica\""
+        },
+        {
+            "datum": "09.01.2026.",
+            "naziv_aktivnosti": "Svečani defile povodom Dana Republike",
+            "organizator_vodic": "PSRS i Vlada RS"
+        },
+        {
+            "datum": "11.01.2026.",
+            "naziv_aktivnosti": "31. Zimski uspon na Trem - Suva planina",
+            "organizator_vodic": "PK \"Železničar\" Niš"
+        },
+        {
+            "datum": "24.01.2026.",
+            "naziv_aktivnosti": "26. Zimski uspon na Rtanj",
+            "organizator_vodic": "PSD \"Dragan Doslo\""
+        }
+    ],
+    "FEBRUAR": [
+        {
+            "datum": "08.02.2026.",
+            "naziv_aktivnosti": "Upoznajmo Majevicu - Tavna",
+            "organizator_vodic": "PED \"Majevica\""
+        },
+        {
+            "datum": "14.02.2026.",
+            "naziv_aktivnosti": "Zimski uspon na Maglić",
+            "organizator_vodic": ""
+        },
+        {
+            "datum": "21.02.2026.",
+            "naziv_aktivnosti": "AD - Pohod Pjenovac",
+            "organizator_vodic": "PED \"Acer\" Vlasenica"
+        }
+    ],
+    "MART": [
+        {
+            "datum": "01.03.2026.",
+            "naziv_aktivnosti": "Osmi mart na planini (lokalna akcija)",
+            "organizator_vodic": "PED \"Majevica\""
+        },
+        {
+            "datum": "07.03.2026.",
+            "naziv_aktivnosti": "27. Uspon na Stol - povodom 8. marta",
+            "organizator_vodic": "PK \"Dubas\" Zlot"
+        },
+        {
+            "datum": "15.03.2026.",
+            "naziv_aktivnosti": "Šetnja za zdravlje - Majevica",
+            "organizator_vodic": "PED \"Majevica\""
+        },
+        {
+            "datum": "21.03.2026.",
+            "naziv_aktivnosti": "AD - Pozdrav proljeću - Kozara",
+            "organizator_vodic": "PD \"Klekovača\" Prijedor"
+        },
+        {
+            "datum": "29.03.2026.",
+            "naziv_aktivnosti": "Upoznajmo Majevicu - Busija",
+            "organizator_vodic": "PED \"Majevica\""
+        }
+    ]
+}

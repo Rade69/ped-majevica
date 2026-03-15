@@ -1,0 +1,128 @@
+# ============================================
+# NETLIFY DEPLOYMENT CONFIGURATION
+# ============================================
+# Frontend-only deployment to Netlify CDN
+# Backend runs separately on Render.com
+
+[build]
+  # Build command
+  command = "npm run build"
+
+  # Publish directory (frontend files)
+  publish = "frontend"
+
+  # Build environment
+  [build.environment]
+    NODE_VERSION = "18"
+    # Disable Python auto-detection
+    PYTHON_VERSION = ""
+
+# ============================================
+# REDIRECTS & REWRITES
+# ============================================
+
+# Root serves pages/index.html directly
+[[redirects]]
+  from = "/"
+  to = "/pages/index.html"
+  status = 200
+
+# Specific page redirects
+[[redirects]]
+  from = "/uclanite-se"
+  to = "/pages/uclanite-se.html"
+  status = 200
+
+[[redirects]]
+  from = "/o-nama"
+  to = "/pages/o-nama.html"
+  status = 200
+
+[[redirects]]
+  from = "/staze"
+  to = "/pages/staze.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/pages/blog.html"
+  status = 200
+
+[[redirects]]
+  from = "/kontakt"
+  to = "/pages/kontakt.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/pages/admin.html"
+  status = 200
+
+# All other routes redirect to pages/index.html (for SPA routing)
+[[redirects]]
+  from = "/*"
+  to = "/pages/index.html"
+  status = 200
+
+# ============================================
+# HEADERS - Security & CORS
+# ============================================
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# HTML files - no cache
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/pages/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# JS files - no cache
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/js/*.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# JSON files - no cache
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/assets/data/*.json"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# Static assets - long cache
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# ============================================
+# ENVIRONMENT VARIABLES (Set in Netlify UI)
+# ============================================
+# VITE_API_URL = https://ped-majevica-backend.onrender.com
+# Trigger Netlify rebuild - v4 - force deploy

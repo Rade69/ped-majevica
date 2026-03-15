@@ -1,0 +1,460 @@
+.sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Script Toggle Buttons (Ћирилица/Latinica) */
+        .script-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .script-btn.active {
+            background: linear-gradient(135deg, #D62828 0%, #003366 100%);
+            box-shadow: 0 2px 8px rgba(214, 40, 40, 0.3);
+        }
+
+        .script-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Dark mode specifics */
+        .dark .script-btn:not(.active) {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dark .script-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ============================================
+           PED MAJEVICA - NOVA COLOR PALETTE V3
+           Optimizovana za pristupačnost i vizuelni impact
+           ============================================ */
+
+        :root {
+            /* === PRIMARY COLORS === */
+            --color-primary-red: #D62828;
+            --color-primary-blue: #003366;
+
+            /* === SECONDARY COLORS (OPTIMIZED) === */
+            --color-secondary-gold: #D4AF37;
+            /* Metallic Gold - bolji kontrast */
+            --color-secondary-gold-light: #F4E4B4;
+            /* Light Gold */
+            --color-secondary-gold-dark: #B8860B;
+            /* Dark Goldenrod */
+            --color-secondary-silver: #D1D5DB;
+            /* Gray-300 - čitljivija */
+            --color-secondary-blue: #1E4A8B;
+
+            /* === ACCENT COLORS (NEW) === */
+            --color-accent-orange: #FF8C00;
+            /* DarkOrange */
+            --color-accent-teal: #0D9488;
+            /* Teal-600 */
+            --color-accent-purple: #7C3AED;
+            /* Violet-600 */
+            --color-accent-amber: #F59E0B;
+            /* Amber-500 */
+
+            /* === SEMANTIC COLORS === */
+            --color-success: #10B981;
+            /* Green-500 */
+            --color-warning: #F59E0B;
+            /* Amber-500 */
+            --color-error: #EF4444;
+            /* Red-500 */
+            --color-info: #3B82F6;
+            /* Blue-500 */
+        }
+
+        /* === IMPROVED STAT NUMBERS === */
+        .stat-number {
+            color: var(--color-secondary-gold) !important;
+            font-size: 2.25rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* === IMPROVED SILVER TEXT === */
+        .text-secondary-silver {
+            color: var(--color-secondary-silver) !important;
+        }
+
+        .dark .text-secondary-silver {
+            color: #9CA3AF !important;
+        }
+
+        /* === IMPROVED GOLD TEXT === */
+        .text-secondary-gold {
+            color: var(--color-secondary-gold) !important;
+        }
+
+        /* === HOVER STATES === */
+        .hover\:text-secondary-gold:hover {
+            color: var(--color-secondary-gold) !important;
+        }
+
+        /* === GRADIENT OVERLAYS === */
+        .gradient-gold-overlay {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(244, 228, 180, 0.1) 100%);
+        }
+
+        .gradient-fire-overlay {
+            background: linear-gradient(135deg, rgba(214, 40, 40, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
+        }
+
+        /* === IMPROVED DIFFICULTY BADGES === */
+        .difficulty-easy {
+            background-color: var(--color-success) !important;
+            color: white !important;
+        }
+
+        .difficulty-medium {
+            background-color: var(--color-accent-amber) !important;
+            color: #1F2937 !important;
+        }
+
+        .difficulty-hard {
+            background-color: var(--color-error) !important;
+            color: white !important;
+        }
+
+        .dark .difficulty-easy {
+            background-color: var(--color-success) !important;
+        }
+
+        .dark .difficulty-medium {
+            background-color: var(--color-accent-amber) !important;
+            color: #1F2937 !important;
+        }
+
+        .dark .difficulty-hard {
+            background-color: var(--color-error) !important;
+        }
+
+        /* === FONT OVERRIDE - MONTSERRAT === */
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        }
+
+        .font-sans {
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        /* Keep Playfair Display for headings */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .font-serif {
+            font-family: 'Playfair Display', serif !important;
+        }
+
+        /* === IMPROVED HERO GRADIENT === */
+        .hero-gradient-text {
+            background: linear-gradient(90deg, #D4AF37 0%, #FF6B6B 50%, #1E4A8B 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease infinite;
+            display: inline-block;
+        }
+
+        @keyframes gradient-shift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* === ACCENT COLOR UTILITIES === */
+        .text-accent-orange {
+            color: var(--color-accent-orange);
+        }
+
+        .text-accent-teal {
+            color: var(--color-accent-teal);
+        }
+
+        .bg-accent-orange {
+            background-color: var(--color-accent-orange);
+        }
+
+        .bg-accent-teal {
+            background-color: var(--color-accent-teal);
+        }
+
+        .border-accent-orange {
+            border-color: var(--color-accent-orange);
+        }
+
+        .border-accent-teal {
+            border-color: var(--color-accent-teal);
+        }
+
+        /* === HOVER ACCENT COLORS === */
+        .hover\:text-accent-orange:hover {
+            color: var(--color-accent-orange);
+        }
+
+        .hover\:text-accent-teal:hover {
+            color: var(--color-accent-teal);
+        }
+
+        .hover\:bg-accent-orange:hover {
+            background-color: var(--color-accent-orange);
+        }
+
+        .hover\:bg-accent-teal:hover {
+            background-color: var(--color-accent-teal);
+        }
+
+        /* ============================================
+           BLOG SYSTEM STYLES
+           ============================================ */
+
+        /* Line clamp utility */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Modal animations */
+        #articleModal {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Modal content prose styling */
+        .prose {
+            color: #374151;
+        }
+
+        .prose h1,
+        .prose h2,
+        .prose h3 {
+            color: #1e3a8a;
+            font-weight: 700;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+        }
+
+        .prose p {
+            margin-bottom: 1.25em;
+            line-height: 1.75;
+        }
+
+        .prose ul,
+        .prose ol {
+            margin: 1.25em 0;
+            padding-left: 1.5em;
+        }
+
+        .prose li {
+            margin-bottom: 0.5em;
+        }
+
+        .prose strong {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .prose a {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+
+        .prose a:hover {
+            color: #991b1b;
+        }
+
+        .prose img {
+            border-radius: 1rem;
+            margin: 2em auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* === BLOG MODAL PROSE - DARK MODE === */
+        .dark .prose {
+            color: #E5E7EB;  /* Svijetlo siva */
+        }
+
+        .dark .prose h1,
+        .dark .prose h2,
+        .dark .prose h3 {
+            color: #F9FAFB;  /* Skoro bijela */
+        }
+
+        .dark .prose p {
+            color: #E5E7EB;  /* Svijetlo siva */
+            line-height: 2;  /* 1.75 → 2 (veći prored) */
+            margin-bottom: 1.5em;  /* Više razmaka između paragrafa */
+        }
+
+        .dark .prose strong {
+            color: #FCD34D;  /* Zlatna */
+        }
+
+        .dark .prose a {
+            color: #FCA5A5;  /* Svijetlo crvena */
+        }
+
+        .dark .prose a:hover {
+            color: #FEE2E2;  /* Još svjetlija */
+        }
+
+        .dark .prose li {
+            color: #E5E7EB;
+            line-height: 1.8;  /* Bolji spacing u listama */
+        }
+
+        /* Article card hover effects */
+        article.group:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* === BLOG CATEGORY BADGES - DARK MODE === */
+        .dark .category-badge {
+            background-color: rgba(212, 175, 55, 0.4) !important;  /* 25% → 40% opacity */
+            color: #FCD34D !important;  /* Još svijetlija zlatna (amber-300) */
+            border: 2px solid rgba(212, 175, 55, 0.6) !important;  /* Deblji border */
+            font-weight: 700 !important;  /* Bold tekst */
+        }
+
+        /* Blog article card category badge - dark mode override */
+        .dark article span.bg-white\/90 {
+            background-color: rgba(212, 175, 55, 0.5) !important;  /* Zlatna pozadina */
+            color: #1F2937 !important;  /* Tamna siva */
+            border: 2px solid rgba(212, 175, 55, 0.7) !important;
+            font-weight: 700 !important;
+        }
+
+        /* Alternativni selector ako prvi ne radi */
+        .dark [class*="bg-white/90"].text-primary-blue {
+            background-color: rgba(212, 175, 55, 0.5) !important;
+            color: #1F2937 !important;
+            border: 2px solid rgba(212, 175, 55, 0.7) !important;
+        }
+
+        /* === TRAIL MODAL TEXT - DARK MODE === */
+        .dark #trailModal p,
+        .dark #modalTrailContent p {
+            color: #1F2937 !important;  /* Dark gray-800 za čitljivost */
+        }
+
+        .dark #trailModal h4,
+        .dark #trailModal h5,
+        .dark #modalTrailContent h4,
+        .dark #modalTrailContent h5 {
+            color: #111827 !important;  /* Još tamnija za naslove */
+        }
+
+        .dark #trailModal span,
+        .dark #modalTrailContent span {
+            color: #374151 !important;  /* Gray-700 */
+        }
+
+        /* Override inline styles for trail modal */
+        #trailModal p[style*="color"],
+        #modalTrailContent p[style*="color"] {
+            color: inherit !important;
+        }
+
+        .dark #trailModal p[style*="color"],
+        .dark #modalTrailContent p[style*="color"] {
+            color: #1F2937 !important;  /* Tamna siva */
+        }
+/* ========================================
+   BLOG SEARCH & FILTER ICON POSITIONING
+   ======================================== */
+
+/* Input & Select Padding */
+#blogSearch {
+    padding-left: 3.5rem !important; /* 56px */
+}
+
+#blogFilter {
+    padding-left: 3.5rem !important; /* 56px */
+}
+
+/* Icon Container Positioning */
+#blogSearch + div[class*="absolute"],
+#blogFilter + div[class*="absolute"] {
+    padding-left: 1.5rem !important; /* 24px */
+}
+
+/* Generic: All icon containers in relative parents */
+.relative > div.absolute.left-0[class*="items-center"] {
+    padding-left: 1.5rem !important; /* 24px */
+}
+
+/* ========================================
+   CONTACT FORM SELECT - DARK MODE FIX
+   ======================================== */
+
+/* Dark mode - select dropdown styling */
+.dark #subject {
+    background-color: #374151 !important; /* dark gray */
+    color: #F9FAFB !important; /* white text */
+    border-color: #4B5563 !important; /* lighter border */
+}
+
+.dark #subject:focus {
+    background-color: #1F2937 !important; /* darker on focus */
+    border-color: #D62828 !important; /* red border on focus */
+}
+
+/* Dark mode - option elements */
+.dark #subject option {
+    background-color: #374151 !important;
+    color: #F9FAFB !important;
+}
+
+/* Light mode - ensure text is dark */
+#subject {
+    color: #1F2937 !important;
+}
+
+#subject option {
+    color: #1F2937 !important;
+    background-color: #ffffff !important;
+}

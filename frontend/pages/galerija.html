@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="sr" class="scroll-smooth overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerija - PED Majevica 1988</title>
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="/assets/css/output.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/transliterator.js"></script>
+    <style>
+        .gallery-item {
+            transition: all 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+        }
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .lightbox-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            max-width: 80%;
+        }
+        .category-btn.active {
+            background: linear-gradient(135deg, #003366 0%, #dc2626 100%) !important;
+            color: white !important;
+            box-shadow: 0 4px 14px rgba(0, 51, 102, 0.3);
+        }
+        .script-btn.active {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-slate-900">
+
+    <!-- Navigation -->
+    <nav class="bg-[#003366] text-white p-4 shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <img src="/assets/images/icons/logo-1.svg" alt="PED Majevica Logo" class="w-10 h-10 group-hover:scale-110 transition-transform">
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-[#FFD700] rounded-full border-2 border-[#003366]"></div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold text-white font-serif">PED MAJEVICA</span>
+                        <span class="text-secondary-gold text-sm font-medium tracking-wider">1988</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-0.5 items-center flex-wrap">
+                    <a href="/"
+                        class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Početna
+                    </a>
+                    <a href="/#staze"
+                        class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-route mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Staze
+                    </a>
+                    <a href="/#blog"
+                        class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-newspaper mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Blog
+                    </a>
+                    <a href="/#kalendar"
+                        class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-calendar-alt mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Kalendar
+                    </a>
+                    <a href="/galerija"
+                        class="nav-link px-3 py-2 rounded-lg text-white bg-white/10 text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-images mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Galerija
+                    </a>
+                    <a href="/#kontakt"
+                        class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-envelope mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Kontakt
+                    </a>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <!-- Script Toggle (Ćirilica/Latinica) -->
+                    <div class="flex gap-1 bg-white/10 rounded-lg p-1">
+                        <button type="button" id="btn-cyrillic" onclick="switchScript('cyrillic')"
+                            class="script-btn active px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
+                            aria-label="Пребаци на ћирилицу">
+                            Ćir
+                        </button>
+                        <button type="button" id="btn-latin" onclick="switchScript('latin')"
+                            class="script-btn px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
+                            aria-label="Prebaci na latinicu">
+                            Lat
+                        </button>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button type="button" onclick="toggleDarkMode()"
+                        class="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-110"
+                        title="Promeni temu">
+                        <i id="themeIcon" class="fas fa-sun text-secondary-gold"></i>
+                    </button>
+
+                    <!-- Join Button -->
+                    <a href="/uclanite-se"
+                        class="px-6 py-2.5 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold rounded-full transition-all hover:scale-105 shadow-lg hover:shadow-xl whitespace-nowrap flex items-center">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        <span class="hidden sm:inline">Priključi se</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 space-y-2">
+                <a href="/" class="mobile-nav-link block px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all text-base">
+                    <i class="fas fa-home mr-3 text-base"></i> Početna
+                </a>
+                <a href="/#staze" class="mobile-nav-link block px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all text-base">
+                    <i class="fas fa-route mr-3 text-base"></i> Staze
+                </a>
+                <a href="/#blog" class="mobile-nav-link block px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all text-base">
+                    <i class="fas fa-newspaper mr-3 text-base"></i> Blog
+                </a>
+                <a href="/#kalendar" class="mobile-nav-link block px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all text-base">
+                    <i class="fas fa-calendar-alt mr-3 text-base"></i> Kalendar
+                </a>
+                <a href="/galerija" class="mobile-nav-link block px-4 py-3 rounded-lg text-white bg-white/10 text-secondary-gold font-medium transition-all text-base">
+                    <i class="fas fa-images mr-3 text-base"></i> Galerija
+                </a>
+                <a href="/#kontakt" class="mobile-nav-link block px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all text-base">
+                    <i class="fas fa-envelope mr-3 text-base"></i> Kontakt
+                </a>
+                <div class="pt-4 border-t border-white/10">
+                    <a href="/uclanite-se" class="block w-full text-center px-6 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold rounded-lg transition-all">
+                        Priključi se
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Script Toggle - Ćirilica/Latinica
+        function switchScript(script) {
+            const cyrBtn = document.getElementById('btn-cyrillic');
+            const latBtn = document.getElementById('btn-latin');
+
+            if (!cyrBtn || !latBtn) return;
+
+            if (script === 'cyrillic') {
+                cyrBtn.classList.add('active', 'bg-white/20');
+                latBtn.classList.remove('active', 'bg-white/20');
+                
+                // Dodaj klasu za ćirilicu na body
+                document.body.classList.add('cyrillic');
+                document.body.classList.remove('latin');
+                
+                // Sačuvaj izbor
+                localStorage.setItem('script', 'cyrillic');
+                
+                console.log('🔤 Prebacivanje na ćirilicu');
+            } else {
+                latBtn.classList.add('active', 'bg-white/20');
+                cyrBtn.classList.remove('active', 'bg-white/20');
+                
+                // Dodaj klasu za latinicu na body
+                document.body.classList.add('latin');
+                document.body.classList.remove('cyrillic');
+                
+                // Sačuvaj izbor
+                localStorage.setItem('script', 'latin');
+                
+                console.log('🔤 Prebacivanje na latinicu');
+            }
+            
+            // Ako postoji transliterator, koristi ga
+            if (typeof transliterator !== 'undefined') {
+                transliterator.setScript(script);
+            }
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                const icon = document.getElementById('themeIcon');
+                if (icon) {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            }
+            
+            // Load saved script
+            const savedScript = localStorage.getItem('script') || 'latin';
+            if (savedScript === 'cyrillic') {
+                document.body.classList.add('cyrillic');
+                document.body.classList.remove('latin');
+            } else {
+                document.body.classList.add('latin');
+                document.body.classList.remove('cyrillic');
+            }
+        })();
+    </script>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-[#003366] to-[#1e4a8b] dark:from-[#002244] dark:to-[#003366] text-white py-16">
+        <div class="container mx-auto text-center">
+            <h1 class="text-5xl font-black mb-4">
+                <i class="fas fa-images mr-4 text-secondary-gold"></i>
+                Galerija Slika
+            </h1>
+            <p class="text-xl opacity-90 max-w-2xl mx-auto">
+                Pogledajte najlepše trenutke iz prirode, sa planinarskih akcija i događaja PED Majevica
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-8 bg-white dark:bg-slate-800 shadow-md">
+        <div class="container mx-auto">
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="filterGallery('all')" class="category-btn active px-8 py-3.5 rounded-full font-bold transition-all bg-gradient-to-r from-[#003366] to-[#dc2626] text-white shadow-lg hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-th mr-2"></i>Sve
+                </button>
+                <button onclick="filterGallery('priroda')" class="category-btn px-8 py-3.5 rounded-full font-bold transition-all bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[#003366] hover:to-[#dc2626] hover:text-white shadow-md hover:shadow-lg hover:scale-105">
+                    <i class="fas fa-leaf mr-2"></i>Priroda
+                </button>
+                <button onclick="filterGallery('planine')" class="category-btn px-8 py-3.5 rounded-full font-bold transition-all bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[#003366] hover:to-[#dc2626] hover:text-white shadow-md hover:shadow-lg hover:scale-105">
+                    <i class="fas fa-mountain mr-2"></i>Planine
+                </button>
+                <button onclick="filterGallery('akcije')" class="category-btn px-8 py-3.5 rounded-full font-bold transition-all bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[#003366] hover:to-[#dc2626] hover:text-white shadow-md hover:shadow-lg hover:scale-105">
+                    <i class="fas fa-hiking mr-2"></i>Akcije
+                </button>
+                <button onclick="filterGallery('dogadjaji')" class="category-btn px-8 py-3.5 rounded-full font-bold transition-all bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[#003366] hover:to-[#dc2626] hover:text-white shadow-md hover:shadow-lg hover:scale-105">
+                    <i class="fas fa-calendar-alt mr-2"></i>Događaji
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Grid -->
+    <section class="py-12 bg-gray-50 dark:bg-slate-900">
+        <div class="container mx-auto">
+            <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Images will be loaded here dynamically -->
+                <div class="col-span-full text-center py-20">
+                    <i class="fas fa-spinner fa-spin text-6xl text-[#003366] dark:text-secondary-gold mb-4"></i>
+                    <p class="text-xl text-gray-600 dark:text-gray-400">Učitavanje galerije...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+        <span class="lightbox-close" onclick="closeLightbox(event)">&times;</span>
+        <img id="lightboxImage" src="" alt="Full size image">
+        <div class="lightbox-caption">
+            <h3 id="lightboxTitle" class="text-2xl font-bold mb-2"></h3>
+            <p id="lightboxDescription" class="text-lg opacity-90"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#003366] dark:bg-slate-900 text-white py-8 mt-12">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2026 PED Majevica 1988. Sva prava zadržana.</p>
+        </div>
+    </footer>
+
+    <script>
+        const GALLERY_API = 'http://127.0.0.1:5000/api/gallery';
+        let allImages = [];
+
+        async function loadGallery() {
+            try {
+                const res = await fetch(GALLERY_API + '/');
+                const data = await res.json();
+                allImages = data.data?.images || data.images || [];
+                console.log('🖼️ Galerija: Učitano', allImages.length, 'slika');
+                renderGallery(allImages);
+            } catch (error) {
+                console.error('Greška pri učitavanju galerije:', error);
+                document.getElementById('galleryGrid').innerHTML = `
+                    <div class="col-span-full text-center py-20">
+                        <i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-4"></i>
+                        <p class="text-xl text-gray-600">Greška pri učitavanju galerije.</p>
+                        <p class="text-sm text-gray-500 mt-2">Proveri da li je backend pokrenut na portu 5000</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderGallery(images) {
+            const container = document.getElementById('galleryGrid');
+            
+            if (images.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-20">
+                        <i class="fas fa-images text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                        <p class="text-xl text-gray-600 dark:text-gray-400">Galerija je trenutno prazna.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">Admin panel → Galerija → Uploaduj prvu sliku</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = images.map(img => `
+                <div class="gallery-item bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl cursor-pointer transition-all duration-300 hover:-translate-y-2" onclick="openLightbox('${GALLERY_API}/${img.id}/image', '${img.title.replace(/'/g, "\\'")}', '${(img.description || '').replace(/'/g, "\\'")}')">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${GALLERY_API}/${img.id}/thumbnail" alt="${img.title}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" onerror="this.src='${GALLERY_API}/${img.id}/image'">
+                        <div class="absolute top-2 right-2 bg-[#003366] dark:bg-[#FFD700] text-white dark:text-[#003366] px-2 py-1 rounded-full text-xs font-bold">
+                            ${img.category || 'ostalo'}
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg text-[#003366] dark:text-white mb-2 truncate">${img.title}</h3>
+                        ${img.description ? `<p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">${img.description}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterGallery(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(category === 'all' ? 'sve' : category)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Filter images
+            if (category === 'all') {
+                renderGallery(allImages);
+            } else {
+                const filtered = allImages.filter(img => img.category === category);
+                renderGallery(filtered);
+            }
+        }
+
+        function openLightbox(src, title, description) {
+            document.getElementById('lightboxImage').src = src;
+            document.getElementById('lightboxTitle').textContent = title;
+            document.getElementById('lightboxDescription').textContent = description;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(event) {
+            if (event.target.id === 'lightbox' || event.target.classList.contains('lightbox-close')) {
+                document.getElementById('lightbox').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close lightbox on ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('lightbox').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Load gallery on page load
+        loadGallery();
+    </script>
+</body>
+</html>

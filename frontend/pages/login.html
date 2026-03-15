@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - PED Majevica Admin</title>
+  <link rel="stylesheet" href="/assets/css/output.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #003366 0%, #1e4a8b 50%, #D62828 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      width: 90%;
+      overflow: hidden;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #003366 0%, #1e4a8b 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 4px solid #FFD700;
+    }
+
+    .login-body {
+      padding: 2rem;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #D62828 0%, #991b1b 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="login-header">
+      <img src="/assets/images/icons/logo-1.svg" alt="PED Majevica 1988" class="w-20 h-20 mx-auto mb-4" />
+      <h1 class="text-2xl font-black uppercase">Admin Panel</h1>
+      <p class="text-sm opacity-75 mt-2">PED Majevica 1988</p>
+    </div>
+
+    <div class="login-body">
+      <div id="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-circle mr-2"></i>
+        <span id="errorText">Pogrešno korisničko ime ili lozinka!</span>
+      </div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="mb-4">
+          <input type="text" id="username" required placeholder="Korisničko ime">
+        </div>
+
+        <div class="mb-6">
+          <input type="password" id="password" required placeholder="Lozinka">
+        </div>
+
+        <button type="submit" class="login-btn">
+          PRIJAVI SE
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- API Config -->
+  <script src="/assets/js/config.js"></script>
+
+  <script>
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('errorMessage');
+      const errorText = document.getElementById('errorText');
+
+      console.log('🔐 Login attempt for:', username);
+
+      try {
+        // Use API_CONFIG for correct backend URL
+        const apiUrl = window.API_CONFIG
+          ? window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.LOGIN)
+          : '/api/login';
+
+        console.log('🔗 Calling API:', apiUrl);
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',  // Important for cookies/session
+          body: JSON.stringify({ username, password })
+        });
+
+        console.log('📡 Response status:', response.status);
+        const data = await response.json();
+        console.log('📦 Response data:', data);
+
+        if (response.ok && data.success) {
+          console.log('✅ Login successful!');
+          window.location.href = '/admin';
+        } else {
+          console.log('❌ Login failed:', data.message || 'Unknown error');
+          errorText.textContent = data.message || 'Pogrešno korisničko ime ili lozinka!';
+          errorDiv.classList.add('show');
+        }
+      } catch (error) {
+        console.error('❌ Login error:', error);
+        errorText.textContent = 'Greška pri povezivanju sa serverom!';
+        errorDiv.classList.add('show');
+      }
+    }
+  </script>
+
+</body>
+</html>

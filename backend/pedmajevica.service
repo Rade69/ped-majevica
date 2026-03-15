@@ -1,0 +1,57 @@
+# ========================================
+# Systemd Service for PED Majevica
+# ========================================
+# Copy this file to /etc/systemd/system/pedmajevica.service
+#
+# Setup:
+#   sudo cp pedmajevica.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable pedmajevica
+#   sudo systemctl start pedmajevica
+#   sudo systemctl status pedmajevica
+#
+# ========================================
+
+[Unit]
+Description=PED Majevica 1988 - Gunicorn Application Server
+Documentation=https://pedmajevica.org
+After=network.target postgresql.service
+
+[Service]
+# User and Group
+User=pedadmin
+Group=pedadmin
+
+# Working Directory
+WorkingDirectory=/var/www/ped-majevica/backend
+
+# Environment Variables
+Environment="PATH=/var/www/ped-majevica/backend/venv/bin"
+EnvironmentFile=/var/www/ped-majevica/backend/.env
+
+# Exec Start with Gunicorn
+ExecStart=/var/www/ped-majevica/backend/venv/bin/gunicorn \
+    -c gunicorn.conf.py \
+    wsgi:app
+
+# Restart Policy
+Restart=always
+RestartSec=10
+
+# Security Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/ped-majevica/backend/uploads /var/log/pedmajevica
+
+# Resource Limits
+LimitNOFILE=65535
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pedmajevica
+
+[Install]
+WantedBy=multi-user.target

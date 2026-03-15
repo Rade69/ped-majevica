@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <title>PED Majevica - Admin Panel</title>
+  <link rel="stylesheet" href="/assets/css/output.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="/js/transliterator.js"></script>
+
+  <!-- PREVIEW MODAL DARK MODE FIX - INLINE CSS -->
+  <style>
+    /*
+    =====================================================
+    ADMIN PANEL - CSS ORGANIZACIJA I DOKUMENTACIJA
+    =====================================================
+
+    1. PREVIEW MODAL STILOVI (linije 18-47)
+       - Kontrolišu boje teksta u preview modalul za članke
+
+    2. TRAIL & EVENT INFO TEXT (linije 49-66)
+       - Klase: .trail-info-text, .event-info-text
+       - Kontrolišu boju običnog teksta (datum, lokacija, km, sati)
+
+    3. BADGE STILOVI (linije 68-116)
+       - Klase: .trail-badge-green, .trail-badge-yellow, .trail-badge-red, .event-badge-blue
+       - Kontrolišu boju i pozadinu badge-ova (Lagana, Srednja, Teška, tip aktivnosti)
+
+    4. TAB NAVIGATION (linije 118-145)
+       - Klase: .tab-btn, .tab-btn.active
+       - Stilovi za tabove (Članci, Staze, Kalendar)
+
+    5. BADGE KATEGORIJE (linije 147-180)
+       - Klase: .badge-vodic, .badge-obilazak, .badge-dogadjaj, .badge-savet
+       - Stilovi za kategorije članaka
+
+    =====================================================
+    */
+
+    /* ===== 1. PREVIEW MODAL STILOVI ===== */
+    [data-theme="dark"] #previewTitle {
+      color: #ffffff !important;
+    }
+
+    [data-theme="dark"] #previewDate {
+      color: #d1d5db !important;
+    }
+
+    [data-theme="dark"] #previewContent,
+    [data-theme="dark"] #previewContent * {
+      color: #f3f4f6 !important;
+    }
+
+    [data-theme="dark"] #previewModal .bg-white {
+      background-color: #1e293b !important;
+    }
+
+    /* Light mode - TAMNE BOJE */
+    [data-theme="light"] #previewTitle,
+    :not([data-theme="dark"]) #previewTitle {
+      color: #003366 !important;
+    }
+
+    [data-theme="light"] #previewDate,
+    :not([data-theme="dark"]) #previewDate {
+      color: #4b5563 !important;
+    }
+
+    [data-theme="light"] #previewContent,
+    [data-theme="light"] #previewContent *,
+    :not([data-theme="dark"]) #previewContent,
+    :not([data-theme="dark"]) #previewContent * {
+      color: #1f2937 !important;
+    }
+
+    /* ===== 2. TRAIL & EVENT INFO TEXT ===== */
+    .dark .trail-info-text,
+    .dark .event-info-text,
+    [data-theme="dark"] .trail-info-text,
+    [data-theme="dark"] .event-info-text,
+    html.dark .trail-info-text,
+    html.dark .event-info-text {
+      color: #e5e7eb !important;
+    }
+
+    .trail-info-text,
+    .event-info-text,
+    [data-theme="light"] .trail-info-text,
+    [data-theme="light"] .event-info-text,
+    :not([data-theme="dark"]) .trail-info-text,
+    :not([data-theme="dark"]) .event-info-text {
+      color: #4b5563 !important;
+    }
+
+    /* ===== 3. BADGE STILOVI ===== */
+    /* Light Mode (default) */
+    .trail-badge-green {
+      background-color: #dcfce7 !important;
+      color: #166534 !important;
+    }
+
+    .trail-badge-yellow {
+      background-color: #fef9c3 !important;
+      color: #854d0e !important;
+    }
+
+    .trail-badge-red {
+      background-color: #fee2e2 !important;
+      color: #991b1b !important;
+    }
+
+    .event-badge-blue {
+      background-color: #dbeafe !important;
+      color: #1e40af !important;
+    }
+
+    /* Dark Mode */
+    .dark .trail-badge-green,
+    [data-theme="dark"] .trail-badge-green,
+    html.dark .trail-badge-green {
+      background-color: #15803d !important;
+      color: #f0fdf4 !important;
+    }
+
+    .dark .trail-badge-yellow,
+    [data-theme="dark"] .trail-badge-yellow,
+    html.dark .trail-badge-yellow {
+      background-color: #a16207 !important;
+      color: #fef9c3 !important;
+    }
+
+    .dark .trail-badge-red,
+    [data-theme="dark"] .trail-badge-red,
+    html.dark .trail-badge-red {
+      background-color: #b91c1c !important;
+      color: #fee2e2 !important;
+    }
+
+    .dark .event-badge-blue,
+    [data-theme="dark"] .event-badge-blue,
+    html.dark .event-badge-blue {
+      background-color: #1e40af !important;
+      color: #dbeafe !important;
+    }
+
+    /* ===== 4. TAB NAVIGATION ===== */
+    .tab-btn {
+      background: transparent;
+      color: #6b7280;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #003366 0%, #dc2626 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(0, 51, 102, 0.3);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: #f3f4f6;
+    }
+
+    [data-theme="dark"] .tab-btn:hover:not(.active) {
+      background: #374151;
+    }
+
+    .tab-panel {
+      display: block;
+    }
+
+    .tab-panel.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <nav class="bg-[#003366] text-white p-4 shadow-xl border-b-4 border-[#FFD700] fixed top-0 left-0 right-0 z-50">
+    <div class="container mx-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="/assets/images/icons/logo-1.svg" alt="PED Majevica Logo" class="w-12 h-12 rounded-full">
+          <span class="font-bold text-xl uppercase tracking-tighter">PED MAJEVICA ADMIN</span>
+        </div>
+
+        <!-- Stats -->
+        <div class="hidden md:flex items-center space-x-4">
+          <div class="text-base">
+            <i class="fas fa-newspaper text-secondary-gold mr-2 text-lg"></i>
+            <span class="text-secondary-gold font-semibold" id="headerPostCount">0</span> članaka
+          </div>
+          <div class="text-base opacity-75">|</div>
+          <div class="text-base">
+            <i class="fas fa-mountain text-secondary-gold mr-2 text-lg"></i>
+            <span class="text-secondary-gold font-semibold" id="headerTrailCount">0</span> staza
+          </div>
+          <div class="text-base opacity-75">|</div>
+          <div class="text-base">
+            <i class="fas fa-calendar-alt text-secondary-gold mr-2 text-lg"></i>
+            <span class="text-secondary-gold font-semibold" id="headerEventCount">0</span> događaja
+          </div>
+          <div class="text-base opacity-75">|</div>
+          <div class="text-base">
+            <i class="fas fa-images text-secondary-gold mr-2 text-lg"></i>
+            <span class="text-secondary-gold font-semibold" id="headerGalleryCount">0</span> slika
+          </div>
+        </div>
+
+        <!-- Dark Mode, Transliterator & Logout -->
+        <div class="flex items-center space-x-3">
+          <!-- Transliterator Toggle -->
+          <div class="flex items-center bg-white/10 rounded-full p-1 space-x-1">
+            <button id="btn-cyrillic" onclick="switchScript('cyrillic')"
+              class="script-btn px-3.5 py-1.5 rounded-full text-sm font-bold transition-all active" title="Ćirilica">
+              ЋИР
+            </button>
+            <button id="btn-latin" onclick="switchScript('latin')"
+              class="script-btn px-3.5 py-1.5 rounded-full text-sm font-bold transition-all" title="Latinica">
+              LAT
+            </button>
+          </div>
+
+          <button onclick="toggleDarkMode()" class="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all"
+            title="Promeni temu">
+            <i id="themeIcon" class="fas fa-moon text-lg"></i>
+          </button>
+
+          <a href="#" onclick="handleLogout(event); return false;"
+            class="flex items-center space-x-2 px-5 py-2.5 rounded-full bg-red-600 hover:bg-red-700 transition-all shadow-lg"
+            title="Odjavi se">
+            <i class="fas fa-sign-out-alt text-base"></i>
+            <span class="font-bold hidden sm:inline text-base">ODJAVI SE</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TAB NAVIGATION -->
+  <div class="bg-gray-50 dark:bg-slate-900 shadow-md" style="margin-top: 100px;">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex space-x-2 bg-white dark:bg-slate-800 rounded-xl p-2 shadow-lg">
+        <button id="tabClanci" onclick="switchTab('clanci')"
+          class="tab-btn active flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
+          <i class="fas fa-newspaper mr-2 text-lg"></i>Članci
+          <span id="clanciCount"
+            class="ml-2 bg-primary-red text-white px-2.5 py-1 rounded-full text-sm font-semibold">0</span>
+        </button>
+        <button id="tabStaze" onclick="switchTab('staze')"
+          class="tab-btn flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
+          <i class="fas fa-mountain mr-2 text-lg"></i>Staze
+          <span id="stazeCount"
+            class="ml-2 bg-primary-red text-white px-2.5 py-1 rounded-full text-sm font-semibold">0</span>
+        </button>
+        <button id="tabKalendar" onclick="switchTab('kalendar')"
+          class="tab-btn flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
+          <i class="fas fa-calendar-alt mr-2 text-lg"></i>Kalendar
+          <span id="kalendarCount"
+            class="ml-2 bg-primary-red text-white px-2.5 py-1 rounded-full text-sm font-semibold">0</span>
+        </button>
+        <button id="tabGalerija" onclick="switchTab('galerija')"
+          class="tab-btn flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
+          <i class="fas fa-images mr-2 text-lg"></i>Galerija
+          <span id="galerijaCount"
+            class="ml-2 bg-primary-red text-white px-2.5 py-1 rounded-full text-sm font-semibold">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container mx-auto pb-8 px-4 pt-8">
+    <!-- PANEL ZA ČLANKE -->
+    <div id="panelClanci" class="tab-panel">
+      <!-- Search & Filter - ALWAYS VISIBLE AT TOP -->
+      <div class="card rounded-2xl p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <div class="relative">
+              <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="text" id="searchInput" placeholder="Pretraži članke..."
+                class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-medium focus:border-blue-500 dark:focus:border-blue-400 outline-none"
+                oninput="filterPosts()">
+            </div>
+          </div>
+          <div>
+            <div class="relative">
+              <i class="fas fa-filter absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="filterCategory" class="select-dark w-full pl-11 p-3 rounded-xl border-2 font-medium"
+                onchange="filterPosts()">
+                <option value="">Sve kategorije</option>
+                <option value="savjeti">Savjeti</option>
+                <option value="oprema">Oprema</option>
+                <option value="putopisi">Putopisi</option>
+                <option value="ishrana">Ishrana</option>
+                <option value="ostalo">Ostalo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <div class="lg:col-span-5 lg:pl-4 order-last lg:order-first">
+          <div class="card p-6 rounded-2xl shadow-2xl border-t-8 border-red-600">
+            <h2 class="text-xl font-black mb-6 text-center uppercase italic">Uređivanje</h2>
+
+            <div class="space-y-4">
+              <input type="hidden" id="editId" value="">
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Naslov</label>
+                <input type="text" id="title" class="w-full border-2 p-3 rounded-xl font-bold outline-none">
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Kategorija</label>
+                  <select id="category" class="select-dark w-full border-2 p-3 rounded-xl font-bold">
+                    <option value="savjeti">savjeti</option>
+                    <option value="oprema">oprema</option>
+                    <option value="putopisi">putopisi</option>
+                    <option value="ishrana">ishrana</option>
+                    <option value="ostalo">ostalo</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Datum</label>
+                  <input type="date" id="date" class="w-full border-2 p-3 rounded-xl font-bold">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Putanja slike (Može prazno)</label>
+                <input type="text" id="image_path" class="w-full border-2 p-3 rounded-xl text-sm">
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Sadržaj (HTML)</label>
+                <textarea id="content_html" rows="10" class="w-full border-2 p-3 rounded-xl text-sm"></textarea>
+              </div>
+
+              <button onclick="finalSave()" id="saveBtn"
+                class="w-full bg-[#003366] text-white py-4 rounded-xl font-black uppercase hover:bg-red-600 shadow-lg">
+                SNIMI ČLANAK
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 lg:pl-4 order-first lg:order-last">
+          <div class="card rounded-2xl shadow-xl border overflow-hidden">
+            <div class="bg-gray-50 p-5 border-b-2 border-[#FFD700] flex justify-between items-center">
+              <h2 class="font-black uppercase pl-4">Članci</h2>
+              <span id="postCount"
+                class="bg-[#FFD700] px-3 py-1 rounded-full font-black text-xs text-[#003366]">0</span>
+            </div>
+            <div class="overflow-y-auto max-h-[600px]">
+              <table class="w-full">
+                <tbody id="postsList" class="divide-y font-bold"></tbody>
+              </table>
+            </div>
+            <div id="posts-list"></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- END panelClanci -->
+
+    <!-- PANEL ZA STAZE -->
+    <div id="panelStaze" class="tab-panel hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- FORMA ZA STAZE -->
+        <div class="lg:col-span-5 lg:pl-4">
+          <div class="card p-6 rounded-2xl shadow-2xl border-t-8 border-green-600">
+            <h2 class="text-xl font-black mb-6 text-center uppercase italic">
+              <i class="fas fa-mountain mr-2"></i>Uređivanje Staza
+            </h2>
+
+            <div class="space-y-4">
+              <input type="hidden" id="trailEditId" value="">
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Naziv Staze</label>
+                <input type="text" id="trailName" class="w-full border-2 p-3 rounded-xl font-bold outline-none">
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Težina</label>
+                  <select id="trailDifficulty" class="select-dark w-full border-2 p-3 rounded-xl font-bold">
+                    <option value="Lagana">Lagana</option>
+                    <option value="Srednja">Srednja</option>
+                    <option value="Teška">Teška</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Dužina (km)</label>
+                  <input type="number" step="0.1" id="trailDistance" class="w-full border-2 p-3 rounded-xl font-bold">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Trajanje (h)</label>
+                  <input type="number" step="0.5" id="trailDuration" class="w-full border-2 p-3 rounded-xl font-bold">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Uspona (m)</label>
+                  <input type="number" id="trailElevation" class="w-full border-2 p-3 rounded-xl font-bold">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Opis</label>
+                <textarea id="trailDescription" rows="4" class="w-full border-2 p-3 rounded-xl text-sm"></textarea>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Početna Tačka</label>
+                  <input type="text" id="trailStart" class="w-full border-2 p-3 rounded-xl text-sm">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Krajnja Tačka</label>
+                  <input type="text" id="trailEnd" class="w-full border-2 p-3 rounded-xl text-sm">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Slika (putanja)</label>
+                <input type="text" id="trailImage" class="w-full border-2 p-3 rounded-xl text-sm" placeholder="/assets/images/trails/ime-staze.webp">
+                <p class="text-xs text-gray-400 mt-1">Npr: /assets/images/trails/velika-staza-tavna.webp</p>
+              </div>
+
+              <!-- MODAL SEKCIJE -->
+              <div class="border-t-2 border-dashed border-gray-300 pt-4 mt-4">
+                <h3 class="text-sm font-bold text-green-600 mb-3 uppercase">
+                  <i class="fas fa-window-maximize mr-2"></i>Sadržaj Modala
+                </h3>
+
+                <!-- Karakteristike -->
+                <div class="mb-4">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Karakteristike (svaka u novom redu)</label>
+                  <textarea id="trailFeatures" rows="4" class="w-full border-2 p-3 rounded-xl text-sm" placeholder="Obeležena planinarska staza&#10;Pogled na 360° sa vrha&#10;Prirodni izvori vode"></textarea>
+                  <p class="text-xs text-gray-400 mt-1">Unesite svaku karakteristiku u novi red</p>
+                </div>
+
+                <!-- Potrebna oprema -->
+                <div class="mb-4">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Potrebna oprema (svaka u novom redu)</label>
+                  <textarea id="trailEquipment" rows="4" class="w-full border-2 p-3 rounded-xl text-sm" placeholder="Planinske cipele&#10;Dovoljno vode (min. 2L)&#10;Zaštita od sunca"></textarea>
+                  <p class="text-xs text-gray-400 mt-1">Unesite svaki komad opreme u novi red</p>
+                </div>
+
+                <!-- Upozorenje -->
+                <div class="mb-4">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Upozorenje</label>
+                  <textarea id="trailWarning" rows="2" class="w-full border-2 p-3 rounded-xl text-sm" placeholder="Staza je zahtevna i nije preporučljiva za početnike."></textarea>
+                </div>
+
+                <!-- Kontakt -->
+                <div class="mb-4">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Kontakt telefon</label>
+                  <input type="text" id="trailContact" class="w-full border-2 p-3 rounded-xl text-sm" placeholder="+387 65 581 354">
+                </div>
+
+                <!-- Checkboxes za brze karakteristike -->
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                  <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                    <input type="checkbox" id="trailWaterSources" class="w-4 h-4 rounded">
+                    <span>Izvori vode</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                    <input type="checkbox" id="trailShelters" class="w-4 h-4 rounded">
+                    <span>Skloništa</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                    <input type="checkbox" id="trailScenicViews" class="w-4 h-4 rounded">
+                    <span>Panorama</span>
+                  </label>
+                </div>
+              </div>
+
+              <button onclick="saveTrail()" id="saveTrailBtn"
+                class="w-full bg-green-600 text-white py-4 rounded-xl font-black uppercase hover:bg-green-700 shadow-lg">
+                <i class="fas fa-save mr-2"></i>SNIMI STAZU
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LISTA STAZA -->
+        <div class="lg:col-span-7 lg:pl-4">
+          <div class="card rounded-2xl shadow-xl border overflow-hidden">
+            <div class="bg-gray-50 p-5 border-b-2 border-green-600 flex justify-between items-center">
+              <h2 class="font-black uppercase pl-4"><i class="fas fa-mountain mr-2"></i>Staze</h2>
+              <span id="trailCount" class="bg-green-600 text-white px-3 py-1 rounded-full font-black text-xs">0</span>
+            </div>
+            <div class="overflow-y-auto max-h-[600px] overflow-x-auto">
+              <table class="w-full table-auto">
+                <tbody id="trailsList" class="divide-y"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- END panelStaze -->
+
+    <!-- PANEL ZA KALENDAR -->
+    <div id="panelKalendar" class="tab-panel hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- FORMA ZA DOGAĐAJE - Prilagođena JSON strukturi -->
+        <div class="lg:col-span-5 lg:pl-4">
+          <div class="card p-6 rounded-2xl shadow-2xl border-t-8 border-blue-600">
+            <h2 class="text-xl font-black mb-6 text-center uppercase italic">
+              <i class="fas fa-calendar-alt mr-2"></i>Uređivanje Aktivnosti
+            </h2>
+
+            <div class="space-y-4">
+              <input type="hidden" id="eventEditId" value="">
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Mjesec</label>
+                <select id="eventMonth" class="select-dark w-full border-2 p-3 rounded-xl font-bold">
+                  <option value="JANUAR">JANUAR</option>
+                  <option value="FEBRUAR">FEBRUAR</option>
+                  <option value="MART">MART</option>
+                  <option value="APRIL">APRIL</option>
+                  <option value="MAJ">MAJ</option>
+                  <option value="JUN">JUN</option>
+                  <option value="JUL">JUL</option>
+                  <option value="AVGUST">AVGUST</option>
+                  <option value="SEPTEMBAR">SEPTEMBAR</option>
+                  <option value="OKTOBAR">OKTOBAR</option>
+                  <option value="NOVEMBAR">NOVEMBAR</option>
+                  <option value="DECEMBAR">DECEMBAR</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Naziv Aktivnosti</label>
+                <input type="text" id="eventActivity" class="w-full border-2 p-3 rounded-xl font-bold outline-none">
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Datum</label>
+                <input type="text" id="eventDate" class="w-full border-2 p-3 rounded-xl font-bold" placeholder="npr. 03/04.01.2026">
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Organizator / Vodič</label>
+                <input type="text" id="eventOrganizer" class="w-full border-2 p-3 rounded-xl text-sm">
+              </div>
+
+              <button onclick="saveEvent()" id="saveEventBtn"
+                class="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase hover:bg-blue-700 shadow-lg">
+                <i class="fas fa-save mr-2"></i>SNIMI AKTIVNOST
+              </button>
+
+              <hr class="border-gray-300 dark:border-gray-600 my-4">
+
+              <button onclick="importFromJSON()"
+                class="w-full bg-green-600 text-white py-3 rounded-xl font-bold uppercase hover:bg-green-700 shadow-lg">
+                <i class="fas fa-file-import mr-2"></i>IMPORTUJ IZ JSON FAJLA
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LISTA DOGAĐAJA -->
+        <div class="lg:col-span-7 lg:pl-4">
+          <div class="card rounded-2xl shadow-xl border overflow-hidden">
+            <div class="bg-gray-50 p-5 border-b-2 border-blue-600 flex justify-between items-center">
+              <h2 class="font-black uppercase pl-4"><i class="fas fa-calendar-alt mr-2"></i>Događaji</h2>
+              <span id="eventCount" class="bg-blue-600 text-white px-3 py-1 rounded-full font-black text-xs">0</span>
+            </div>
+            <div class="overflow-y-auto max-h-[600px] overflow-x-auto">
+              <table class="w-full table-auto">
+                <tbody id="eventsList" class="divide-y"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- END panelKalendar -->
+
+    <!-- PANEL ZA GALERIJU -->
+    <div id="panelGalerija" class="tab-panel hidden">
+      <!-- Upload & Filter Section -->
+      <div class="card rounded-2xl p-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <button onclick="openGalleryUpload()"
+              class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-black uppercase hover:from-purple-700 hover:to-pink-700 shadow-lg transition-all"
+              style="color: white !important;">
+              <i class="fas fa-upload mr-2"></i>Uploaduj Novu Sliku
+            </button>
+          </div>
+          <div>
+            <div class="relative">
+              <i class="fas fa-filter absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="galleryFilterCategory" class="select-dark w-full pl-11 p-3 rounded-xl border-2 font-medium"
+                onchange="filterGallery()">
+                <option value="">Sve kategorije</option>
+                <option value="priroda">Priroda</option>
+                <option value="planine">Planine</option>
+                <option value="akcije">Akcije</option>
+                <option value="dogadjaji">Događaji</option>
+                <option value="ostalo">Ostalo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- FORMA ZA UREĐIVANJE -->
+        <div class="lg:col-span-5 lg:pl-4">
+          <div class="card p-6 rounded-2xl shadow-2xl border-t-8 border-purple-600">
+            <h2 class="text-xl font-black mb-6 text-center uppercase italic">
+              <i class="fas fa-edit mr-2"></i>Uređivanje Slike
+            </h2>
+
+            <div class="space-y-4">
+              <input type="hidden" id="galleryEditId" value="">
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Naslov</label>
+                <input type="text" id="galleryTitle" class="w-full border-2 p-3 rounded-xl font-bold outline-none">
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Kategorija</label>
+                  <select id="galleryCategory" class="select-dark w-full border-2 p-3 rounded-xl font-bold">
+                    <option value="priroda">priroda</option>
+                    <option value="planine">planine</option>
+                    <option value="akcije">akcije</option>
+                    <option value="dogadjaji">događaji</option>
+                    <option value="ostalo">ostalo</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase">Redosled</label>
+                  <input type="number" id="galleryOrder" class="w-full border-2 p-3 rounded-xl font-bold" value="0">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Opis</label>
+                <textarea id="galleryDescription" rows="3" class="w-full border-2 p-3 rounded-xl text-sm"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Tagovi (zarezom odvojeni)</label>
+                <input type="text" id="galleryTags" class="w-full border-2 p-3 rounded-xl text-sm" placeholder="planina, zalazak, majevica">
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase">Putanja do slike</label>
+                <input type="text" id="galleryFilePath" class="w-full border-2 p-3 rounded-xl text-sm" readonly>
+                <p class="text-xs text-gray-400 mt-1">Fajl se uploaduje zasebno</p>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <input type="checkbox" id="galleryPublished" class="w-4 h-4 rounded" checked>
+                <label for="galleryPublished" class="text-sm font-bold">Objavljeno</label>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <button onclick="saveGalleryImage()" id="saveGalleryBtn"
+                  style="background: linear-gradient(135deg, #9333ea 0%, #db2777 100%); color: #ffffff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); border: 2px solid #7e22ce;">
+                  <i class="fas fa-save mr-2"></i>SNIMI
+                </button>
+                <button onclick="deleteGalleryImage()" id="deleteGalleryBtn"
+                  style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #ffffff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); border: 2px solid #b91c1c;">
+                  <i class="fas fa-trash mr-2"></i>OBRISI
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRID GALERIJE -->
+        <div class="lg:col-span-7 lg:pl-4">
+          <div class="card rounded-2xl shadow-xl border overflow-hidden">
+            <div class="bg-gray-50 p-5 border-b-2 border-purple-600 flex justify-between items-center">
+              <h2 class="font-black uppercase pl-4"><i class="fas fa-images mr-2"></i>Slike u Galeriji</h2>
+              <span id="galleryImageCount" class="bg-purple-600 text-white px-3 py-1 rounded-full font-black text-xs">0</span>
+            </div>
+            <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 max-h-[600px] overflow-y-auto">
+              <!-- Slike će biti ubačene ovde dinamički -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- END panelGalerija -->
+
+  </main>
+
+  <!-- PREVIEW MODAL -->
+  <div id="previewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-[#003366] to-[#1e4a8b] p-6 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-file-alt text-secondary-gold text-2xl"></i>
+          <span id="previewCategory" class="badge text-sm"></span>
+        </div>
+        <!-- X button - BELA pozadina sa TAMNOM ikonom u light mode -->
+        <button onclick="closePreview()"
+          class="bg-white text-[#003366] hover:bg-red-600 hover:text-white dark:bg-slate-700 dark:text-white dark:hover:bg-[#FFD700] dark:hover:text-[#003366] transition-colors rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
+          title="Zatvori (ESC)">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="overflow-y-auto max-h-[calc(90vh-180px)] p-8 bg-white dark:bg-slate-800">
+        <!-- Title -->
+        <h1 id="previewTitle" class="text-3xl font-black mb-4">Učitavanje...</h1>
+
+        <!-- Date -->
+        <div id="previewDate" class="text-sm mb-6"></div>
+
+        <!-- Image -->
+        <div id="previewImageContainer" class="hidden mb-6">
+          <img id="previewImage"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+            class="w-full rounded-xl shadow-lg" alt="Post image">
+        </div>
+
+        <!-- Content -->
+        <div id="previewContent"
+          class="prose dark:prose-invert max-w-none text-gray-900 dark:text-gray-100 leading-relaxed"></div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div
+        class="bg-gray-50 dark:bg-slate-900 p-6 flex justify-end space-x-3 border-t border-gray-200 dark:border-slate-700">
+        <button onclick="closePreview()"
+          class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl font-bold transition-colors">
+          <i class="fas fa-times mr-2"></i>Zatvori
+        </button>
+        <button onclick="editFromPreview()"
+          class="px-6 py-3 bg-[#003366] hover:bg-[#1e4a8b] text-white rounded-xl font-bold transition-colors">
+          <i class="fas fa-edit mr-2"></i>Uredi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Config -->
+  <script src="/assets/js/config.js"></script>
+
+  <script>
+    // API URLs - use API_CONFIG to call Render backend
+    const API_URL = window.API_CONFIG ? window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.POSTS) : '/api/posts';
+    const TRAILS_API_URL = window.API_CONFIG ? window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.TRAILS) : '/api/trails';
+    const EVENTS_API_URL = window.API_CONFIG ? window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.EVENTS) : '/api/events';
+
+    let postsData = [];
+    const translit = typeof SerbianTransliterator !== 'undefined' ? new SerbianTransliterator() : { convert: (t) => t };
+
+    // LOGOUT HANDLER - Client-side redirect to ensure proper navigation
+    async function handleLogout(event) {
+      event.preventDefault();
+      if (confirm('Da li ste sigurni da želite da se odjavite?')) {
+        try {
+          // Call backend logout to clear session
+          await fetch('https://ped-majevica.onrender.com/logout', {
+            credentials: 'include'
+          });
+        } catch (e) {
+          console.log('Logout error (ignoring):', e);
+        }
+        // Always redirect to login, even if server logout fails
+        window.location.href = '/pages/login.html';
+      }
+    }
+
+    async function load() {
+      console.log('🔵 Admin: Učitavanje blog postova sa', API_URL);
+      try {
+        const res = await fetch(API_URL, { credentials: 'include' });
+        console.log('🔵 Admin: HTTP Status:', res.status);
+
+        if (!res.ok) {
+          console.error('❌ Admin: Greška pri učitavanju:', res.status, res.statusText);
+          if (res.status === 302 || res.status === 401) {
+            console.error('❌ Admin: Niste prijavljeni! Redirect na login...');
+            window.location.href = '/login.html';
+            return;
+          }
+        }
+
+        const data = await res.json();
+        console.log('🔵 Admin: Podaci primljeni:', data);
+        
+        // Handle both old format (data.posts) and new format (data.data.posts)
+        const posts = data.data?.posts || data.posts || [];
+        console.log('🔵 Admin: Broj postova:', posts.length);
+
+        postsData = posts;
+        document.getElementById('postCount').innerText = postsData.length;
+        updateTabCount('clanci', postsData.length);
+        render();
+      } catch (error) {
+        console.error('❌ Admin: Greška:', error);
+        alert('Greška pri učitavanju članaka: ' + error.message);
+      }
+    }
+
+    // =========================================
+    // GALLERY FUNCTIONS
+    // =========================================
+    let galleryData = [];
+    const GALLERY_API = window.API_CONFIG ? window.API_CONFIG.getUrl('/api/gallery') : '/api/gallery';
+
+    async function loadGallery() {
+      console.log('🖼️ Gallery: Učitavanje sa', GALLERY_API);
+      try {
+        const res = await fetch(GALLERY_API, { credentials: 'include' });
+        console.log('🖼️ Gallery: HTTP Status:', res.status);
+
+        if (!res.ok) {
+          console.error('❌ Gallery: Greška pri učitavanju:', res.status, res.statusText);
+          return;
+        }
+
+        const data = await res.json();
+        console.log('🖼️ Gallery: Podaci primljeni:', data);
+
+        galleryData = data.data?.images || data.images || [];
+        console.log('🖼️ Gallery: Broj slika:', galleryData.length);
+
+        // Update counts
+        document.getElementById('galleryImageCount').innerText = galleryData.length;
+        document.getElementById('galerijaCount').innerText = galleryData.length;
+        document.getElementById('headerGalleryCount').innerText = galleryData.length;
+
+        renderGallery();
+      } catch (error) {
+        console.error('❌ Gallery: Greška:', error);
+        alert('Greška pri učitavanju galerije: ' + error.message);
+      }
+    }
+
+    function renderGallery() {
+      const filterCat = document.getElementById('galleryFilterCategory')?.value || '';
+      const container = document.getElementById('galleryGrid');
+
+      if (!container) {
+        console.warn('⚠️ Gallery container not found!');
+        return;
+      }
+
+      const filtered = filterCat ? galleryData.filter(img => img.category === filterCat) : galleryData;
+      console.log('🖼️ Render Gallery:', filtered.length, 'slika (filter:', filterCat || 'all', ')');
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-3 text-center py-12">
+            <i class="fas fa-images text-6xl text-gray-300 mb-4"></i>
+            <p class="text-xl text-gray-500">Nema slika u galeriji.</p>
+            <button onclick="openGalleryUpload()" style="background: linear-gradient(135deg, #9333ea 0%, #db2777 100%); color: #ffffff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); border: 2px solid #7e22ce;" class="mt-4 px-6 py-3 rounded-xl font-bold hover:opacity-90">
+              <i class="fas fa-upload mr-2"></i>Uploaduj prvu sliku
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(img => `
+        <div class="relative group cursor-pointer rounded-xl overflow-hidden shadow-lg border-2 border-transparent hover:border-purple-500 transition-all"
+             onclick="selectGalleryImage(${img.id})">
+          <img src="${GALLERY_API}/${img.id}/thumbnail" alt="${img.title}" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-300" loading="lazy" onerror="this.src='${GALLERY_API}/${img.id}/image'">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="absolute bottom-0 left-0 right-0 p-3">
+              <p class="text-white font-bold text-sm truncate">${img.title}</p>
+              <p class="text-gray-300 text-xs">${img.category}</p>
+            </div>
+          </div>
+          <div class="absolute top-2 right-2 bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-bold">
+            #${img.order}
+          </div>
+        </div>
+      `).join('');
+      
+      console.log('✅ Gallery rendered successfully');
+    }
+
+    function filterGallery() {
+      renderGallery();
+    }
+
+    function selectGalleryImage(id) {
+      const image = galleryData.find(img => img.id === id);
+      if (!image) return;
+
+      document.getElementById('galleryEditId').value = image.id;
+      document.getElementById('galleryTitle').value = image.title || '';
+      document.getElementById('galleryCategory').value = image.category || 'ostalo';
+      document.getElementById('galleryOrder').value = image.order || 0;
+      document.getElementById('galleryDescription').value = image.description || '';
+      document.getElementById('galleryTags').value = image.tags || '';
+      document.getElementById('galleryFilePath').value = `${GALLERY_API}/${image.id}/image`;
+      document.getElementById('galleryPublished').checked = image.published !== false;
+
+      console.log('🖼️ Gallery: Selektovana slika ID:', id);
+    }
+
+    async function saveGalleryImage() {
+      const id = document.getElementById('galleryEditId').value;
+      if (!id) {
+        alert('Prvo izaberi sliku za uređivanje');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('title', document.getElementById('galleryTitle').value);
+      formData.append('category', document.getElementById('galleryCategory').value);
+      formData.append('order', document.getElementById('galleryOrder').value);
+      formData.append('description', document.getElementById('galleryDescription').value);
+      formData.append('tags', document.getElementById('galleryTags').value);
+      formData.append('published', document.getElementById('galleryPublished').checked);
+
+      try {
+        const res = await fetch(`${GALLERY_API}/${id}`, {
+          method: 'PUT',
+          credentials: 'include',
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('✅ Slika je uspešno ažurirana!');
+          loadGallery();
+        } else {
+          alert('❌ Greška: ' + (data.error || data.message));
+        }
+      } catch (error) {
+        alert('❌ Greška pri ažuriranju: ' + error.message);
+      }
+    }
+
+    async function deleteGalleryImage() {
+      const id = document.getElementById('galleryEditId').value;
+      if (!id) {
+        alert('Prvo izaberi sliku za brisanje');
+        return;
+      }
+
+      if (!confirm('Da li si siguran da želiš da obrišeš ovu sliku? Ovo ne može biti poništeno.')) {
+        return;
+      }
+
+      try {
+        const res = await fetch(`${GALLERY_API}/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        if (res.ok) {
+          alert('✅ Slika je uspešno obrisana!');
+          document.getElementById('galleryEditId').value = '';
+          loadGallery();
+        } else {
+          const data = await res.json();
+          alert('❌ Greška: ' + (data.error || data.message));
+        }
+      } catch (error) {
+        alert('❌ Greška pri brisanju: ' + error.message);
+      }
+    }
+
+    // UPLOAD FUNCTIONS
+    function openGalleryUpload() {
+      document.getElementById('uploadModal').classList.remove('hidden');
+      document.getElementById('uploadModal').classList.add('flex');
+    }
+
+    function closeUploadModal() {
+      document.getElementById('uploadModal').classList.add('hidden');
+      document.getElementById('uploadModal').classList.remove('flex');
+      document.getElementById('uploadForm').reset();
+      document.getElementById('uploadPreview').classList.add('hidden');
+      document.getElementById('fileSelected').classList.add('hidden');
+      document.getElementById('uploadFile').value = '';  // Reset file input
+    }
+
+    function previewUploadedImage() {
+      const file = document.getElementById('uploadFile').files[0];
+      if (file) {
+        // Prikaži ime fajla
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSelected').classList.remove('hidden');
+        
+        // Prikaži preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImage').src = e.target.result;
+          document.getElementById('uploadPreview').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function handleUpload(event) {
+      event.preventDefault();
+      
+      // Sakrij error ako postoji
+      document.getElementById('uploadError').classList.add('hidden');
+
+      // Provera da li je korisnik ulogovan
+      try {
+        const authRes = await fetch(window.API_CONFIG ? window.API_CONFIG.getUrl('/api/debug/auth') : '/api/debug/auth', {
+          credentials: 'include'
+        });
+        const authData = await authRes.json();
+        if (!authData.authenticated) {
+          showError('Moraš biti ulogovan da bi uploadovao sliku!\n\n1. Idi na /pages/login.html\n2. Prijavi se\n3. Vrati se ovde i probaj ponovo');
+          setTimeout(() => window.location.href = '/pages/login.html', 3000);
+          return;
+        }
+      } catch (e) {
+        console.error('Auth check failed:', e);
+      }
+
+      const file = document.getElementById('uploadFile').files[0];
+      if (!file) {
+        showError('Izaberi fajl za upload');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('title', document.getElementById('uploadTitle').value);
+      formData.append('category', document.getElementById('uploadCategory').value);
+      formData.append('order', document.getElementById('uploadOrder').value);
+      formData.append('published', document.getElementById('uploadPublished').checked);
+
+      try {
+        const res = await fetch(GALLERY_API, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('✅ Slika je uspešno uploadovana!');
+          closeUploadModal();
+          loadGallery();
+        } else {
+          showError(data.error || data.message || 'Nepoznata greška');
+        }
+      } catch (error) {
+        showError('Greška pri uploadu: ' + error.message);
+      }
+    }
+
+    function showError(message) {
+      const errorBox = document.getElementById('uploadError');
+      const errorMessage = document.getElementById('uploadErrorMessage');
+      errorMessage.textContent = message;
+      errorBox.classList.remove('hidden');
+    }
+
+    // TAB SWITCHING FUNCTIONALITY
+    function switchTab(tabName) {
+      // Hide all panels
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+
+      // Remove active from all tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      // Show selected panel
+      const panelId = 'panel' + tabName.charAt(0).toUpperCase() + tabName.slice(1);
+      document.getElementById(panelId).classList.remove('hidden');
+
+      // Activate tab button
+      const tabId = 'tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1);
+      document.getElementById(tabId).classList.add('active');
+
+      // Load data for selected tab
+      if (tabName === 'clanci') {
+        load(); // Load blog posts
+      } else if (tabName === 'staze') {
+        loadTrails(); // Load trails data
+      } else if (tabName === 'kalendar') {
+        loadEvents(); // Load events data
+      } else if (tabName === 'galerija') {
+        loadGallery(); // Load gallery images
+      }
+    }
+
+    function updateTabCount(tabName, count) {
+      const countId = tabName + 'Count';
+      const element = document.getElementById(countId);
+      if (element) {
+        element.innerText = count;
+      }
+    }
+
+    function render() {
+      const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+      const filterCat = document.getElementById('filterCategory')?.value || '';
+
+      const filtered = postsData.filter(p => {
+        const matchSearch = p.title.toLowerCase().includes(searchTerm);
+        const matchCategory = !filterCat || p.category === filterCat;
+        return matchSearch && matchCategory;
+      });
+
+      document.getElementById('postsList').innerHTML = filtered.map((p, i) => {
+        const categoryClass = `badge-${p.category}`;
+        const wordCount = p.word_count || 0;
+        const imageCount = p.image_count || 0;
+        const realIndex = postsData.indexOf(p);
+
+        return `
+                <tr class="hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors">
+                    <td class="p-4">
+                      <div class="text-[10px] text-gray-400 dark:text-gray-300">${p.date ? p.date.split(' ')[0] : ''}</div>
+                      <div class="mt-1">
+                        <span class="badge ${categoryClass}">${p.category}</span>
+                      </div>
+                    </td>
+                    <td class="p-4">
+                      <div class="font-bold text-sm mb-1 cursor-pointer hover:text-[#003366] dark:hover:text-secondary-gold transition-colors"
+                        onclick="openPreview(${realIndex})"
+                        title="Klikni za pregled">
+                        ${p.title}
+                      </div>
+                      <div class="text-xs text-gray-500 dark:text-gray-300 flex items-center space-x-3">
+                        <span><i class="fas fa-align-left mr-1"></i>${wordCount} reči</span>
+                        <span><i class="fas fa-image mr-1"></i>${imageCount} slika</span>
+                      </div>
+                    </td>
+                    <td class="p-4 text-right whitespace-nowrap min-w-[200px]">
+                        <button onclick="edit(${realIndex})" title="Izmeni članak"
+                          class="inline-flex items-center gap-2 px-4 py-3 bg-amber-400 hover:bg-amber-500 text-gray-900 dark:text-gray-900 font-bold rounded-lg mr-2 transition-colors shadow-xl border-2 border-amber-600">
+                          <i class="fas fa-edit text-lg"></i>
+                          <span class="hidden sm:inline transliterate">Уреди</span>
+                        </button>
+                        <button onclick="del(${realIndex})" title="Obriši članak"
+                          class="inline-flex items-center gap-2 px-4 py-3 bg-red-500 hover:bg-red-600 font-bold rounded-lg transition-colors shadow-xl border-2 border-red-700">
+                          <i class="fas fa-trash text-lg text-red-900"></i>
+                          <span class="hidden sm:inline text-white transliterate">Избриши</span>
+                        </button>
+                    </td>
+                </tr>
+            `;
+      }).join('');
+
+      // Update count
+      const count = filtered.length;
+      document.getElementById('postCount').innerText = count;
+      document.getElementById('headerPostCount').innerText = postsData.length;
+    }
+
+    function filterPosts() {
+      render();
+    }
+
+    async function finalSave() {
+      const title = document.getElementById('title').value;
+      const content = document.getElementById('content_html').value;
+      if (!title || !content) return alert("Naslov i sadržaj su obavezni!");
+
+      const editIdx = document.getElementById('editId').value;
+      const imgPath = document.getElementById('image_path').value.trim();
+
+      // Generiši slug iz naslova
+      const slug = title.toLowerCase()
+        .replace(/[čćđšž]/g, c => ({ č: 'c', ć: 'c', đ: 'd', š: 's', ž: 'z' })[c] || c)
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+      // Strip HTML tagovi za preview i word count
+      const textContent = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      const preview = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
+      const wordCount = textContent.split(/\s+/).filter(w => w.length > 0).length;
+
+      // Pročitaj datum iz forme
+      const dateInput = document.getElementById('date').value;
+      let customDate = null;
+      if (dateInput) {
+        // Pretvori datum iz forme (YYYY-MM-DD) u ISO format sa trenutnim vremenom
+        customDate = dateInput + 'T' + new Date().toTimeString().split(' ')[0];
+      }
+
+      const postData = {
+        title: title,
+        slug: slug,
+        category: document.getElementById('category').value,
+        content_html: content,
+        content_markdown: content,
+        content_text: textContent,
+        preview: preview,
+        word_count: wordCount,
+        image_count: imgPath ? 1 : 0,
+        images: imgPath ? [imgPath] : [],
+        published: true
+      };
+
+      // Dodaj custom datum ako je postavljen
+      if (customDate) {
+        postData.custom_date = customDate;
+      }
+
+      try {
+        let response;
+
+        if (editIdx !== "") {
+          // UPDATE postojećeg članka
+          const postId = postsData[editIdx].id;
+          response = await fetch(`${API_URL}/${postId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(postData)
+          });
+        } else {
+          // CREATE novog članka
+          response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(postData)
+          });
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert("USPJEŠNO SAČUVANO!");
+          location.reload();
+        } else {
+          alert("Greška: " + (result.message || result.error || 'Nepoznata greška'));
+        }
+      } catch (e) {
+        alert("Greška pri slanju: " + e.message);
+      }
+    }
+
+    function edit(i) {
+      const p = postsData[i];
+      document.getElementById('editId').value = i;
+      document.getElementById('title').value = p.title;
+      document.getElementById('category').value = p.category;
+
+      // Popuni datum - prvo probaj created_at, pa date kao fallback
+      let dateValue = "";
+      if (p.created_at) {
+        dateValue = p.created_at.split('T')[0]; // Uzmi samo YYYY-MM-DD dio
+      } else if (p.date) {
+        dateValue = p.date.split(' ')[0];
+      }
+      document.getElementById('date').value = dateValue;
+
+      document.getElementById('image_path').value = (p.images && p.images.length > 0) ? p.images[0] : "";
+      document.getElementById('content_html').value = p.content_html || p.content || "";
+      window.scrollTo(0, 0);
+    }
+
+    async function del(i) {
+      if (confirm("Obriši članak?")) {
+        const postId = postsData[i].id;
+
+        try {
+          const response = await fetch(`${API_URL}/${postId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("Članak uspješno obrisan!");
+            load(); // Reload lista
+          } else {
+            alert("Greška pri brisanju: " + (result.message || result.error || 'Nepoznata greška'));
+          }
+        } catch (e) {
+          alert("Greška: " + e.message);
+        }
+      }
+    }
+
+
+    load();
+    loadTrails();
+    loadEvents();
+
+    // Postavi današnji datum kao default u polje datuma
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').value = today;
+
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      html.setAttribute('data-theme', newTheme);
+      if (newTheme === 'dark') {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+      localStorage.setItem('admin-theme', newTheme);
+
+      const icon = document.getElementById('themeIcon');
+      icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // ========================================
+    // TRAILS CRUD FUNCTIONS
+    // ========================================
+    let trailsData = [];
+
+    // Željeni redoslijed staza
+    const TRAILS_ORDER = ['Velika Staza-Tavna', 'Herojeva staza', 'Novakova pećina'];
+
+    async function loadTrails() {
+      try {
+        const res = await fetch(TRAILS_API_URL, { credentials: 'include' });
+        const data = await res.json();
+        trailsData = data.trails || [];
+
+        // Sortiraj staze po custom redoslijedu
+        trailsData.sort((a, b) => {
+          const indexA = TRAILS_ORDER.indexOf(a.name);
+          const indexB = TRAILS_ORDER.indexOf(b.name);
+          // Ako staza nije u listi, stavi je na kraj
+          const orderA = indexA === -1 ? 999 : indexA;
+          const orderB = indexB === -1 ? 999 : indexB;
+          return orderA - orderB;
+        });
+
+        document.getElementById('trailCount').innerText = trailsData.length;
+        document.getElementById('headerTrailCount').innerText = trailsData.length;
+        updateTabCount('staze', trailsData.length);
+        renderTrails();
+      } catch (error) {
+        console.error('Greška pri učitavanju staza:', error);
+        alert('Greška pri učitavanju staza: ' + error.message);
+      }
+    }
+
+    function renderTrails() {
+      const list = document.getElementById('trailsList');
+      if (!list) return;
+
+      console.log('🏔️ Rendering trails:', trailsData.length);
+
+      const html = trailsData.map((t, i) => {
+        let badgeClass = '';
+        if (t.difficulty === 'Lagana') {
+          badgeClass = 'trail-badge-green';
+        } else if (t.difficulty === 'Srednja') {
+          badgeClass = 'trail-badge-yellow';
+        } else {
+          badgeClass = 'trail-badge-red';
+        }
+
+        return `
+        <tr class="hover:bg-green-50 dark:hover:bg-slate-700 transition-colors border-b">
+          <td class="p-4">
+            <div class="font-bold text-lg">${t.name}</div>
+            <div class="text-sm mt-1 trail-info-text">
+              <span class="inline-block px-2 py-1 rounded text-xs font-bold ${badgeClass}">${t.difficulty}</span>
+              <span class="mx-2">•</span>
+              ${t.distance_km} km
+              <span class="mx-2">•</span>
+              ${t.duration_hours}h
+            </div>
+          </td>
+          <td class="p-4 text-right whitespace-nowrap min-w-[200px]">
+            <button onclick="editTrail(${i})" title="Izmeni stazu" class="inline-flex items-center gap-2 px-4 py-3 bg-amber-400 hover:bg-amber-500 text-gray-900 dark:text-gray-900 font-bold rounded-lg mr-2 transition-colors shadow-xl border-2 border-amber-600">
+              <i class="fas fa-edit text-lg"></i>
+              <span class="hidden sm:inline transliterate">Уреди</span>
+            </button>
+            <button onclick="deleteTrail(${i})" title="Obriši stazu" class="inline-flex items-center gap-2 px-4 py-3 bg-red-500 hover:bg-red-600 font-bold rounded-lg transition-colors shadow-xl border-2 border-red-700">
+              <i class="fas fa-trash text-lg text-red-900"></i>
+              <span class="hidden sm:inline text-white transliterate">Избриши</span>
+            </button>
+          </td>
+        </tr>
+      `;
+      }).join('');
+
+      console.log('🏔️ HTML generated, length:', html.length);
+      list.innerHTML = html;
+      console.log('🏔️ Trails rendered to DOM');
+    }
+
+    async function saveTrail() {
+      const name = document.getElementById('trailName').value;
+      if (!name) return alert('Naziv staze je obavezan!');
+
+      const editId = document.getElementById('trailEditId').value;
+      const imageUrl = document.getElementById('trailImage').value.trim();
+
+      // Parse textarea fields (each line = one item)
+      const featuresText = document.getElementById('trailFeatures').value.trim();
+      const equipmentText = document.getElementById('trailEquipment').value.trim();
+      const features = featuresText ? featuresText.split('\n').filter(f => f.trim()) : [];
+      const equipment = equipmentText ? equipmentText.split('\n').filter(e => e.trim()) : [];
+
+      const trailData = {
+        name: name,
+        description: document.getElementById('trailDescription').value,
+        difficulty: document.getElementById('trailDifficulty').value,
+        distance_km: parseFloat(document.getElementById('trailDistance').value) || null,
+        duration_hours: parseFloat(document.getElementById('trailDuration').value) || null,
+        elevation_gain_m: parseInt(document.getElementById('trailElevation').value) || null,
+        start_point: document.getElementById('trailStart').value,
+        end_point: document.getElementById('trailEnd').value,
+        region: 'Majevica',
+        published: true,
+        images: imageUrl ? [imageUrl] : [],
+        features: features,
+        equipment: equipment,
+        warning: document.getElementById('trailWarning').value.trim(),
+        contact: document.getElementById('trailContact').value.trim() || '+387 65 581 354',
+        water_sources: document.getElementById('trailWaterSources').checked,
+        shelters: document.getElementById('trailShelters').checked,
+        scenic_views: document.getElementById('trailScenicViews').checked
+      };
+
+      console.log('📤 Saving trail data:', trailData);
+      console.log('📷 Image URL from form:', imageUrl);
+
+      try {
+        let response;
+        if (editId !== "") {
+          const trail = trailsData[editId];
+          const url = window.API_CONFIG ? window.API_CONFIG.getUrl(`${window.API_CONFIG.ENDPOINTS.TRAILS}/${trail.id}`) : `/api/trails/${trail.id}`;
+          response = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(trailData)
+          });
+        } else {
+          response = await fetch(TRAILS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(trailData)
+          });
+        }
+
+        const result = await response.json();
+        if (result.success) {
+          alert('Staza sačuvana!');
+          clearTrailForm();
+          loadTrails();
+        } else {
+          alert('Greška: ' + (result.message || result.error));
+        }
+      } catch (e) {
+        alert('Greška pri slanju: ' + e.message);
+      }
+    }
+
+    function editTrail(i) {
+      const t = trailsData[i];
+      document.getElementById('trailEditId').value = i;
+      document.getElementById('trailName').value = t.name;
+      document.getElementById('trailDescription').value = t.description || '';
+      document.getElementById('trailDifficulty').value = t.difficulty;
+      document.getElementById('trailDistance').value = t.distance_km || '';
+      document.getElementById('trailDuration').value = t.duration_hours || '';
+      document.getElementById('trailElevation').value = t.elevation_gain_m || '';
+      document.getElementById('trailStart').value = t.start_point || '';
+      document.getElementById('trailEnd').value = t.end_point || '';
+      document.getElementById('trailImage').value = t.image_url || (t.images && t.images[0]) || '';
+
+      // Modal content fields
+      document.getElementById('trailFeatures').value = (t.features || []).join('\n');
+      document.getElementById('trailEquipment').value = (t.equipment || []).join('\n');
+      document.getElementById('trailWarning').value = t.warning || '';
+      document.getElementById('trailContact').value = t.contact || '+387 65 581 354';
+      document.getElementById('trailWaterSources').checked = t.water_sources || false;
+      document.getElementById('trailShelters').checked = t.shelters || false;
+      document.getElementById('trailScenicViews').checked = t.scenic_views || false;
+
+      window.scrollTo(0, 0);
+    }
+
+    async function deleteTrail(i) {
+      if (!confirm('Obriši stazu?')) return;
+
+      const trail = trailsData[i];
+      try {
+        const url = window.API_CONFIG ? window.API_CONFIG.getUrl(`${window.API_CONFIG.ENDPOINTS.TRAILS}/${trail.id}`) : `/api/trails/${trail.id}`;
+        const response = await fetch(url, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Staza obrisana!');
+          loadTrails();
+        } else {
+          alert('Greška pri brisanju');
+        }
+      } catch (e) {
+        alert('Greška: ' + e.message);
+      }
+    }
+
+    function clearTrailForm() {
+      document.getElementById('trailEditId').value = '';
+      document.getElementById('trailName').value = '';
+      document.getElementById('trailDescription').value = '';
+      document.getElementById('trailDistance').value = '';
+      document.getElementById('trailDuration').value = '';
+      document.getElementById('trailElevation').value = '';
+      document.getElementById('trailStart').value = '';
+      document.getElementById('trailEnd').value = '';
+      document.getElementById('trailImage').value = '';
+      // Modal content fields
+      document.getElementById('trailFeatures').value = '';
+      document.getElementById('trailEquipment').value = '';
+      document.getElementById('trailWarning').value = '';
+      document.getElementById('trailContact').value = '';
+      document.getElementById('trailWaterSources').checked = false;
+      document.getElementById('trailShelters').checked = false;
+      document.getElementById('trailScenicViews').checked = false;
+    }
+
+    // ========================================
+    // EVENTS - UČITAVANJE IZ BAZE PODATAKA (API)
+    // ========================================
+    let eventsData = [];
+    const PLAN_API_URL = window.API_CONFIG ? window.API_CONFIG.getUrl('/api/plan-aktivnosti/flat') : '/api/plan-aktivnosti/flat';
+
+    async function loadEventsFromJSON() {
+      // Učitaj iz lokalnog JSON fajla
+      const fallbackRes = await fetch('/assets/data/plan_aktivnosti.json');
+      const fallbackData = await fallbackRes.json();
+      eventsData = [];
+      const months = ['JANUAR', 'FEBRUAR', 'MART', 'APRIL', 'MAJ', 'JUN', 'JUL', 'AVGUST', 'SEPTEMBAR', 'OKTOBAR', 'NOVEMBAR', 'DECEMBAR'];
+      months.forEach(month => {
+        if (fallbackData[month] && Array.isArray(fallbackData[month])) {
+          fallbackData[month].forEach(event => {
+            eventsData.push({ ...event, month: month });
+          });
+        }
+      });
+      document.getElementById('eventCount').innerText = eventsData.length;
+      document.getElementById('headerEventCount').innerText = eventsData.length;
+      updateTabCount('kalendar', eventsData.length);
+      renderEvents();
+      console.log('Učitano iz JSON fajla:', eventsData.length, 'aktivnosti');
+    }
+
+    async function loadEvents() {
+      try {
+        const res = await fetch(PLAN_API_URL, { credentials: 'include' });
+        const data = await res.json();
+
+        if (data.success && data.aktivnosti && data.aktivnosti.length > 0) {
+          eventsData = data.aktivnosti;
+          document.getElementById('eventCount').innerText = eventsData.length;
+          document.getElementById('headerEventCount').innerText = eventsData.length;
+          updateTabCount('kalendar', eventsData.length);
+          renderEvents();
+          console.log('Učitano iz API-ja:', eventsData.length, 'aktivnosti');
+        } else {
+          // API je prazan ili greška - koristi JSON fallback
+          console.log('API prazan ili greška, koristim JSON fallback');
+          await loadEventsFromJSON();
+        }
+      } catch (error) {
+        console.error('Greška pri učitavanju iz API-ja:', error);
+        // Fallback na JSON fajl ako API nije dostupan
+        try {
+          await loadEventsFromJSON();
+        } catch (fallbackError) {
+          console.error('Fallback greška:', fallbackError);
+        }
+      }
+    }
+
+    function renderEvents() {
+      const list = document.getElementById('eventsList');
+      if (!list) return;
+
+      console.log('📅 Rendering events:', eventsData.length);
+
+      const html = eventsData.map((e, i) => {
+        // Koristi polja iz JSON fajla: date, activity, organizer_guide
+        const dateStr = e.date || '';
+        const activity = e.activity || '';
+        const organizer = e.organizer_guide || '';
+        const month = e.month || '';
+
+        return `
+        <tr class="hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors border-b">
+          <td class="p-4">
+            <div class="font-bold text-lg transliterate">${activity}</div>
+            <div class="text-sm mt-1 event-info-text">
+              <span class="inline-block px-2 py-1 rounded text-xs font-bold event-badge-blue">${month}</span>
+              <span class="mx-2">•</span>
+              <span class="transliterate">${dateStr.trim()}</span>
+              ${organizer ? `<span class="mx-2">•</span><span class="transliterate">${organizer}</span>` : ''}
+            </div>
+          </td>
+          <td class="p-4 text-right whitespace-nowrap min-w-[200px]">
+            <button onclick="editEvent(${i})" title="Izmeni događaj" class="inline-flex items-center gap-2 px-4 py-3 bg-amber-400 hover:bg-amber-500 text-gray-900 dark:text-gray-900 font-bold rounded-lg mr-2 transition-colors shadow-xl border-2 border-amber-600">
+              <i class="fas fa-edit text-lg"></i>
+              <span class="hidden sm:inline transliterate">Уреди</span>
+            </button>
+            <button onclick="deleteEvent(${i})" title="Obriši događaj" class="inline-flex items-center gap-2 px-4 py-3 bg-red-500 hover:bg-red-600 font-bold rounded-lg transition-colors shadow-xl border-2 border-red-700">
+              <i class="fas fa-trash text-lg text-red-900"></i>
+              <span class="hidden sm:inline text-white transliterate">Избриши</span>
+            </button>
+          </td>
+        </tr>
+      `;
+      }).join('');
+
+      console.log('📅 HTML generated, length:', html.length);
+      list.innerHTML = html;
+      console.log('📅 Events rendered to DOM');
+
+      // Primijeni transliteraciju ako je potrebno
+      if (typeof applyTransliteration === 'function') {
+        applyTransliteration();
+      }
+    }
+
+    async function saveEvent() {
+      const activity = document.getElementById('eventActivity').value;
+      const date = document.getElementById('eventDate').value;
+      if (!activity) return alert('Naziv aktivnosti je obavezan!');
+
+      const editId = document.getElementById('eventEditId').value;
+      const organizer = document.getElementById('eventOrganizer').value;
+      const month = document.getElementById('eventMonth').value || 'JANUAR';
+
+      const eventData = {
+        activity: activity,
+        date: date,
+        organizer_guide: organizer,
+        month: month
+      };
+
+      try {
+        let response;
+        const baseUrl = window.API_CONFIG ? window.API_CONFIG.getUrl('/api/plan-aktivnosti') : '/api/plan-aktivnosti';
+
+        if (editId !== "") {
+          // Ažuriraj postojeću aktivnost
+          const aktivnost = eventsData[editId];
+          response = await fetch(`${baseUrl}/${aktivnost.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(eventData)
+          });
+        } else {
+          // Kreiraj novu aktivnost
+          response = await fetch(baseUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(eventData)
+          });
+        }
+
+        const result = await response.json();
+        if (result.success) {
+          alert(editId !== "" ? 'Aktivnost ažurirana!' : 'Aktivnost dodana!');
+          clearEventForm();
+          loadEvents();
+        } else {
+          alert('Greška: ' + (result.error || 'Nepoznata greška'));
+        }
+      } catch (e) {
+        alert('Greška pri spremanju: ' + e.message);
+      }
+    }
+
+    function clearEventForm() {
+      document.getElementById('eventEditId').value = '';
+      document.getElementById('eventMonth').value = '';
+      document.getElementById('eventActivity').value = '';
+      document.getElementById('eventDate').value = '';
+      document.getElementById('eventOrganizer').value = '';
+    }
+
+    function editEvent(i) {
+      const e = eventsData[i];
+      document.getElementById('eventEditId').value = i;
+      document.getElementById('eventMonth').value = e.month || '';
+      document.getElementById('eventActivity').value = e.activity || '';
+      document.getElementById('eventDate').value = (e.date || '').trim();
+      document.getElementById('eventOrganizer').value = e.organizer_guide || '';
+      window.scrollTo(0, 0);
+    }
+
+    async function deleteEvent(i) {
+      if (!confirm('Obriši aktivnost?')) return;
+
+      const aktivnost = eventsData[i];
+      try {
+        const baseUrl = window.API_CONFIG ? window.API_CONFIG.getUrl('/api/plan-aktivnosti') : '/api/plan-aktivnosti';
+        const response = await fetch(`${baseUrl}/${aktivnost.id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Aktivnost obrisana!');
+          loadEvents();
+        } else {
+          alert('Greška pri brisanju: ' + (result.error || 'Nepoznata greška'));
+        }
+      } catch (e) {
+        alert('Greška: ' + e.message);
+      }
+    }
+
+    async function importFromJSON() {
+      if (!confirm('Ovo će obrisati sve postojeće aktivnosti i importovati iz JSON fajla. Nastaviti?')) {
+        return;
+      }
+
+      try {
+        // Učitaj JSON fajl
+        const jsonRes = await fetch('/assets/data/plan_aktivnosti.json');
+        const jsonData = await jsonRes.json();
+
+        // Pošalji na API za import
+        const baseUrl = window.API_CONFIG ? window.API_CONFIG.getUrl('/api/plan-aktivnosti') : '/api/plan-aktivnosti';
+        const response = await fetch(`${baseUrl}/import`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(jsonData)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert(`Uspješno importovano ${result.count} aktivnosti!`);
+          loadEvents();
+        } else {
+          alert('Greška pri importu: ' + (result.error || 'Nepoznata greška'));
+        }
+      } catch (e) {
+        alert('Greška: ' + e.message);
+      }
+    }
+
+    // Load saved theme
+    (function () {
+      const savedTheme = localStorage.getItem('admin-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+      const icon = document.getElementById('themeIcon');
+      if (icon) {
+        icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      }
+    })();
+
+    // DEBUG - Provera podataka
+    setTimeout(() => {
+      console.log('=== ADMIN PANEL DEBUG ===');
+      console.log('Trails loaded:', trailsData.length);
+      console.log('Events loaded:', eventsData.length);
+      console.log('trailsList element:', document.getElementById('trailsList'));
+      console.log('eventsList element:', document.getElementById('eventsList'));
+
+      if (trailsData.length > 0) {
+        console.log('✅ Trails data OK - trebalo bi da vidiš listu!');
+      } else {
+        console.warn('⚠️ Nema trails podataka!');
+      }
+
+      if (eventsData.length > 0) {
+        console.log('✅ Events data OK - trebalo bi da vidiš listu!');
+      } else {
+        console.warn('⚠️ Nema events podataka!');
+      }
+    }, 2000);
+  </script>
+
+  <!-- UPLOAD MODAL FOR GALLERY - SIMPLIFIED -->
+  <div id="uploadModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
+      <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4 flex justify-between items-center">
+        <h2 class="text-lg font-black text-white uppercase">
+          <i class="fas fa-upload mr-2"></i>Uploaduj Sliku
+        </h2>
+        <button onclick="closeUploadModal()"
+          style="background: rgba(255,255,255,0.2);"
+          class="hover:bg-white/30 transition-colors rounded-full w-8 h-8 flex items-center justify-center text-white flex-shrink-0 border-2 border-white/30">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="uploadForm" class="p-4 space-y-3" onsubmit="handleUpload(event)">
+        <!-- FILE SELECTION -->
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4 border-2 border-dashed border-purple-300 dark:border-purple-700">
+          <div class="text-center mb-3">
+            <i class="fas fa-cloud-upload-alt text-5xl text-purple-400 mb-2"></i>
+            <p class="text-sm font-bold text-gray-700 dark:text-gray-300">Izaberi sliku za upload</p>
+            <p class="text-xs text-gray-500 mt-1">PNG, JPG, JPEG, WEBP (max 10MB)</p>
+          </div>
+          
+          <input type="file" id="uploadFile" accept="image/*" class="hidden" onchange="previewUploadedImage()">
+          <button type="button" onclick="document.getElementById('uploadFile').click()"
+            style="background: linear-gradient(135deg, #9333ea 0%, #db2777 100%); color: #ffffff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); border: 2px solid #7e22ce;"
+            class="w-full px-4 py-2 rounded-lg font-bold flex items-center justify-center">
+            <i class="fas fa-folder-open mr-2"></i>Izaberi Fajl
+          </button>
+          
+          <!-- PREVIEW -->
+          <div id="uploadPreview" class="hidden mt-3">
+            <div class="relative rounded-lg overflow-hidden border-2 border-purple-200 dark:border-purple-800">
+              <img id="previewImage" class="w-full h-40 object-cover" alt="Preview">
+            </div>
+            <div id="fileSelected" class="hidden mt-2 flex items-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-lg font-bold text-xs justify-center">
+              <i class="fas fa-check-circle mr-2"></i>
+              <span id="fileName" class="truncate"></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Naslov *</label>
+          <input type="text" id="uploadTitle" class="w-full border-2 p-2 rounded-lg font-bold outline-none text-sm" required placeholder="Unesi naslov...">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Kategorija</label>
+            <select id="uploadCategory" class="w-full border-2 p-2 rounded-lg font-bold text-sm">
+              <option value="priroda">Priroda</option>
+              <option value="planine">Planine</option>
+              <option value="akcije">Akcije</option>
+              <option value="dogadjaji">Događaji</option>
+              <option value="ostalo">Ostalo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Redosled</label>
+            <input type="number" id="uploadOrder" class="w-full border-2 p-2 rounded-lg font-bold text-sm" value="0">
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="uploadPublished" class="w-4 h-4 rounded" checked>
+          <label for="uploadPublished" class="text-sm font-bold">Objavljeno odmah</label>
+        </div>
+
+        <!-- ERROR MESSAGE BOX -->
+        <div id="uploadError" class="hidden bg-red-100 dark:bg-red-900/30 border-2 border-red-500 text-red-700 dark:text-red-400 p-3 rounded-lg text-xs">
+          <p class="font-bold mb-1"><i class="fas fa-exclamation-triangle mr-2"></i>Greška:</p>
+          <p id="uploadErrorMessage" class="font-mono"></p>
+        </div>
+
+        <button type="submit"
+          style="background: linear-gradient(135deg, #9333ea 0%, #db2777 100%); color: #ffffff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); border: 2px solid #7e22ce;"
+          class="w-full py-3 rounded-xl font-black uppercase">
+          <i class="fas fa-upload mr-2"></i>Uploaduj
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Inline script already handles all admin functionality -->
+
+
+</body>
+</html>

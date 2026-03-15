@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="sr" class="scroll-smooth overflow-x-hidden" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>Учланите се - PED Majevica 1988</title>
+    <meta name="description" content="Postanite član PED Majevica 1988 - najstarijeg planinarskog društva na Majevici. Popunite pristupnicu online i preuzmite uplatnicu.">
+
+    <!-- Fonts -->
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap">
+    </noscript>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/output.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="icon" type="image/x-icon" href="/assets/images/icons/logo-2.png">
+    <link rel="stylesheet" href="/assets/css/style-optimized.min.css">
+    <link rel="stylesheet" href="/assets/css/animations.css?v=6">
+</head>
+
+<body class="font-sans bg-neutral-light dark:bg-gray-900 text-gray-800 dark:text-white overflow-x-hidden">
+    
+    <!-- NAVIGACIJA -->
+    <nav class="fixed w-full bg-primary-blue/95 backdrop-blur-sm z-50 shadow-lg border-b border-secondary-silver/20">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-red to-primary-blue flex items-center justify-center">
+                                <img src="/assets/images/icons/logo-2.png" alt="PED Majevica Logo" width="56" height="56">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold text-white font-serif">PED MAJEVICA</span>
+                        <span class="text-secondary-gold text-sm font-medium tracking-wider">1988</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Meni -->
+                <div class="hidden md:flex space-x-0.5 items-center flex-wrap">
+                    <a href="/" class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-home mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Početna
+                    </a>
+                    <a href="/#staze" class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-route mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Staze
+                    </a>
+                    <a href="/#blog" class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-newspaper mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Blog
+                    </a>
+                    <a href="/#kalendar" class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-calendar-alt mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Kalendar
+                    </a>
+                    <a href="/galerija" class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-images mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Galerija
+                    </a>
+                    <a href="/#kontakt" class="nav-link px-3 py-2 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-envelope mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Kontakt
+                    </a>
+                    <a href="#formular" class="nav-link px-3 py-2 rounded-lg bg-secondary-gold text-primary-blue hover:bg-yellow-500 font-bold transition-all duration-300 group inline-flex items-center whitespace-nowrap text-base">
+                        <i class="fas fa-user-plus mr-2 group-hover:scale-110 transition-transform text-sm"></i>
+                        Učlanite se
+                    </a>
+                </div>
+
+                <!-- CTA Dugmad -->
+                <div class="hidden md:flex items-center space-x-3">
+                    <!-- Script Toggle (Ćirilica/Latinica) -->
+                    <div class="flex gap-1 bg-white/10 rounded-lg p-1">
+                        <button type="button" id="btn-cyrillic" onclick="switchScript('cyrillic')"
+                            class="script-btn active px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
+                            aria-label="Пребаци на ћирилицу">
+                            Ћир
+                        </button>
+                        <button type="button" id="btn-latin" onclick="switchScript('latin')"
+                            class="script-btn px-3 py-1.5 rounded-md text-white text-sm font-semibold transition-all hover:bg-white/10"
+                            aria-label="Prebaci na latinicu">
+                            Lat
+                        </button>
+                    </div>
+
+                    <!-- Dark Mode Toggle -->
+                    <button type="button" id="themeToggle"
+                        class="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all hover:scale-110"
+                        aria-label="Uključi/isključi tamni režim">
+                        <i class="fas fa-sun text-secondary-gold" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button type="button" id="mobileMenuToggle" class="md:hidden text-white text-2xl"
+                    aria-label="Otvori meni">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Meni -->
+            <div id="mobileMenu" class="md:hidden mt-4 hidden bg-primary-blue rounded-lg p-4 border border-secondary-silver/20">
+                <div class="flex flex-col space-y-2">
+                    <a href="/" class="mobile-nav-link px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all">
+                        <i class="fas fa-home mr-3"></i> Početna
+                    </a>
+                    <a href="/#staze" class="mobile-nav-link px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all">
+                        <i class="fas fa-route mr-3"></i> Staze
+                    </a>
+                    <a href="/#blog" class="mobile-nav-link px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all">
+                        <i class="fas fa-newspaper mr-3"></i> Blog
+                    </a>
+                    <a href="/#kalendar" class="mobile-nav-link px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all">
+                        <i class="fas fa-calendar-alt mr-3"></i> Kalendar
+                    </a>
+                    <a href="/galerija" class="mobile-nav-link px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all">
+                        <i class="fas fa-images mr-3"></i> Galerija
+                    </a>
+                    <a href="/#kontakt" class="mobile-nav-link px-4 py-3 rounded-lg text-white hover:bg-white/10 hover:text-secondary-gold font-medium transition-all">
+                        <i class="fas fa-envelope mr-3"></i> Kontakt
+                    </a>
+                    <a href="#formular" class="mobile-nav-link px-4 py-3 rounded-lg bg-secondary-gold text-primary-blue hover:bg-yellow-500 font-bold transition-all">
+                        <i class="fas fa-user-plus mr-3"></i> Učlanite se
+                    </a>
+
+                    <!-- Script Toggle za Mobile -->
+                    <div class="pt-4 border-t border-secondary-silver/20 mt-2">
+                        <div class="flex gap-2 mb-3">
+                            <button type="button" id="btn-cyrillic-mobile" onclick="switchScript('cyrillic')"
+                                class="script-btn active flex-1 py-2 rounded-lg text-white text-sm font-semibold transition-all"
+                                aria-label="Пребаци на ћирилицу">
+                                Ћирилица
+                            </button>
+                            <button type="button" id="btn-latin-mobile" onclick="switchScript('latin')"
+                                class="script-btn flex-1 py-2 rounded-lg text-white text-sm font-semibold transition-all"
+                                aria-label="Prebaci na latinicu">
+                                Latinica
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SEKCIJA -->
+    <section class="pt-24 pb-20 relative overflow-hidden bg-gradient-to-br from-primary-blue via-blue-dark to-neutral-dark">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-secondary-gold blur-3xl"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-primary-red blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 container mx-auto px-4 py-16">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Badge -->
+                <div class="inline-flex items-center justify-center mb-8 px-6 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-secondary-silver/30 fade-in-up-instant">
+                    <span class="text-secondary-gold font-bold text-lg mr-2">1988</span>
+                    <span class="text-white text-sm">PRIDRUŽITE SE TRADICIJI</span>
+                </div>
+
+                <!-- Main Heading -->
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 font-serif leading-tight text-white fade-in-delay-1-instant">
+                    Postanite Član <br>
+                    <span class="hero-gradient-text animate-gradient-shift">PED Majevica 1988</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="text-xl md:text-2xl mb-12 text-secondary-silver max-w-3xl mx-auto leading-relaxed fade-in-delay-2-instant">
+                    Učlanite se u najstarije planinsko društvo na Majevici i postanite deo tradicije koja traje preko 35 godina!
+                </p>
+
+                <!-- Benefits -->
+                <div class="grid md:grid-cols-3 gap-6 mb-12 fade-in-delay-3-instant">
+                    <div class="glass-card rounded-xl p-6 card-hover">
+                        <div class="w-16 h-16 bg-secondary-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-hiking text-primary-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-white font-bold mb-2">Organizovani izleti</h3>
+                        <p class="text-secondary-silver text-sm">Mjesečni izleti na najlepše staze Majevice</p>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 card-hover">
+                        <div class="w-16 h-16 bg-secondary-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-primary-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-white font-bold mb-2">Planinska zajednica</h3>
+                        <p class="text-secondary-silver text-sm">Upoznajte ljude sa istim interesovanjima</p>
+                    </div>
+                    <div class="glass-card rounded-xl p-6 card-hover">
+                        <div class="w-16 h-16 bg-secondary-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-id-card text-primary-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-white font-bold mb-2">Članska kartica</h3>
+                        <p class="text-secondary-silver text-sm">Popusti na opremu i obilaske nacionalnih parkova</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+            <a href="#formular" class="text-white text-2xl">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- KORAK 1: FORMULAR -->
+    <section id="formular" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center mb-6">
+                        <div class="w-12 h-12 bg-primary-blue rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                            1
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-blue font-serif">
+                            Popunite <span class="text-primary-red">Pristupnicu</span>
+                        </h2>
+                    </div>
+                    <p class="text-gray-600 text-lg">
+                        Unesite vaše podatke i preuzmite popunjenu pristupnicu u PDF formatu
+                    </p>
+                </div>
+
+                <!-- Success Message (Hidden by default) -->
+                <div id="successMessage" class="hidden mb-8 bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 text-3xl mr-4"></i>
+                        <div>
+                            <h3 class="text-green-800 font-bold text-lg mb-1">Pristupnica uspešno generisana!</h3>
+                            <p class="text-green-700">PDF fajl je preuzet. Sada pređite na korak 2 - uplata članarine.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formular -->
+                <form id="membershipForm" onsubmit="generatePristupnica(event)" class="bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 border border-gray-100">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Ime i prezime -->
+                        <div class="md:col-span-2">
+                            <label for="imePrezime" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-user text-primary-red mr-2"></i>
+                                Име и презиме *
+                            </label>
+                            <input type="text" id="imePrezime" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base"
+                                placeholder="Марко Марковић">
+                        </div>
+
+                        <!-- Datum rođenja -->
+                        <div>
+                            <label for="datumRodjenja" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-calendar text-primary-red mr-2"></i>
+                                Датум рођења *
+                            </label>
+                            <input type="date" id="datumRodjenja" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base">
+                        </div>
+
+                        <!-- Mjesto rođenja -->
+                        <div>
+                            <label for="mjestoRodjenja" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-map-marker-alt text-primary-red mr-2"></i>
+                                Мјесто рођења *
+                            </label>
+                            <input type="text" id="mjestoRodjenja" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base"
+                                placeholder="Бијељина">
+                        </div>
+
+                        <!-- Mjesto boravka -->
+                        <div>
+                            <label for="mjestoBoravka" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-home text-primary-red mr-2"></i>
+                                Мјесто боравка *
+                            </label>
+                            <input type="text" id="mjestoBoravka" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base"
+                                placeholder="Бијељина">
+                        </div>
+
+                        <!-- Adresa -->
+                        <div>
+                            <label for="adresa" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-map-marked-alt text-primary-red mr-2"></i>
+                                Адреса становања *
+                            </label>
+                            <input type="text" id="adresa" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base"
+                                placeholder="Батковић 33">
+                        </div>
+
+                        <!-- Telefon -->
+                        <div>
+                            <label for="telefon" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-phone text-primary-red mr-2"></i>
+                                Телефон *
+                            </label>
+                            <input type="tel" id="telefon" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base no-translate"
+                                placeholder="+387 65 123 456" translate="no">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-envelope text-primary-red mr-2"></i>
+                                Email адреса *
+                            </label>
+                            <input type="email" id="email" required
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base no-translate"
+                                placeholder="vaseime@gmail.com" translate="no">
+                        </div>
+
+                        <!-- Zanimanje -->
+                        <div>
+                            <label for="zanimanje" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-briefcase text-primary-red mr-2"></i>
+                                Занимање
+                            </label>
+                            <input type="text" id="zanimanje"
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base"
+                                placeholder="Инжењер">
+                        </div>
+
+                        <!-- Datum učlanjenja -->
+                        <div>
+                            <label for="datumUclanjenja" class="block text-primary-blue font-bold mb-3">
+                                <i class="fas fa-calendar-check text-primary-red mr-2"></i>
+                                Датум учлањења
+                            </label>
+                            <input type="date" id="datumUclanjenja"
+                                class="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary-red focus:ring-2 focus:ring-primary-red/20 transition-all bg-white text-base">
+                            <p class="text-gray-500 text-sm mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Automatski popunjeno sa današnjim datumom
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Notice -->
+                    <div class="mt-8 p-4 bg-blue-50 border-l-4 border-primary-blue rounded-lg">
+                        <p class="text-gray-700 text-sm">
+                            <i class="fas fa-shield-alt text-primary-blue mr-2"></i>
+                            <strong>Napomena:</strong> Vaši lični podaci se koriste isključivo za učlanjenje, evidenciju članova i organizovanje planinarskih aktivnosti.
+                        </p>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-10 text-center">
+                        <button type="submit"
+                            class="px-10 py-5 bg-gradient-to-r from-primary-red to-red-dark hover:from-red-dark hover:to-primary-red text-white font-bold rounded-2xl text-lg transition-all transform hover:-translate-y-1 shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] group inline-flex items-center justify-center gap-4">
+                            <i class="fas fa-file-pdf group-hover:scale-110 transition-transform"></i>
+                            <span>Генериши Приступницу (PDF)</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                        </button>
+                        <p class="text-gray-500 text-sm mt-4">
+                            PDF pristupnica će biti automatski preuzeta
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- KORAK 2: UPLATNICE -->
+    <section id="uplatnice" class="py-20 bg-gradient-to-b from-neutral-light to-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center mb-6">
+                        <div class="w-12 h-12 bg-primary-blue rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                            2
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-blue font-serif">
+                            Uplatite <span class="text-primary-red">Članarinu</span>
+                        </h2>
+                    </div>
+                    <p class="text-gray-600 text-lg">
+                        Izaberite opciju članarine i preuzmite uplatnicu
+                    </p>
+                </div>
+
+                <!-- Opcije članarine -->
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <!-- Opcija 1 - Samo članarina -->
+                    <div class="group bg-white rounded-3xl p-8 shadow-2xl hover:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] transition-all duration-500 border-b-4 border-primary-blue transform hover:-translate-y-2">
+                        <div class="text-center mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-br from-primary-blue to-blue-dark rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-id-badge text-white text-3xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-primary-blue mb-2">Основна Чланарина</h3>
+                            <div class="text-5xl font-bold text-primary-red my-4">35 КМ</div>
+                            <p class="text-gray-600">годишње / по особи</p>
+                        </div>
+
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Учешће у свим излетима</span>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Приступ планинарским стазама</span>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Едукативни програми</span>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Чланство у друштву</span>
+                            </div>
+                        </div>
+
+                        <!-- Uplatnica slika -->
+                        <div class="mb-6 border-2 border-gray-200 rounded-xl overflow-hidden">
+                            <img src="/assets/images/uplatnica-35km.jpg" alt="Uplatnica 35 KM" class="w-full h-auto">
+                        </div>
+
+                        <button type="button" onclick="downloadUplatnica('basic')"
+                            class="w-full py-4 bg-primary-blue hover:bg-blue-dark text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg group">
+                            <i class="fas fa-download mr-2 group-hover:animate-bounce"></i>
+                            Преузми уплатницу (35 КМ)
+                        </button>
+                    </div>
+
+                    <!-- Opcija 2 - Članarina + Kartica -->
+                    <div class="group bg-white rounded-3xl p-8 shadow-2xl hover:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] transition-all duration-500 border-b-4 border-secondary-gold transform hover:-translate-y-2 relative">
+                        <!-- Recommended Badge -->
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-secondary-gold text-primary-blue px-6 py-2 rounded-full font-bold text-sm shadow-lg">
+                            <i class="fas fa-star mr-2"></i>ПРЕПОРУЧЕНО
+                        </div>
+
+                        <div class="text-center mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-br from-secondary-gold to-yellow-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-id-card text-white text-3xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-primary-blue mb-2">Чланарина + Картица</h3>
+                            <div class="text-5xl font-bold text-primary-red my-4">40 КМ</div>
+                            <p class="text-gray-600">годишње / по особи</p>
+                        </div>
+
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Све из основне чланарине</span>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span><strong>Званична чланска картица</strong></span>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Попусти на планинарску опрему</span>
+                            </div>
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Олакшан улазак у националне паркове</span>
+                            </div>
+                        </div>
+
+                        <!-- Uplatnica slika -->
+                        <div class="mb-6 border-2 border-secondary-gold rounded-xl overflow-hidden">
+                            <img src="/assets/images/uplatnica-40km.jpg" alt="Uplatnica 40 KM" class="w-full h-auto">
+                        </div>
+
+                        <button type="button" onclick="downloadUplatnica('with-card')"
+                            class="w-full py-4 bg-secondary-gold hover:bg-yellow-600 text-primary-blue font-bold rounded-xl transition-all hover:scale-105 shadow-lg group">
+                            <i class="fas fa-download mr-2 group-hover:animate-bounce"></i>
+                            Преузми уплатницу (40 КМ)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instrukcije za uplatu -->
+                <div class="bg-gradient-to-r from-primary-blue to-blue-dark rounded-2xl p-8 text-white shadow-xl">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-info-circle text-secondary-gold mr-3"></i>
+                        Упутство за уплату
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold mb-3 text-secondary-gold">Подаци за уплату:</h4>
+                            <div class="space-y-2 text-secondary-silver">
+                                <p class="no-translate" translate="no"><strong class="text-white">Рачун:</strong> 554-001-00000329-64</p>
+                                <p><strong class="text-white">Прималац:</strong> ПЕД МАЈЕВИЦА</p>
+                                <p><strong class="text-white">Мјесто:</strong> Бијељина</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-3 text-secondary-gold">Сврха уплате:</h4>
+                            <div class="space-y-2 text-secondary-silver">
+                                <p><strong class="text-white">35 КМ:</strong> "УПЛАТА ЧЛАНАРИНЕ ЗА 2026"</p>
+                                <p><strong class="text-white">40 КМ:</strong> "УПЛАТА ЧЛАНАРИНЕ И КАРТИЦУ 2026"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KORAK 3: PREDAJA PRISTUPNICE -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center mb-6">
+                        <div class="w-12 h-12 bg-primary-blue rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">
+                            3
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary-blue font-serif">
+                            Предајте <span class="text-primary-red">Приступницу</span>
+                        </h2>
+                    </div>
+                    <p class="text-gray-600 text-lg">
+                        Завршите процес учлањења предајом приступнице
+                    </p>
+                </div>
+
+                <!-- Opcije za predaju -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Opcija 1 - Lično -->
+                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-xl border-l-4 border-primary-blue">
+                        <div class="w-16 h-16 bg-primary-blue rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-handshake text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary-blue mb-4">Лично предајте</h3>
+                        <div class="space-y-4 text-gray-700">
+                            <div class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-primary-red mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-bold">Адреса:</p>
+                                    <p>Кнегиње Милице 8<br>76300 Бијељина</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-clock text-primary-red mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-bold">Састанци:</p>
+                                    <p>Сваки први уторак у мјесецу<br>Почетак у 19:00 часова</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-phone text-primary-red mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-bold">Телефон:</p>
+                                    <p class="no-translate" translate="no">+387 65 581 354</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opcija 2 - Email -->
+                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-xl border-l-4 border-secondary-gold">
+                        <div class="w-16 h-16 bg-secondary-gold rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-envelope text-primary-blue text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary-blue mb-4">Пошаљите email-ом</h3>
+                        <div class="space-y-4 text-gray-700">
+                            <div class="flex items-start">
+                                <i class="fas fa-at text-primary-red mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-bold">Email адреса:</p>
+                                    <a href="mailto:pedmajevica88@gmail.com" class="text-primary-blue hover:text-primary-red transition-colors font-bold no-translate" translate="no">
+                                        pedmajevica88@gmail.com
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-file-pdf text-primary-red mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-bold">Приложите:</p>
+                                    <p>• Попуњену приступницу (PDF)<br>
+                                       • Доказ о уплати чланарине</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-reply text-primary-red mt-1 mr-3"></i>
+                                <div>
+                                    <p class="font-bold">Одговор:</p>
+                                    <p>Одговарамо у року од 24 часа</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final CTA -->
+                <div class="mt-16 bg-gradient-to-r from-primary-blue to-blue-dark rounded-2xl p-8 text-white text-center shadow-xl">
+                    <h3 class="text-2xl font-bold mb-4">
+                        <i class="fas fa-mountain text-secondary-gold mr-2"></i>
+                        Постаните дио традиције која траје од 1988!
+                    </h3>
+                    <p class="text-secondary-silver mb-6">
+                        Учланите се данас и придружите се заједници од преко 500 чланова који дијеле љубав према планинама.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#formular"
+                            class="px-8 py-4 bg-secondary-gold hover:bg-yellow-600 text-primary-blue font-bold rounded-xl transition-all hover:scale-105 shadow-lg">
+                            <i class="fas fa-arrow-up mr-2"></i>
+                            Попуни приступницу
+                        </a>
+                        <a href="/#kontakt"
+                            class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all hover:scale-105">
+                            <i class="fas fa-envelope mr-2"></i>
+                            Контактирајте нас
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gradient-to-b from-primary-blue to-blue-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <!-- Logo & Description -->
+                <div>
+                    <a href="/" class="flex items-center space-x-3 mb-6">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center border-4 border-white shadow-xl">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-red to-primary-blue flex items-center justify-center">
+                                <img src="/assets/images/icons/logo-2.png" alt="PED Majevica Logo" width="48" height="48" class="w-12 h-12 object-contain">
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-2xl font-bold font-serif">PED MAJEVICA</span>
+                            <span class="text-secondary-gold text-sm font-medium tracking-wider">1988</span>
+                        </div>
+                    </a>
+                    <p class="text-secondary-silver mb-8 leading-relaxed text-sm">
+                        Planinsko ekološko društvo "Majevica" osnovano 1988. godine.
+                        Posvećeni promovisanju planinarenja, očuvanju prirode i stvaranju zajednice ljubitelja prirode.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 hover:bg-secondary-gold hover:text-primary-blue flex items-center justify-center transition-all hover:scale-110">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/pedmajevica/" class="w-10 h-10 rounded-full bg-white/10 hover:bg-secondary-gold hover:text-primary-blue flex items-center justify-center transition-all hover:scale-110">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 hover:bg-secondary-gold hover:text-primary-blue flex items-center justify-center transition-all hover:scale-110">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://invite.viber.com/?g2=AQBIuNfsFy%2FSIEnkleTp2RaKBphhkogiZcqwhApAnqNw9P5YhRxbYxRrmRnODEjC" class="w-10 h-10 rounded-full bg-white/10 hover:bg-secondary-gold hover:text-primary-blue flex items-center justify-center transition-all hover:scale-110">
+                            <i class="fab fa-viber"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 pb-3 border-b border-white/20">Brzi linkovi</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="/" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center group">
+                                <i class="fas fa-chevron-right text-primary-red mr-3 text-xs group-hover:translate-x-1 transition-transform"></i>
+                                Početna
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#staze" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center group">
+                                <i class="fas fa-chevron-right text-primary-red mr-3 text-xs group-hover:translate-x-1 transition-transform"></i>
+                                Planinske staze
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#blog" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center group">
+                                <i class="fas fa-chevron-right text-primary-red mr-3 text-xs group-hover:translate-x-1 transition-transform"></i>
+                                Planinarski vodič
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#kalendar" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center group">
+                                <i class="fas fa-chevron-right text-primary-red mr-3 text-xs group-hover:translate-x-1 transition-transform"></i>
+                                Kalendar aktivnosti
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/galerija" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center group">
+                                <i class="fas fa-chevron-right text-primary-red mr-3 text-xs group-hover:translate-x-1 transition-transform"></i>
+                                Galerija 1988+
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/uclanite-se" class="text-secondary-gold hover:text-yellow-500 transition-colors flex items-center group">
+                                <i class="fas fa-chevron-right text-primary-red mr-3 text-xs group-hover:translate-x-1 transition-transform"></i>
+                                Учланите се
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Activities -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 pb-3 border-b border-white/20">Aktivnosti</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="/#staze" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center">
+                                <i class="fas fa-hiking text-primary-red mr-3"></i>
+                                Organizovani izleti
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#blog" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center">
+                                <i class="fas fa-dumbbell text-primary-red mr-3"></i>
+                                Planinarska kondicija
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#staze" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center">
+                                <i class="fas fa-leaf text-primary-red mr-3"></i>
+                                Akcije čišćenja staza
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#kalendar" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center">
+                                <i class="fas fa-school text-primary-red mr-3"></i>
+                                Planinarska škola
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/#staze" class="text-secondary-silver hover:text-secondary-gold transition-colors flex items-center">
+                                <i class="fas fa-campground text-primary-red mr-3"></i>
+                                Eko kampovanja
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-xl font-bold mb-6 pb-3 border-b border-white/20">Kontakt</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center text-secondary-silver hover:text-white transition-colors no-translate" translate="no">
+                            <i class="fas fa-phone text-secondary-gold mr-3"></i>
+                            <span>+387 65 581 354</span>
+                        </div>
+                        <div class="flex items-center text-secondary-silver hover:text-white transition-colors no-translate" translate="no">
+                            <i class="fas fa-envelope text-secondary-gold mr-3"></i>
+                            <a href="mailto:pedmajevica88@gmail.com" class="no-translate hover:text-secondary-gold transition-colors" translate="no">
+                                pedmajevica88@gmail.com
+                            </a>
+                        </div>
+                        <div class="flex items-center text-secondary-silver hover:text-white transition-colors">
+                            <i class="fas fa-clock text-secondary-gold mr-3"></i>
+                            <span>Sastanci prvi utorak u mjesecu od 19h</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="pt-8 border-t border-white/20">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0 text-center md:text-left">
+                        <p class="text-secondary-silver">
+                            © 1988 PED Majevica. Sva prava zadržana.
+                            <span class="block md:inline mt-2 md:mt-0 md:ml-4">
+                                Napravljeno sa <i class="fas fa-heart text-primary-red mx-1"></i> za ljubitelje planina
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Legal Links -->
+                    <div class="flex flex-wrap justify-center gap-6">
+                        <a href="#" class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
+                            Uslovi korišćenja
+                        </a>
+                        <a href="#" class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
+                            Politika privatnosti
+                        </a>
+                        <a href="#" class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
+                            Cookies
+                        </a>
+                        <a href="#" class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
+                            Sitemap
+                        </a>
+                        <a href="/pages/uclanite-se.html"
+                            class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
+                            Članstvo
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <div class="inline-flex items-center justify-center px-4 py-2 bg-white/5 rounded-full border border-white/10">
+                        <i class="fas fa-gem text-secondary-gold mr-2"></i>
+                        <span class="text-secondary-silver text-sm">ТРАДИЦИЈА • СТРАСТ • ПЛАНИНЕ • 1988</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button type="button" id="scrollToTop"
+        class="scroll-top-btn fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-primary-red to-red-dark text-white rounded-full shadow-2xl hover:shadow-3xl transition-all z-40 opacity-0 pointer-events-none flex items-center justify-center hover:scale-110 group"
+        aria-label="Vrati se na vrh stranice">
+        <i class="fas fa-chevron-up group-hover:-translate-y-1 transition-transform"></i>
+    </button>
+
+    <!-- Scripts -->
+    <!-- Fontkit for custom fonts (ćirilica support) -->
+    <script src="https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
+    <!-- PDF-LIB -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="/js/transliterator.js"></script>
+    <script src="/js/membership.js"></script>
+    <script src="/js/app.js"></script>
+
+    <!-- AOS (Animate On Scroll) Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Initialize AOS -->
+    <script>
+        AOS.init({
+            duration: 1500,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50,
+            delay: 0,
+            mirror: false,
+            anchorPlacement: 'top-bottom',
+            disable: false,
+            startEvent: 'DOMContentLoaded'
+        });
+
+        // Osiguraj da se animacije pokreću i za već vidljive elemente
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                AOS.refresh();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

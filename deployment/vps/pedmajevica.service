@@ -1,0 +1,29 @@
+[Unit]
+Description=PED Majevica Flask Application
+After=network.target postgresql.service
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/pedmajevica/backend
+Environment="PATH=/var/www/pedmajevica/venv/bin"
+EnvironmentFile=/var/www/pedmajevica/backend/.env
+ExecStart=/var/www/pedmajevica/venv/bin/gunicorn \
+    --bind unix:/var/www/pedmajevica/pedmajevica.sock \
+    --workers 3 \
+    --timeout 120 \
+    --access-logfile /var/log/pedmajevica/access.log \
+    --error-logfile /var/log/pedmajevica/error.log \
+    wsgi:app
+
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

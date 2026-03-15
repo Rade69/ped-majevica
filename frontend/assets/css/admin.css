@@ -1,0 +1,640 @@
+/* ================================================== */
+/* PED MAJEVICA ADMIN PANEL - CUSTOM STYLES */
+/* ================================================== */
+
+/* ================== DARK MODE VARIABLES ================== */
+
+:root {
+  /* Light Mode */
+  --bg-primary: #f1f5f9;
+  --bg-secondary: #f8fafc;  /* Blago sivkasta umesto čisto bele */
+  --bg-card: #f8fafc;       /* Blago sivkasta umesto čisto bele */
+  --text-primary: #003366;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  
+  /* PED Majevica Colors */
+  --ped-blue: #003366;
+  --ped-blue-light: #1e4a8b;
+  --ped-red: #D62828;
+  --ped-gold: #FFD700;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: #475569;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+}
+
+/* ================== GLOBAL STYLES ================== */
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ================== CARD STYLES ================== */
+
+.card {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+/* ================== STAT CARD ================== */
+
+.stat-card {
+  background: linear-gradient(135deg, var(--ped-blue) 0%, var(--ped-blue-light) 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+[data-theme="dark"] .stat-card {
+  background: linear-gradient(135deg, var(--ped-blue-light) 0%, var(--ped-blue) 100%);
+}
+
+/* ================== CATEGORY BADGES ================== */
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Badge colors */
+.badge-savjeti {
+  background: #10b981;
+  color: white;
+}
+
+.badge-oprema {
+  background: #3b82f6;
+  color: white;
+}
+
+.badge-putopisi {
+  background: #f59e0b;
+  color: white;
+}
+
+.badge-ishrana {
+  background: #ec4899;
+  color: white;
+}
+
+.badge-ostalo {
+  background: #6b7280;
+  color: white;
+}
+
+/* ================== FORM ELEMENTS ================== */
+
+input,
+textarea,
+select,
+button {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Focus styles */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--ped-gold);
+}
+
+/* ================== SELECT DROPDOWN (DARK MODE FIX) ================== */
+
+select.select-dark {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+select.select-dark option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Dark mode option elements */
+[data-theme="dark"] select option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+/* ================== DATE INPUT (DARK MODE FIX) ================== */
+
+/* Date input calendar icon - light mode */
+input[type="date"] {
+  position: relative;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Dark mode - fix calendar icon visibility */
+[data-theme="dark"] input[type="date"] {
+  color-scheme: dark;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* ================== DATE INPUT (DARK MODE FIX) ================== */
+
+/* Calendar icon - Base style (LIGHT MODE) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.8;
+  padding: 5px;
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Hover efekat na CIJELI date input - siva pozadina */
+input[type="date"]:hover {
+  background-color: rgba(100, 116, 139, 0.08);  /* Blago siva */
+}
+
+/* Dark mode - hover sa tamnijom sivom */
+[data-theme="dark"] input[type="date"]:hover {
+  background-color: rgba(148, 163, 184, 0.1);  /* Tamnija siva za dark mode */
+}
+
+/* Dark mode - custom bela SVG ikonica */
+[data-theme="dark"] input[type="date"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23f1f5f9' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px 20px;
+  padding-right: 40px;
+}
+
+/* Dark mode - custom bela SVG ikonica SA sivom pozadinom na hover */
+[data-theme="dark"] input[type="date"]:hover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23f1f5f9' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
+  background-color: rgba(148, 163, 184, 0.1);  /* Siva pozadina */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px 20px;
+}
+
+/* Sakrij original crnu ikonicu u dark mode */
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  margin-right: -25px;
+  pointer-events: auto;
+}
+
+/* Firefox fallback */
+input[type="date"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+[data-theme="dark"] input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(1) brightness(1);
+}
+
+/* Placeholder text styling */
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+/* ================== TABLE STYLES ================== */
+
+/* Članci header - tamna boja teksta u oba moda */
+.card .bg-gray-50 h2 {
+  color: #003366 !important;  /* PED tamno plava - uvek tamna */
+}
+
+[data-theme="dark"] .card .bg-gray-50 {
+  background-color: #e2e8f0;  /* Ostaje svetla siva u dark mode */
+}
+
+/* Post count badge - žut sa tamnim tekstom (uvek) */
+#postCount {
+  background-color: #FFD700 !important;
+  color: #003366 !important;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+td {
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Table row hover */
+tbody tr:hover {
+  background: var(--bg-card);
+}
+
+/* ================== BUTTONS ================== */
+
+/* Transliterator buttons */
+.script-btn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: none;
+  cursor: pointer;
+}
+
+.script-btn.active {
+  background: var(--ped-gold);
+  color: var(--ped-blue);
+}
+
+.script-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
+  color: white;
+}
+
+.script-btn.active:hover {
+  background: var(--ped-gold);
+  color: var(--ped-blue);
+}
+
+/* Dark mode theme icon - ZLATNA u dark mode-u */
+[data-theme="dark"] #themeIcon,
+[data-theme="dark"] .fa-sun {
+  color: #FFD700 !important;  /* PED gold */
+}
+
+/* Light mode theme icon - bela */
+[data-theme="light"] #themeIcon,
+[data-theme="light"] .fa-moon {
+  color: #ffffff !important;
+}
+
+/* Button styles */
+.btn-primary {
+  background: var(--ped-blue);
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--ped-blue-light);
+}
+
+.btn-danger {
+  background: var(--ped-red);
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: #b71c1c;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+/* ================== RESPONSIVE DESIGN ================== */
+
+@media (max-width: 768px) {
+  .stat-card {
+    font-size: 0.875rem;
+  }
+
+  .badge {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.5rem;
+  }
+}
+
+/* ================== UTILITY CLASSES ================== */
+
+/* Preview modal prose styling */
+.prose {
+  line-height: 1.8;
+  font-size: 1.0625rem;
+}
+
+/* Alt text kada slika ne učita - MORA biti vidljiv */
+#previewImage {
+  color: #003366;  /* Tamno plava u light mode */
+}
+
+[data-theme="dark"] #previewImage {
+  color: #f1f5f9;  /* Svetla u dark mode */
+}
+
+/* Preview naslov - MORA biti vidljiv u dark mode */
+#previewTitle {
+  color: #003366;  /* Light mode - tamno plava (BEZ !important) */
+}
+
+[data-theme="dark"] #previewTitle {
+  color: #ffffff !important;  /* Dark mode - BELA (SA !important) */
+}
+
+/* Preview datum */
+#previewDate {
+  color: #4b5563;  /* Light mode - siva */
+}
+
+[data-theme="dark"] #previewDate {
+  color: #d1d5db !important;  /* Dark mode - svetlo siva */
+}
+
+/* Preview content tekst */
+#previewContent {
+  color: #1f2937;  /* Light mode - tamno siva */
+}
+
+[data-theme="dark"] #previewContent {
+  color: #f3f4f6 !important;  /* Dark mode - svetlo siva */
+}
+
+[data-theme="dark"] #previewContent p {
+  color: #f3f4f6 !important;  /* Paragrafi takođe */
+}
+
+.prose p {
+  margin-bottom: 1.25rem;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.prose h1 {
+  font-size: 2rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+}
+
+.prose ul, .prose ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose a {
+  color: var(--ped-blue);
+  text-decoration: underline;
+}
+
+.prose img {
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--ped-gold);
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+
+/* Dark mode prose */
+.dark .prose-invert h1,
+.dark .prose-invert h2,
+.dark .prose-invert h3 {
+  color: var(--text-primary);
+}
+
+.dark .prose-invert a {
+  color: var(--ped-gold);
+}
+
+.text-gold {
+  color: var(--ped-gold);
+}
+
+.text-red {
+  color: var(--ped-red);
+}
+
+.text-blue {
+  color: var(--ped-blue);
+}
+
+.bg-gold {
+  background: var(--ped-gold);
+}
+
+.bg-red {
+  background: var(--ped-red);
+}
+
+.bg-blue {
+  background: var(--ped-blue);
+}
+
+/* ================== ANIMATIONS ================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ================== SCROLLBAR (DARK MODE) ================== */
+
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 12px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--bg-card);
+  border-radius: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color);
+}
+
+/* ================== PREVIEW MODAL DARK MODE FIX ================== */
+
+/* Dark mode - SVETLE BOJE */
+[data-theme="dark"] #previewTitle {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] #previewDate {
+  color: #d1d5db !important;
+}
+
+[data-theme="dark"] #previewContent,
+[data-theme="dark"] #previewContent * {
+  color: #f3f4f6 !important;
+}
+
+[data-theme="dark"] #previewModal .bg-white {
+  background-color: #1e293b !important;
+}
+
+/* Light mode - TAMNE BOJE */
+[data-theme="light"] #previewTitle,
+:not([data-theme="dark"]) #previewTitle {
+  color: #003366 !important;
+}
+
+[data-theme="light"] #previewDate,
+:not([data-theme="dark"]) #previewDate {
+  color: #4b5563 !important;
+}
+
+[data-theme="light"] #previewContent,
+[data-theme="light"] #previewContent *,
+:not([data-theme="dark"]) #previewContent,
+:not([data-theme="dark"]) #previewContent * {
+  color: #1f2937 !important;
+}
+
+/* ================== PREVIEW MODAL DARK MODE FIX - SUPER JAK ================== */
+
+/* KRITIČNO: Ovi selectori su NAJJAČI mogući! */
+
+/* Dark mode - BEO NASLOV */
+html[data-theme="dark"] #previewTitle,
+body[data-theme="dark"] #previewTitle,
+[data-theme="dark"] #previewTitle,
+.dark #previewTitle {
+  color: #ffffff !important;
+}
+
+/* Dark mode - SVETAO DATUM */
+html[data-theme="dark"] #previewDate,
+body[data-theme="dark"] #previewDate,
+[data-theme="dark"] #previewDate,
+.dark #previewDate {
+  color: #d1d5db !important;
+}
+
+/* Dark mode - SVETAO CONTENT (svi elementi) */
+html[data-theme="dark"] #previewContent,
+html[data-theme="dark"] #previewContent *,
+body[data-theme="dark"] #previewContent,
+body[data-theme="dark"] #previewContent *,
+[data-theme="dark"] #previewContent,
+[data-theme="dark"] #previewContent *,
+.dark #previewContent,
+.dark #previewContent * {
+  color: #f3f4f6 !important;
+}
+
+/* Light mode - TAMNI TEKST */
+html:not([data-theme="dark"]) #previewTitle {
+  color: #003366 !important;
+}
+
+html:not([data-theme="dark"]) #previewDate {
+  color: #4b5563 !important;
+}
+
+html:not([data-theme="dark"]) #previewContent,
+html:not([data-theme="dark"]) #previewContent * {
+  color: #1f2937 !important;
+}
+
+/* ================== PREVIEW MODAL DARK MODE ================== */
+
+/* Dark mode - SVETLE BOJE */
+[data-theme="dark"] #previewTitle {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] #previewDate {
+  color: #d1d5db !important;
+}
+
+[data-theme="dark"] #previewContent,
+[data-theme="dark"] #previewContent * {
+  color: #f3f4f6 !important;
+}
+
+[data-theme="dark"] #previewModal .bg-white {
+  background-color: #1e293b !important;
+}
+
+/* Light mode - TAMNE BOJE */
+[data-theme="light"] #previewTitle,
+:not([data-theme="dark"]) #previewTitle {
+  color: #003366 !important;
+}
+
+[data-theme="light"] #previewDate,
+:not([data-theme="dark"]) #previewDate {
+  color: #4b5563 !important;
+}
+
+[data-theme="light"] #previewContent,
+[data-theme="light"] #previewContent *,
+:not([data-theme="dark"]) #previewContent,
+:not([data-theme="dark"]) #previewContent * {
+  color: #1f2937 !important;
+}

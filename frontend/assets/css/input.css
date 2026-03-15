@@ -1,0 +1,559 @@
+/* ============================================
+   PED MAJEVICA 1988 - TAILWIND INPUT CSS
+   ============================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   BASE LAYER - Global resets and defaults
+   ============================================ */
+@layer base {
+  html {
+    @apply scroll-smooth overflow-x-hidden;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply overflow-x-hidden w-full m-0 p-0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  img {
+    @apply max-w-full h-auto align-middle;
+    content-visibility: auto;
+  }
+
+  /* Dark mode smooth transition */
+  body,
+  .bg-white,
+  .trail-card,
+  input,
+  textarea,
+  select,
+  .border-gray-200,
+  .border-gray-100 {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+/* ============================================
+   COMPONENTS LAYER - Custom reusable components
+   ============================================ */
+@layer components {
+  
+  /* Hero Gradient Text */
+  .hero-gradient-text {
+    background: linear-gradient(90deg, #FFD700 0%, #FF6B6B 50%, #1E4A8B 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    @apply inline-block;
+  }
+
+  /* Navigation Active State */
+  .nav-link.active {
+    @apply bg-white/15 relative;
+    color: #FFD700 !important;
+  }
+
+  .nav-link.active::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-secondary-gold;
+  }
+
+  /* Trail Cards */
+  .trail-card {
+    @apply bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg;
+    @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-2;
+  }
+
+  .trail-card.hidden-trail {
+    @apply hidden;
+  }
+
+  /* Difficulty Badges */
+  .difficulty-easy {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+
+  .difficulty-medium {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+
+  .difficulty-hard {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+
+  /* Filter Buttons */
+  .filter-btn {
+    @apply px-6 py-2.5 rounded-full font-medium transition-all duration-300;
+    @apply border-2 border-gray-300 dark:border-gray-600;
+    @apply hover:border-primary-blue dark:hover:border-blue-400;
+  }
+
+  .filter-btn.active {
+    @apply bg-primary-blue text-white border-primary-blue;
+    @apply dark:bg-blue-500 dark:border-blue-500;
+  }
+
+  /* Loading States */
+  .loading-shimmer {
+    background: linear-gradient(90deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0.3) 50%, 
+      rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  .skeleton {
+    @apply bg-gray-200 dark:bg-gray-700 animate-pulse rounded;
+  }
+
+  /* Modal Backdrop */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+    @apply flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-2xl;
+    @apply max-w-4xl w-full max-h-[90vh] overflow-y-auto;
+    @apply animate-scale-in;
+  }
+
+  /* Notification Styles */
+  .notification {
+    @apply fixed top-20 right-4 z-50 px-6 py-4 rounded-xl shadow-2xl;
+    @apply flex items-start gap-3 max-w-md animate-slide-in;
+  }
+
+  .notification.success {
+    @apply bg-success text-white;
+  }
+
+  .notification.error {
+    @apply bg-error text-white;
+  }
+
+  .notification.warning {
+    @apply bg-warning text-white;
+  }
+
+  .notification.info {
+    @apply bg-info text-white;
+  }
+
+  /* Form Elements */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200;
+    @apply dark:border-gray-700 dark:bg-gray-800 dark:text-white;
+    @apply focus:outline-none focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20;
+    @apply transition-all duration-300;
+  }
+
+  .form-textarea {
+    @apply form-input resize-vertical min-h-[120px];
+  }
+
+  .form-select {
+    @apply form-input cursor-pointer;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply px-8 py-4 bg-primary-red text-white font-bold rounded-xl;
+    @apply hover:bg-red-dark transition-all duration-300;
+    @apply shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+  }
+
+  .btn-secondary {
+    @apply px-8 py-4 border-2 border-white text-white font-bold rounded-xl;
+    @apply hover:bg-white hover:text-primary-blue transition-all duration-300;
+  }
+
+  .btn-ghost {
+    @apply px-6 py-2.5 text-primary-blue dark:text-blue-400;
+    @apply hover:bg-blue-400/10 dark:hover:bg-blue-400/20;
+    @apply rounded-lg transition-all duration-300;
+  }
+
+  /* Section Titles */
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold font-serif text-center mb-4;
+    @apply text-primary-blue dark:text-white;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-gray-600 dark:text-gray-400 text-center max-w-2xl mx-auto mb-12;
+  }
+
+  /* Calendar Event Cards */
+  .calendar-event {
+    @apply bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg;
+    @apply hover:shadow-xl transition-all duration-300;
+    @apply border-l-4 border-primary-red;
+  }
+
+  /* Gallery Grid */
+  .gallery-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .gallery-item {
+    @apply relative overflow-hidden rounded-2xl cursor-pointer;
+    @apply transition-all duration-300 hover:shadow-2xl;
+  }
+
+  .gallery-item img {
+    
+    @apply group-hover:scale-110;
+  }
+
+  .gallery-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/80 to-transparent;
+    @apply opacity-0 transition-opacity duration-300;
+    @apply flex items-end p-6;
+  }
+
+  .gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+  /* Stats Counter */
+  .stat-card {
+    @apply text-center p-6 rounded-xl bg-white/10 backdrop-blur-sm;
+    @apply border border-white/20;
+  }
+
+  .stat-number {
+    @apply text-4xl md:text-5xl font-bold text-secondary-gold mb-2;
+  }
+
+  .stat-label {
+    @apply text-white/90 font-medium;
+  }
+
+  /* Blog Cards */
+  .blog-card {
+    @apply bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg;
+    @apply hover:shadow-2xl transition-all duration-300 hover:-translate-y-2;
+  }
+
+  .blog-card-image {
+    @apply w-full h-48 object-cover;
+  }
+
+  .blog-card-content {
+    @apply p-6;
+  }
+
+  .blog-card-date {
+    @apply text-sm text-gray-500 dark:text-gray-400 mb-2;
+  }
+
+  .blog-card-title {
+    @apply text-xl font-bold text-primary-blue dark:text-white mb-3;
+    @apply hover:text-primary-red dark:hover:text-red-400 transition-colors;
+  }
+
+  /* Footer Links */
+  .footer-link {
+    @apply text-gray-400 hover:text-secondary-gold transition-colors duration-300;
+  }
+
+  /* Social Icons */
+  .social-icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center;
+    @apply bg-white/10 hover:bg-secondary-gold text-white;
+    @apply transition-all duration-300 hover:scale-110;
+  }
+}
+
+/* ============================================
+   UTILITIES LAYER - Custom utility classes
+   ============================================ */
+@layer utilities {
+  
+  /* Gradient Backgrounds */
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, #003366 0%, #1E4A8B 50%, #003366 100%);
+    background-size: 200% auto;
+  }
+
+  .bg-gradient-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  }
+
+  /* Text Gradients */
+  .text-gradient-gold {
+    background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-blue {
+    background: linear-gradient(90deg, #1E4A8B 0%, #003366 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Backdrop Blur */
+  .backdrop-blur-navbar {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Custom Shadows */
+  .shadow-navbar {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-card-hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Scroll Behavior */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  /* Content Visibility (Performance) */
+  .content-auto {
+    content-visibility: auto;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom transitions */
+  .transition-navbar {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ============================================
+   DARK MODE DEBUG INDICATOR (Remove in production)
+   ============================================ */
+.dark body::before {
+  content: '';
+  @apply fixed top-2.5 right-2.5 w-2.5 h-2.5 bg-success rounded-full z-[9999] hidden;
+}
+/* ============================================
+   Custom Scrollbar - Solid Colors
+   ============================================ */
+::-webkit-scrollbar {
+    width: 12px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937 !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D62828 !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #FF6B6B !important;
+}
+
+* {
+    scrollbar-width: thin !important;
+    scrollbar-color: #D62828 #1f2937 !important;
+}
+/* ============================================
+   PED MAJEVICA - NOVA COLOR PALETTE V3
+   Optimizovana za pristupačnost i vizuelni impact
+   ============================================ */
+
+:root {
+  /* === PRIMARY COLORS === */
+  --color-primary-red: #D62828;
+  --color-primary-blue: #003366;
+  
+  /* === SECONDARY COLORS (OPTIMIZED) === */
+  --color-secondary-gold: #D4AF37;        /* Metallic Gold - bolji kontrast */
+  --color-secondary-gold-light: #F4E4B4; /* Light Gold */
+  --color-secondary-gold-dark: #B8860B;   /* Dark Goldenrod */
+  --color-secondary-silver: #D1D5DB;      /* Gray-300 - čitljivija */
+  --color-secondary-blue: #1E4A8B;
+  
+  /* === ACCENT COLORS (NEW) === */
+  --color-accent-orange: #FF8C00;         /* DarkOrange */
+  --color-accent-teal: #0D9488;           /* Teal-600 */
+  --color-accent-purple: #7C3AED;         /* Violet-600 */
+  --color-accent-amber: #F59E0B;          /* Amber-500 */
+  
+  /* === SEMANTIC COLORS === */
+  --color-success: #10B981;               /* Green-500 */
+  --color-warning: #F59E0B;               /* Amber-500 */
+  --color-error: #EF4444;                 /* Red-500 */
+  --color-info: #3B82F6;                  /* Blue-500 */
+  
+  /* === NEUTRAL PALETTE === */
+  --color-neutral-50: #F9FAFB;
+  --color-neutral-100: #F3F4F6;
+  --color-neutral-200: #E5E7EB;
+  --color-neutral-300: #D1D5DB;
+  --color-neutral-400: #9CA3AF;
+  --color-neutral-500: #6B7280;
+  --color-neutral-600: #4B5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1F2937;
+  --color-neutral-900: #111827;
+  
+  /* === DARK VARIANTS === */
+  --color-blue-dark: #001F3F;
+  --color-red-dark: #B22222;
+  
+  /* === GRADIENTS === */
+  --gradient-hero: linear-gradient(135deg, #003366 0%, #1E4A8B 50%, #003366 100%);
+  --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #F4E4B4 100%);
+  --gradient-fire: linear-gradient(135deg, #D62828 0%, #FF8C00 100%);
+  --gradient-ocean: linear-gradient(135deg, #003366 0%, #0D9488 100%);
+  --gradient-sunset: linear-gradient(135deg, #FF8C00 0%, #D62828 100%);
+}
+
+/* === CUSTOM UTILITY CLASSES === */
+.text-gold {
+  color: var(--color-secondary-gold);
+}
+
+.text-gold-dark {
+  color: var(--color-secondary-gold-dark);
+}
+
+.bg-gold {
+  background-color: var(--color-secondary-gold);
+}
+
+.bg-gold-light {
+  background-color: var(--color-secondary-gold-light);
+}
+
+.border-gold {
+  border-color: var(--color-secondary-gold);
+}
+
+/* Accent colors */
+.text-accent-orange {
+  color: var(--color-accent-orange);
+}
+
+.text-accent-teal {
+  color: var(--color-accent-teal);
+}
+
+.bg-accent-orange {
+  background-color: var(--color-accent-orange);
+}
+
+.bg-accent-teal {
+  background-color: var(--color-accent-teal);
+}
+
+/* Improved silver */
+.text-silver-new {
+  color: var(--color-secondary-silver);
+}
+
+/* Gradient utilities */
+.bg-gradient-hero-new {
+  background: var(--gradient-hero);
+}
+
+.bg-gradient-gold {
+  background: var(--gradient-gold);
+}
+
+.bg-gradient-fire {
+  background: var(--gradient-fire);
+}
+
+.bg-gradient-ocean {
+  background: var(--gradient-ocean);
+}
+
+/* === IMPROVED DIFFICULTY BADGES === */
+.difficulty-easy-new {
+  background-color: var(--color-success);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.difficulty-medium-new {
+  background-color: var(--color-accent-amber);
+  color: #1F2937; /* Dark text for better contrast */
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.difficulty-hard-new {
+  background-color: var(--color-error);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* === STAT NUMBERS - IMPROVED === */
+.stat-number-gold {
+  color: var(--color-secondary-gold);
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* === HOVER STATES === */
+.hover-gold:hover {
+  color: var(--color-secondary-gold);
+  transition: color 0.3s ease;
+}
+
+.hover-orange:hover {
+  color: var(--color-accent-orange);
+  transition: color 0.3s ease;
+}
+
+.hover-teal:hover {
+  color: var(--color-accent-teal);
+  transition: color 0.3s ease;
+}
+
+/* === DARK MODE SUPPORT === */
+.dark .text-silver-new {
+  color: var(--color-neutral-400);
+}
+
+.dark .stat-number-gold {
+  color: var(--color-secondary-gold);
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}

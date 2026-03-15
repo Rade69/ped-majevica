@@ -1,0 +1,16 @@
+# Robots.txt for PED Majevica 1988
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /login/
+Disallow: /uclanite-se/
+
+# Sitemap location
+Sitemap: https://pedmajevica.org/sitemap.xml
+
+# Crawl-delay (optional, for respectful crawling)
+Crawl-delay: 1

@@ -70,9 +70,14 @@
         /* Category buttons - svijetla tema hover fix */
         .category-btn {
             color: #374151 !important;
+            background: #e5e7eb !important;
         }
+        
+        /* Force gradient on hover for both themes */
         .category-btn:hover {
+            background: linear-gradient(135deg, #003366 0%, #dc2626 100%) !important;
             color: white !important;
+            box-shadow: 0 4px 14px rgba(0, 51, 102, 0.3);
         }
         
         /* Script dugmad hover */
@@ -427,13 +432,26 @@
         }
 
         function filterGallery(category) {
-            // Update active button
+            // Update active button - reset all buttons first
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.textContent.toLowerCase().includes(category === 'all' ? 'sve' : category)) {
-                    btn.classList.add('active');
-                }
+                // Remove inline background styles
+                btn.style.background = '';
             });
+            
+            // Find the clicked button and add active class
+            const buttons = document.querySelectorAll('.category-btn');
+            const categoryMap = {
+                'all': 0,
+                'priroda': 1,
+                'planine': 2,
+                'akcije': 3,
+                'dogadjaji': 4
+            };
+            
+            if (buttons[categoryMap[category]]) {
+                buttons[categoryMap[category]].classList.add('active');
+            }
 
             // Filter images
             if (category === 'all') {

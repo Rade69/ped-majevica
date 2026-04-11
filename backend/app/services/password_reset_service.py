@@ -127,20 +127,35 @@ class PasswordResetService:
             bool: True if email would be sent (logged), False on error
         """
         try:
-            # TODO: Implement actual email sending
-            # For now, log the reset link for development
-            logger.info(
-                f"PASSWORD RESET EMAIL for {user.email}:\n"
-                f"  User: {user.username} ({user.email})\n"
+            # Since this is an admin-only app with few users, we don't send actual emails
+            # Instead, we log the token and provide CLI alternative
+            logger.warning(
+                f"PASSWORD RESET REQUEST for admin user: {user.username} ({user.email})\n"
+                f"  ===== IMPORTANT: EMAIL NOT SENT (admin-only app) =====\n"
+                f"  Reset token (valid 1 hour): {token}\n"
                 f"  Reset URL: {reset_url}\n"
-                f"  (In production, this would be sent via email)"
+                f"  \n"
+                f"  ALTERNATIVE: Use CLI command for password reset:\n"
+                f"    1. Access server via SSH/Render dashboard\n"
+                f"    2. Run: flask reset-admin-password --username {user.username}\n"
+                f"    3. Follow interactive prompts\n"
+                f"  \n"
+                f"  For development, token is logged here and can be used at {reset_url}"
             )
             
-            # Return True to indicate "email sent" for testing
+            # Also print to console for development
+            if current_app.config.get('FLASK_ENV') == 'development':
+                print(f"\n🔐 PASSWORD RESET TOKEN for {user.username}:")
+                print(f"   Token: {token}")
+                print(f"   URL: {reset_url}")
+                print(f"   CLI alternative: flask reset-admin-password --username {user.username}")
+                print()
+            
+            # Return True to indicate "reset process initiated"
             return True
             
         except Exception as e:
-            logger.error(f"Failed to send password reset email: {e}")
+            logger.error(f"Failed to process password reset request: {e}")
             return False
     
     @staticmethod

@@ -197,6 +197,27 @@ Doprinosi su dobrodošli! Ako želiš da pomogneš:
 4. Push na branch (`git push origin feature/AmazingFeature`)
 5. Otvori Pull Request
 
+## 👨‍💼 Admin Documentation
+
+Ova aplikacija ima samo admin korisnike (4 osobe) za uređivanje sadržaja.
+
+**Key admin resources:**
+- [ADMIN_PASSWORD_GUIDE.md](ADMIN_PASSWORD_GUIDE.md) - Upravljanje admin lozinkama
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Production deployment guide
+- [SETUP.md](SETUP.md) - Development setup
+
+**CLI commands for admin management:**
+```bash
+# Reset admin password
+flask reset-admin-password --username USERNAME
+
+# List all admin users
+flask list-admins
+
+# Migrate blog posts from JSON
+flask migrate-json
+```
+
 ## 📄 License
 
 Distribuirano pod MIT licencom. Vidi `LICENSE` fajl za više informacija.

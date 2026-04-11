@@ -107,9 +107,15 @@ def create_app(test_config=None):
     # -----------------------------
     # CLI COMMANDS
     # -----------------------------
-    from app.commands import migrate_json_command
+    from app.commands import (
+        migrate_json_command,
+        reset_admin_password_command,
+        list_admins_command
+    )
 
     app.cli.add_command(migrate_json_command)
+    app.cli.add_command(reset_admin_password_command)
+    app.cli.add_command(list_admins_command)
 
     # -----------------------------
     # INIT ADMIN USER

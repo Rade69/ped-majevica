@@ -86,7 +86,24 @@ class Config:
     WTF_CSRF_TIME_LIMIT = None
     WTF_CSRF_SSL_STRICT = False
     WTF_CSRF_HEADERS = ['X-CSRFToken', 'X-CSRF-Token']
-
+    
+    # -----------------------------
+    # EMAIL CONFIGURATION
+    # -----------------------------
+    # Email settings for password reset and notifications
+    MAIL_SERVER = os.getenv('MAIL_SERVER', '')
+    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
+    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS', 'true').lower() == 'true'
+    MAIL_USE_SSL = os.getenv('MAIL_USE_SSL', 'false').lower() == 'true'
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME', '')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', '')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'noreply@pedmajevica.org')
+    MAIL_DEBUG = DEBUG
+    
+    # Password reset email settings
+    PASSWORD_RESET_SUBJECT = "PED Majevica - Resetovanje lozinke"
+    PASSWORD_RESET_EXPIRY_HOURS = 1
+    
     @staticmethod
     def init_logging(app):
         logging.basicConfig(

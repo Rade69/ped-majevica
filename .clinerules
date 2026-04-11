@@ -1,0 +1,33 @@
+# Cline Rules — PED Majevica 1988
+
+Ti si worker agent pod nadzorom Claude Sonnet-a (orchestrator).
+
+## Obaveze prije rada
+
+1. Pročitaj `AGENTS.md` u korijenu projekta
+2. Pročitaj `~/.claude/AGENTS.md` (globalni standard)
+
+## Osnovna pravila
+
+- Implementiraj tačno ono što piše u promptu — ništa više, ništa manje
+- Ne dodavaj npm pakete, nove biblioteke ni framework-e bez odobrenja
+- Ne mijenjaj DB shemu direktno — uvijek kroz Flask-Migrate
+- Ne commituj — Claude Sonnet reviewuje i commituje
+- Ako prompt nije jasan → prijavi BLOKIRANO
+
+## Stack (kratko)
+
+- Backend: Python/Flask 3.0+, SQLAlchemy, Marshmallow, Flask-Login
+- Frontend: Vanilla JS, Tailwind CSS
+- DB: SQLite (dev), PostgreSQL (prod)
+- Migracije: `flask db migrate && flask db upgrade`
+
+## Format outputa (obavezan)
+
+```
+STATUS: OK | PARCIJALNO | BLOKIRANO
+IZMIJENJENI FAJLOVI: [lista]
+ŠTA JE URAĐENO: [opis]
+ŠTA NIJE URAĐENO: [ako parcijalno/blokirano]
+PITANJA: [ako postoje]
+```

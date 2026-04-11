@@ -15,8 +15,13 @@ ADMIN_USERS = {
 def init_admin():
     """Create or update admin users in database on startup"""
     try:
-        # Ensure tables exist
-        db.create_all()
+        # Check if tables exist before trying to query them
+        from sqlalchemy import inspect, text
+        inspector = inspect(db.engine)
+        
+        # If user table doesn't exist yet, skip - migrations will handle it
+        if "user" not in inspector.get_table_names():
+            return
 
         # Create/update each admin user
         for username, password in ADMIN_USERS.items():

@@ -1,0 +1,15 @@
+# Aider konfiguracija za PED Majevica 1988
+
+model: deepseek/deepseek-chat
+weak-model: deepseek/deepseek-chat
+
+# Kontekst (read-only)
+read:
+  - AGENTS.md
+
+# Git — Claude Sonnet reviewuje prije commita
+auto-commits: false
+dirty-commits: false
+
+pretty: true
+stream: true

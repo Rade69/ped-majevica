@@ -773,14 +773,15 @@
       if (confirm('Da li ste sigurni da želite da se odjavite?')) {
         try {
           // Call backend logout to clear session
-          await fetch('https://ped-majevica.onrender.com/logout', {
+          const logoutUrl = window.API_CONFIG ? window.API_CONFIG.getUrl('/logout') : '/logout';
+          await fetch(logoutUrl, {
             credentials: 'include'
           });
         } catch (e) {
           console.log('Logout error (ignoring):', e);
         }
         // Always redirect to login, even if server logout fails
-        window.location.href = '/pages/login.html';
+        window.location.href = '/login';
       }
     }
 
@@ -1025,8 +1026,8 @@
         });
         const authData = await authRes.json();
         if (!authData.authenticated) {
-          showError('Moraš biti ulogovan da bi uploadovao sliku!\n\n1. Idi na /pages/login.html\n2. Prijavi se\n3. Vrati se ovde i probaj ponovo');
-          setTimeout(() => window.location.href = '/pages/login.html', 3000);
+          showError('Moraš biti ulogovan da bi uploadovao sliku!\n\n1. Idi na /login\n2. Prijavi se\n3. Vrati se ovde i probaj ponovo');
+          setTimeout(() => window.location.href = '/login', 3000);
           return;
         }
       } catch (e) {

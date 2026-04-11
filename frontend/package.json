@@ -3,8 +3,9 @@
   "version": "2.0.0",
   "description": "Planinarsko društvo PED Majevica - Full Tailwind Build",
   "scripts": {
-    "dev": "tailwindcss -i ./frontend/assets/css/input.css -o ./frontend/assets/css/output.css --watch",
-    "build": "tailwindcss -i ./frontend/assets/css/input.css -o ./frontend/assets/css/output.min.css --minify",
+    "dev": "tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --watch",
+    "build": "tailwindcss -i ./assets/css/input.css -o ./assets/css/output.min.css --minify",
+    "quick-build": "tailwindcss -i ./assets/css/input.css -o ./assets/css/output.min.css",
     "lighthouse": "lhci autorun --collect.url=http://127.0.0.1:5000"
   },
   "keywords": [

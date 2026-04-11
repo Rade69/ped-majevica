@@ -4,7 +4,18 @@
 (function() {
   'use strict';
 
-const TRAILS_API = window.API_CONFIG ? window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.TRAILS) : 'https://ped-majevica.onrender.com/api/trails';
+// Bezbedna konfiguracija API endpoint-a sa fallback-om
+const TRAILS_API = (function() {
+    // Prvo pokušaj da koristiš centralnu konfiguraciju
+    if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
+        console.log('✅ trails.js: Koristim API_CONFIG');
+        return window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.TRAILS);
+    }
+    
+    // Fallback za razvojno okruženje - koristi relativni put
+    console.log('⚠️ trails.js: API_CONFIG nije dostupan, koristim relativni put');
+    return '/api/trails';
+})();
 
 let allTrails = [];
 let displayedTrails = [];

@@ -3821,7 +3821,7 @@ body,
   }
 }
 
-/* === FORCED: Category badges from blog.js (Tailwind missed these) === */
+/* === FORCED: Category badges from blog.js === */
 .bg-yellow-600{--tw-bg-opacity:1;background-color:rgb(202 138 4/var(--tw-bg-opacity))}
 .bg-gray-600{--tw-bg-opacity:1;background-color:rgb(75 85 99/var(--tw-bg-opacity))}
 .from-yellow-500{--tw-gradient-from:#eab308 var(--tw-gradient-via-stops,var(--tw-gradient-position));--tw-gradient-to:#eab308 var(--tw-gradient-stops);--tw-gradient-via-stops:}

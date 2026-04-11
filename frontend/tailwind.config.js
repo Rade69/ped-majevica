@@ -4,6 +4,7 @@ module.exports = {
     "./index.html",
     "./admin.html",
     "./assets/js/**/*.js",
+    "./js/**/*.js",
     "./**/*.html"
   ],
   darkMode: 'class',

@@ -455,7 +455,7 @@
                         <h3 class="text-2xl font-bold mb-2">Pridruži se tradiciji koja traje od 1988.</h3>
                         <p class="text-secondary-silver">Postani deo najstarijeg planinarskog društva na Majevici.</p>
                     </div>
-                    <a href="/pages/uclanite-se.html"
+                    <a href="/uclanite-se"
                         class="inline-block px-8 py-3 bg-secondary-gold hover:bg-yellow-600 text-primary-blue font-bold rounded-lg transition-all hover:scale-105 shadow-lg">
                         Postani član <i class="fas fa-user-plus ml-2" aria-hidden="true"></i>
                     </a>
@@ -1174,7 +1174,7 @@
                         <a href="#" class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
                             Sitemap
                         </a>
-                        <a href="/pages/uclanite-se.html"
+                        <a href="/uclanite-se"
                             class="text-secondary-silver hover:text-secondary-gold transition-colors text-sm">
                             Članstvo
                         </a>
@@ -1526,7 +1526,7 @@ PED Majevica vjeruje da je edukovana zajednica najjača zaštita prirode. Kroz z
                             <p class="leading-relaxed mb-4 text-secondary-silver">
                                 Godišnja članarina iznosi samo <strong class="text-secondary-gold">35 KM</strong> i uključuje učešće na svim aktivnostima, popuste na opremu i osiguranje.
                             </p>
-                            <a href="/pages/uclanite-se.html" class="inline-block px-6 py-3 bg-secondary-gold hover:bg-yellow-500 text-primary-blue font-bold rounded-xl transition-all transform hover:scale-105">
+                            <a href="/uclanite-se" class="inline-block px-6 py-3 bg-secondary-gold hover:bg-yellow-500 text-primary-blue font-bold rounded-xl transition-all transform hover:scale-105">
                                 Postani član <i class="fas fa-arrow-right ml-2"></i>
                             </a>
                         </div>
@@ -1577,7 +1577,18 @@ PED Majevica vjeruje da je edukovana zajednica najjača zaštita prirode. Kroz z
         // =========================================
         // INDEX GALLERY - Dynamic Loading
         // =========================================
-        const INDEX_GALLERY_API = 'http://127.0.0.1:5000/api/gallery';
+        // Bezbedna konfiguracija API endpoint-a sa fallback-om
+        const INDEX_GALLERY_API = (function() {
+            // Prvo pokušaj da koristiš centralnu konfiguraciju
+            if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
+                console.log('✅ Koristim API_CONFIG za galeriju');
+                return window.API_CONFIG.getUrl('/api/gallery');
+            }
+            
+            // Fallback za razvojno okruženje
+            console.log('⚠️ API_CONFIG nije dostupan, koristim development URL');
+            return 'http://127.0.0.1:5000/api/gallery';
+        })();
 
         async function loadIndexGallery() {
             try {

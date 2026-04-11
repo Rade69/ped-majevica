@@ -283,6 +283,26 @@
 }
 
 /* ============================================
+   FORCED CLASSES - Used dynamically in JS (blog.js)
+   Tailwind doesn't detect these because they're in JS string templates
+   ============================================ */
+.bg-yellow-600 { background-color: #ca8a04 !important; }
+.bg-blue-600 { background-color: #2563eb !important; }
+.bg-green-600 { background-color: #16a34a !important; }
+.bg-purple-600 { background-color: #9333ea !important; }
+.bg-gray-600 { background-color: #4b5563 !important; }
+.from-blue-500 { --tw-gradient-from: #3b82f6 !important; }
+.from-green-500 { --tw-gradient-from: #22c55e !important; }
+.from-yellow-500 { --tw-gradient-from: #eab308 !important; }
+.from-purple-500 { --tw-gradient-from: #a855f7 !important; }
+.from-gray-500 { --tw-gradient-from: #6b7280 !important; }
+.to-blue-600 { --tw-gradient-to: #2563eb !important; }
+.to-green-600 { --tw-gradient-to: #16a34a !important; }
+.to-yellow-600 { --tw-gradient-to: #ca8a04 !important; }
+.to-purple-600 { --tw-gradient-to: #9333ea !important; }
+.to-gray-600 { --tw-gradient-to: #4b5563 !important; }
+
+/* ============================================
    UTILITIES LAYER - Custom utility classes
    ============================================ */
 @layer utilities {

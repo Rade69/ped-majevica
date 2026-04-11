@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(python *)",
+      "Bash(sleep *)",
+      "Bash(python3 *)",
+      "Bash(source *)",
+      "Bash(pip install *)",
+      "Bash(flask *)",
+      "Bash(rm *)",
+      "Bash(sqlite3 *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(find *)",
+      "Bash(/* *)",
+      "Bash(=== *)",
+      "Bash(.bg-yellow-600{--tw-bg-opacity:1)",
+      "Bash(background-color:rgb)",
+      "Bash(.bg-gray-600{--tw-bg-opacity:1)",
+      "Bash(eof)",
+      "Bash(.from-yellow-500{--tw-gradient-from:#eab308)",
+      "Bash(--tw-gradient-to:#eab308)",
+      "Bash(--tw-gradient-via-stops:})",
+      "Bash(git add *)"
+    ]
+  },
+  "$version": 3
+}

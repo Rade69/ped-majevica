@@ -9,6 +9,7 @@
         as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="stylesheet" href="/assets/css/output.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/assets/js/config.js"></script>
     <script src="/js/transliterator.js"></script>
     <style>
         .gallery-item {
@@ -379,7 +380,18 @@
     </footer>
 
     <script>
-        const GALLERY_API = 'http://127.0.0.1:5000/api/gallery';
+        // Bezbedna konfiguracija API endpoint-a sa fallback-om
+        const GALLERY_API = (function() {
+            // Prvo pokušaj da koristiš centralnu konfiguraciju
+            if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
+                console.log('✅ Koristim API_CONFIG za galeriju');
+                return window.API_CONFIG.getUrl('/api/gallery');
+            }
+            
+            // Fallback za razvojno okruženje
+            console.log('⚠️ API_CONFIG nije dostupan, koristim development URL');
+            return 'http://127.0.0.1:5000/api/gallery';
+        })();
         let allImages = [];
 
         async function loadGallery() {

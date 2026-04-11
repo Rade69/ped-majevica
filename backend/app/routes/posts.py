@@ -19,21 +19,42 @@ post_schema = PostSchema()
 @login_required
 def list_posts():
     try:
-        posts = Post.query.order_by(Post.created_at.desc()).all()
+        # Pagination parameters
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        
+        # Limit per_page to max 50
+        if per_page > 50:
+            per_page = 50
+        
+        query = Post.query.order_by(Post.created_at.desc())
+        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+        
+        posts_list = [
+            {
+                "id": post.id,
+                "title": post.title,
+                "published": post.published,
+                "created_at": post.created_at.isoformat(),
+            }
+            for post in pagination.items
+        ]
 
         return success_response(
             data={
-                'posts': [
-                    {
-                        "id": post.id,
-                        "title": post.title,
-                        "published": post.published,
-                        "created_at": post.created_at.isoformat(),
-                    }
-                    for post in posts
-                ]
+                'posts': posts_list,
+                'pagination': {
+                    'page': page,
+                    'per_page': per_page,
+                    'total': pagination.total,
+                    'pages': pagination.pages,
+                    'has_next': pagination.has_next,
+                    'has_prev': pagination.has_prev,
+                    'next_page': page + 1 if pagination.has_next else None,
+                    'prev_page': page - 1 if pagination.has_prev else None,
+                }
             },
-            message=f"Pronađeno {len(posts)} postova"
+            message=f"Pronađeno {pagination.total} postova (stranica {page}/{pagination.pages})"
         )
     except Exception as e:
         logger.error(f"Greška pri preuzimanju postova: {str(e)}", exc_info=True)

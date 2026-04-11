@@ -27,23 +27,31 @@ def create_app(test_config=None):
     csrf.init_app(app)
 
     # CORS - Allow Netlify frontend to access API
+    # Environment-based CORS origins
+    if app.config.get("FLASK_ENV") == "production":
+        cors_origins = [
+            "https://pedmajevica.org",
+            "https://www.pedmajevica.org",
+        ]
+    else:
+        # Development origins
+        cors_origins = [
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "https://ped-majevica.netlify.app",
+            "http://127.0.0.1:5500",  # VS Code Live Server (dev only)
+            "http://localhost:5500",  # VS Code Live Server (dev only)
+            "http://127.0.0.1:8080",  # Python HTTP Server (dev only)
+            "http://localhost:8080",  # Python HTTP Server (dev only)
+        ]
+    
     cors.init_app(
         app,
         resources={
             r"/api/*": {
-                "origins": [
-                    "http://localhost:*",
-                    "http://127.0.0.1:*",
-                    "https://ped-majevica.netlify.app",
-                    "https://pedmajevica.org",
-                    "https://www.pedmajevica.org",
-                    "http://127.0.0.1:5500",  # VS Code Live Server (dev only)
-                    "http://localhost:5500",  # VS Code Live Server (dev only)
-                    "http://127.0.0.1:8080",  # Python HTTP Server (dev only)
-                    "http://localhost:8080",  # Python HTTP Server (dev only)
-                ],
+                "origins": cors_origins,
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-                "allow_headers": ["Content-Type", "Authorization"],
+                "allow_headers": ["Content-Type", "Authorization", "X-CSRFToken"],
                 "supports_credentials": True,
             }
         },

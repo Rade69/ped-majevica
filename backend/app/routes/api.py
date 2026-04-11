@@ -59,11 +59,23 @@ def get_posts():
         page = request.args.get("page", 1, type=int)
         per_page = min(request.args.get("per_page", 10, type=int), 50)
         category = request.args.get("category", None)
+        search = request.args.get("search", None)
 
         # Query
         query = Post.query.filter_by(published=True)
         if category:
             query = query.filter_by(category=category)
+        if search:
+            # Search in title and content_text (case-insensitive)
+            from sqlalchemy import or_
+            search_term = f"%{search}%"
+            query = query.filter(
+                or_(
+                    Post.title.ilike(search_term),
+                    Post.content_text.ilike(search_term),
+                    Post.excerpt.ilike(search_term)
+                )
+            )
 
         query = query.order_by(Post.created_at.desc())
         pagination = query.paginate(page=page, per_page=per_page, error_out=False)

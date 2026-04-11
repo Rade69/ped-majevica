@@ -1,18 +1,19 @@
 // ============================================================================
 // BLOG SYSTEM - PED Majevica 1988
-// Sa integrisanom transliteracijom Ćirilica ⇄ Latinica
+// Sa integrisanom transliteracijom Ćirilica ⇄ Latinica i API paginacijom
 // ============================================================================
 
 // Globalne promenljive
-let allArticles = [];
-let filteredArticles = [];
+let currentPosts = [];          // Postovi za trenutnu stranicu
+let currentPagination = {};     // Paginacioni podaci od API-ja
 let currentPage = 1;
-const articlesPerPage = 6;
+const articlesPerPage = 6;      // Mora da se podudara sa backend per_page
 let currentScript = 'cyrillic'; // default
+let currentSearch = '';         // Trenutni search termin
+let currentCategory = 'sve';    // Trenutna kategorija ('sve' za sve)
 
-// Inicijalizacija
-async function initBlog() {
-    console.log('📚 Blog: Inicijalizacija...');
+// Fetch postova sa API-ja sa paginacijom
+async function fetchPosts(page = 1, search = '', category = 'sve') {
     try {
         // Use API_CONFIG for correct backend URL
         let apiUrl;
@@ -27,58 +28,62 @@ async function initBlog() {
                 apiUrl = '/api/posts';
             }
         }
-        console.log('📚 Blog: Fetching from:', apiUrl);
+        
+        // Dodaj query parametre
+        const url = new URL(apiUrl);
+        url.searchParams.set('page', page);
+        url.searchParams.set('per_page', articlesPerPage);
+        
+        if (search && search.trim() !== '') {
+            url.searchParams.set('search', search.trim());
+        }
+        
+        if (category && category !== 'sve') {
+            url.searchParams.set('category', category);
+        }
+        
+        console.log('📚 Blog: Fetching from:', url.toString());
+        
         // Use credentials for cross-origin requests
-        const response = await fetch(apiUrl, {
+        const response = await fetch(url.toString(), {
           credentials: window.API_CONFIG ? window.API_CONFIG.getCredentials() : 'include'
         });
+        
         console.log('📚 Blog: Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
         const data = await response.json();
         console.log('📚 Blog: Data received:', data);
         
         // Handle both old format (data.posts) and new format (data.data.posts)
-        allArticles = data.data?.posts || data.posts || [];
-        console.log('📚 Blog: Total posts:', allArticles.length);
+        const posts = data.data?.posts || data.posts || [];
+        const pagination = data.data?.pagination || data.pagination || {};
         
-        if (allArticles.length === 0) {
-            console.warn('📚 Blog: Nema članaka za prikaz');
-        }
+        console.log('📚 Blog: Fetched', posts.length, 'posts for page', page);
+        console.log('📚 Blog: Pagination info:', pagination);
         
-        filteredArticles = [...allArticles];
-
-        // Sortiranje po datumu - NAJNOVIJI PRVO (sa error handling)
-        try {
-            allArticles.sort((a, b) => {
-                const dateA = new Date(a.created_at || a.date || 0);
-                const dateB = new Date(b.created_at || b.date || 0);
-                if (isNaN(dateA.getTime())) return 1;
-                if (isNaN(dateB.getTime())) return -1;
-                return dateB - dateA; // Noviji prvo (DESC)
-            });
-            console.log('📚 Blog: Sortirano', allArticles.length, 'članaka');
-        } catch (sortError) {
-            console.error('📚 Blog: Greška pri sortiranju:', sortError);
-        }
-
-        filteredArticles = [...allArticles];
-
-        // Proveri trenutno pismo iz transliteratora
-        if (typeof transliterator !== 'undefined' && typeof transliterator.getCurrentScript === 'function') {
-            currentScript = transliterator.getCurrentScript();
-            console.log('📚 Blog: Current script:', currentScript);
-        } else {
-            console.log('📚 Blog: Transliterator nije dostupan, koristim default');
-            currentScript = 'latin';
-        }
-
-        console.log('📚 Blog: Pozivam renderArticles()');
-        renderArticles();
+        return { posts, pagination };
         
-        console.log('📚 Blog: Pozivam setupEventListeners()');
-        setupEventListeners();
+    } catch (error) {
+        console.error('📚 Blog: Greška pri fetch-ovanju postova:', error);
+        throw error;
+    }
+}
+
+// Inicijalizacija
+async function initBlog() {
+    console.log('📚 Blog: Inicijalizacija...');
+    try {
+        // Resetuj trenutne vrednosti
+        currentSearch = '';
+        currentCategory = 'sve';
+        currentPage = 1;
         
-        console.log('📚 Blog: Pozivam setupScriptChangeListener()');
-        setupScriptChangeListener();
+        // Učitaj prvu stranicu
+        await loadPage(1);
         
         console.log('📚 Blog: Inicijalizacija završena!');
     } catch (error) {
@@ -86,6 +91,41 @@ async function initBlog() {
         console.error('Stack trace:', error.stack);
         showError();
     }
+}
+
+// Učitaj stranicu sa trenutnim filterima
+async function loadPage(page) {
+    try {
+        console.log(`📚 Blog: Učitavam stranicu ${page} sa search='${currentSearch}', category='${currentCategory}'`);
+        
+        const result = await fetchPosts(page, currentSearch, currentCategory);
+        currentPosts = result.posts;
+        currentPagination = result.pagination;
+        currentPage = page;
+        
+        // Sortiranje po datumu - NAJNOVIJI PRVO (API već sortira, ali za svaki slučaj)
+        try {
+            currentPosts.sort((a, b) => {
+                const dateA = new Date(a.created_at || a.date || 0);
+                const dateB = new Date(b.created_at || b.date || 0);
+                if (isNaN(dateA.getTime())) return 1;
+                if (isNaN(dateB.getTime())) return -1;
+                return dateB - dateA; // Noviji prvo (DESC)
+            });
+        } catch (sortError) {
+            console.error('📚 Blog: Greška pri sortiranju:', sortError);
+        }
+        
+        renderArticles();
+        renderPagination();
+        
+    } catch (error) {
+        console.error('📚 Blog: Greška pri učitavanju stranice:', error);
+        throw error;
+    }
+}
+
+
 }
 
 // Praćenje promene pisma
@@ -152,39 +192,42 @@ function setupEventListeners() {
 }
 
 // Search funkcija
-function handleSearch(e) {
-    const query = e.target.value.toLowerCase().trim();
+async function handleSearch(e) {
+    const query = e.target.value.trim();
     
-    if (query === '') {
-        filteredArticles = [...allArticles];
-    } else {
-        filteredArticles = allArticles.filter(article => {
-            const title = article.title.toLowerCase();
-            const content = article.content_text.toLowerCase();
-            
-            // Pretraga i na ćirilici i na latinici
-            return title.includes(query) || content.includes(query) ||
-                   transliterateText(title, 'latin').toLowerCase().includes(query) ||
-                   transliterateText(content, 'latin').toLowerCase().includes(query);
-        });
-    }
+    console.log(`📚 Blog: Search query: "${query}"`);
     
+    // Ažuriraj trenutni search i resetuj na prvu stranicu
+    currentSearch = query;
     currentPage = 1;
-    renderArticles();
+    
+    try {
+        await loadPage(1);
+    } catch (error) {
+        console.error('📚 Blog: Greška pri pretrazi:', error);
+        showError();
+    }
 }
 
 // Filter funkcija
-function handleFilter(e) {
+async function handleFilter(e) {
     const category = e.target.value;
     
-    if (category === 'sve') {
-        filteredArticles = [...allArticles];
-    } else {
-        filteredArticles = allArticles.filter(article => article.category === category);
-    }
+    console.log(`📚 Blog: Filter category: "${category}"`);
     
+    // Ažuriraj trenutnu kategoriju i resetuj na prvu stranicu
+    currentCategory = category;
     currentPage = 1;
-    renderArticles();
+    
+    // Resetuj search kada se menja kategorija (opciono)
+    // currentSearch = '';
+    
+    try {
+        await loadPage(1);
+    } catch (error) {
+        console.error('📚 Blog: Greška pri filtriranju:', error);
+        showError();
+    }
 }
 
 // Debounce helper
@@ -242,12 +285,9 @@ function renderArticles() {
     console.log('📚 Blog: Container found:', !!container);
     if (!container) return;
 
-    const startIndex = (currentPage - 1) * articlesPerPage;
-    const endIndex = startIndex + articlesPerPage;
-    const articlesToShow = filteredArticles.slice(startIndex, endIndex);
-    console.log('📚 Blog: Articles to show:', articlesToShow.length);
+    console.log('📚 Blog: Current posts:', currentPosts.length);
 
-    if (articlesToShow.length === 0) {
+    if (currentPosts.length === 0) {
         const noResultsText = currentScript === 'latin' 
             ? 'Nema pronađenih članaka.' 
             : 'Нема пронађених чланака.';
@@ -262,7 +302,7 @@ function renderArticles() {
         return;
     }
     
-    container.innerHTML = articlesToShow.map(article => {
+    container.innerHTML = currentPosts.map(article => {
         const categoryInfo = getCategoryInfo(article.category);
         const dateStr = formatDate(article.date);
         const excerpt = article.preview || article.content_text.substring(0, 150) + '...';
@@ -322,7 +362,11 @@ function renderPagination() {
     const paginationContainer = document.getElementById('blogPagination');
     if (!paginationContainer) return;
     
-    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+    // Koristi paginacione podatke od API-ja
+    const totalPages = currentPagination.pages || 0;
+    const hasPrev = currentPagination.has_prev || false;
+    const hasNext = currentPagination.has_next || false;
+    const currentPageNum = currentPagination.page || currentPage;
     
     if (totalPages <= 1) {
         paginationContainer.innerHTML = '';
@@ -332,9 +376,10 @@ function renderPagination() {
     let html = '<div class="flex items-center justify-center space-x-2">';
     
     // Previous
-    if (currentPage > 1) {
+    if (hasPrev) {
+        const prevPage = currentPagination.prev_page || (currentPageNum - 1);
         html += `
-            <button onclick="changePage(${currentPage - 1})"
+            <button onclick="changePage(${prevPage})"
                 class="px-4 py-2 rounded-lg border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white transition-all duration-300">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -343,28 +388,29 @@ function renderPagination() {
     
     // Page numbers
     for (let i = 1; i <= totalPages; i++) {
-        if (i === currentPage) {
+        if (i === currentPageNum) {
             html += `
                 <button class="px-4 py-2 rounded-lg bg-primary-red text-white font-bold">
                     ${i}
                 </button>
             `;
-        } else if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+        } else if (i === 1 || i === totalPages || Math.abs(i - currentPageNum) <= 1) {
             html += `
                 <button onclick="changePage(${i})"
                     class="px-4 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:border-primary-blue hover:text-primary-blue transition-all duration-300">
                     ${i}
                 </button>
             `;
-        } else if (Math.abs(i - currentPage) === 2) {
+        } else if (Math.abs(i - currentPageNum) === 2) {
             html += `<span class="px-2 text-gray-400">...</span>`;
         }
     }
     
     // Next
-    if (currentPage < totalPages) {
+    if (hasNext) {
+        const nextPage = currentPagination.next_page || (currentPageNum + 1);
         html += `
-            <button onclick="changePage(${currentPage + 1})"
+            <button onclick="changePage(${nextPage})"
                 class="px-4 py-2 rounded-lg border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white transition-all duration-300">
                 <i class="fas fa-chevron-right"></i>
             </button>
@@ -376,28 +422,106 @@ function renderPagination() {
 }
 
 // Promena stranice
-function changePage(page) {
-    currentPage = page;
-    renderArticles();
+async function changePage(page) {
+    console.log(`📚 Blog: Menjam stranicu na ${page}`);
     
-    // Scroll to top of blog section
+    // Scroll to top of blog section pre nego što se učitaju novi podaci
     const blogSection = document.getElementById('blog');
     if (blogSection) {
         blogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    
+    try {
+        await loadPage(page);
+    } catch (error) {
+        console.error('📚 Blog: Greška pri promeni stranice:', error);
+        showError();
+    }
+}
+
+// Fetch pojedinačnog članka
+async function fetchArticle(articleId) {
+    try {
+        // Use API_CONFIG for correct backend URL
+        let apiUrl;
+        if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
+            apiUrl = window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.POSTS + '/' + articleId);
+        } else {
+            // Development fallback
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost) {
+                apiUrl = 'http://localhost:5000/api/posts/' + articleId;
+            } else {
+                apiUrl = '/api/posts/' + articleId;
+            }
+        }
+        
+        console.log('📚 Blog: Fetching article:', apiUrl);
+        
+        const response = await fetch(apiUrl, {
+          credentials: window.API_CONFIG ? window.API_CONFIG.getCredentials() : 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const article = data.data || data;
+        console.log('📚 Blog: Article fetched:', article.id);
+        return article;
+        
+    } catch (error) {
+        console.error('📚 Blog: Greška pri fetch-ovanju članka:', error);
+        throw error;
+    }
 }
 
 // Otvori članak
-function openArticle(articleId) {
-    const article = allArticles.find(a => a.id === articleId);
-    if (!article) return;
-    
-    // Ako je kratak članak (<300 reči) - otvori u modalu
-    if (article.word_count < 300) {
+async function openArticle(articleId) {
+    try {
+        console.log(`📚 Blog: Otvaram članak ${articleId}`);
+        
+        // Prikaži loading stanje u modalu
+        const modal = document.getElementById('articleModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        
+        if (modal && modalTitle && modalContent) {
+            modalTitle.textContent = 'Učitavanje...';
+            modalContent.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-primary-blue"></i><p class="mt-4 text-gray-600">Učitavam članak...</p></div>';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Fetch article from API
+        const article = await fetchArticle(articleId);
+        
+        // Prikaži članak u modalu
         showModal(article);
-    } else {
-        // Dugi članak - otvori u modalu (kasnije možemo dodati zasebne HTML stranice)
-        showModal(article);
+        
+    } catch (error) {
+        console.error('📚 Blog: Greška pri otvaranju članka:', error);
+        
+        // Prikaži error poruku
+        const modal = document.getElementById('articleModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        
+        if (modal && modalTitle && modalContent) {
+            modalTitle.textContent = 'Greška';
+            modalContent.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-4xl text-red-500"></i>
+                    <p class="mt-4 text-gray-700">Došlo je do greške pri učitavanju članka.</p>
+                    <p class="text-gray-500 text-sm mt-2">Molimo pokušajte ponovo.</p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
     }
 }
 

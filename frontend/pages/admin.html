@@ -767,6 +767,43 @@
     let postsData = [];
     const translit = typeof SerbianTransliterator !== 'undefined' ? new SerbianTransliterator() : { convert: (t) => t };
 
+    // CSRF helper - automatically adds CSRF token to fetch requests
+    function withCsrf(options = {}) {
+      if (window.CSRF && window.CSRF.token) {
+        options.headers = {
+          ...options.headers,
+          ...window.CSRF.getHeader()
+        };
+      }
+      return options;
+    }
+
+    // Wrap fetch to auto-add CSRF token for state-changing requests
+    const _originalFetch = window.fetch;
+    window.fetch = async function(url, options = {}) {
+      const method = (options.method || 'GET').toUpperCase();
+      if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method) && window.CSRF && window.CSRF.token) {
+        options.headers = {
+          ...options.headers,
+          ...window.CSRF.getHeader()
+        };
+      }
+      return _originalFetch(url, options);
+    };
+
+    // Fetch CSRF token on page load
+    (async () => {
+      try {
+        const res = await fetch('/api/csrf-token', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          window.CSRF = { token: data.csrf_token, getHeader: () => ({ 'X-CSRFToken': data.csrf_token }) };
+        }
+      } catch (e) {
+        console.warn('CSRF token fetch failed:', e);
+      }
+    })();
+
     // LOGOUT HANDLER - Client-side redirect to ensure proper navigation
     async function handleLogout(event) {
       event.preventDefault();

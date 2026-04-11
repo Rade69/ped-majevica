@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, session
 from flask_login import login_required, current_user
+from flask_wtf.csrf import generate_csrf
 from app.extensions import db, limiter
 from app.models.post import Post
 from app.models.like import Like
@@ -18,6 +19,18 @@ api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 # Inicijalizacija schema
 post_schema = PostSchema()
+
+
+# ========================================
+# CSRF TOKEN ENDPOINT
+# ========================================
+
+
+@api_bp.get("/csrf-token")
+@api_bp.get("/csrf-token/")
+def get_csrf_token():
+    """Return CSRF token for frontend forms"""
+    return jsonify({"csrf_token": generate_csrf()})
 
 
 # DEBUG ENDPOINT - Check auth status

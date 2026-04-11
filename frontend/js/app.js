@@ -6,6 +6,42 @@
 const PEDMajevicaApp = (function () {
     'use strict';
 
+    // ============================================
+    // CSRF TOKEN MANAGEMENT
+    // ============================================
+    const CSRF = {
+        token: null,
+
+        async init() {
+            try {
+                const res = await fetch('/api/csrf-token', { credentials: 'include' });
+                if (res.ok) {
+                    const data = await res.json();
+                    this.token = data.csrf_token;
+                    // Inject into all forms with CSRF token hidden input
+                    document.querySelectorAll('form').forEach(form => {
+                        if (!form.querySelector('input[name="csrf_token"]')) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'csrf_token';
+                            input.value = this.token;
+                            form.appendChild(input);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn('CSRF token fetch failed:', e);
+            }
+        },
+
+        getHeader() {
+            return { 'X-CSRFToken': this.token };
+        }
+    };
+
+    // Export to window for use in other JS files
+    window.CSRF = CSRF;
+
     const CONFIG = {
         lazyLoading: { rootMargin: '100px 0px', threshold: 0.1, maxLoadingTime: 10000 },
         debounce: { scroll: 100, resize: 200 },
@@ -506,6 +542,9 @@ const PEDMajevicaApp = (function () {
 
     function init() {
         Utils.log('🚀 Initializing...');
+
+        // Initialize CSRF token first
+        CSRF.init();
 
         const ns = new NotificationSystem();
         ns.init();

@@ -103,6 +103,19 @@
   <script src="/assets/js/config.js"></script>
 
   <script>
+    // Fetch CSRF token on page load
+    (async () => {
+      try {
+        const res = await fetch('/api/csrf-token', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          window.CSRF = { token: data.csrf_token, getHeader: () => ({ 'X-CSRFToken': data.csrf_token }) };
+        }
+      } catch (e) {
+        console.warn('CSRF token fetch failed:', e);
+      }
+    })();
+
     async function handleLogin(event) {
       event.preventDefault();
 
@@ -121,10 +134,17 @@
 
         console.log('🔗 Calling API:', apiUrl);
 
+        // Get CSRF token
+        let csrfHeader = {};
+        if (window.CSRF && window.CSRF.token) {
+          csrfHeader = window.CSRF.getHeader();
+        }
+
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...csrfHeader
           },
           credentials: 'include',  // Important for cookies/session
           body: JSON.stringify({ username, password })

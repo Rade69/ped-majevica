@@ -116,6 +116,7 @@ def sample_post(app):
     with app.app_context():
         post = Post(
             title="Test Članak",
+            slug="test-clanak",
             content="Ovo je sadržaj testnog članka.",
             category="vesti",
             published=True
@@ -134,7 +135,7 @@ def sample_event(app):
         event = Event(
             title="Test Događaj",
             description="Opis testnog događaja",
-            date="2026-04-15",
+            event_date="2026-04-15",
             location="Majevica",
             published=True
         )
@@ -153,7 +154,7 @@ def sample_trail(app):
             name="Test Staza",
             description="Opis testne staze",
             difficulty="srednja",
-            length_km=10.5,
+            distance_km=10.5,
             duration_hours=4,
             published=True
         )

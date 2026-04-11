@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.extensions import db
+from app.extensions import db, bcrypt
 from flask_login import UserMixin
 import enum
 
@@ -54,9 +54,16 @@ class User(db.Model, UserMixin):
         return self.role in [UserRole.EDITOR.value, UserRole.ADMIN.value]
 
     def update_last_login(self):
-        """Update last login timestamp"""
+        """Update last login timestamp (caller must commit session)"""
         self.last_login = datetime.utcnow()
-        db.session.commit()
+
+    def set_password(self, password):
+        """Set password hash for user"""
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        """Check if password matches hash"""
+        return bcrypt.check_password_hash(self.password_hash, password)
 
     def to_dict(self):
         """Convert to dictionary for JSON serialization"""

@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, redirect, url_for, request
 from app.config import Config
-from app.extensions import db, migrate, login_manager, bcrypt, limiter, cors
+from app.extensions import db, migrate, login_manager, bcrypt, limiter, cors, csrf
 from app.models.user import User
 
 
@@ -24,6 +24,7 @@ def create_app(test_config=None):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     limiter.init_app(app)
+    csrf.init_app(app)
 
     # CORS - Allow Netlify frontend to access API
     cors.init_app(
@@ -34,14 +35,12 @@ def create_app(test_config=None):
                     "http://localhost:*",
                     "http://127.0.0.1:*",
                     "https://ped-majevica.netlify.app",
-                    "http://pedmajevica.org",  # Temporary: HTTP until SSL is active
                     "https://pedmajevica.org",
-                    "http://www.pedmajevica.org",  # Temporary: HTTP until SSL is active
                     "https://www.pedmajevica.org",
-                    "http://127.0.0.1:5500",  # VS Code Live Server
-                    "http://localhost:5500",  # VS Code Live Server
-                    "http://127.0.0.1:8080",  # Python HTTP Server
-                    "http://localhost:8080",  # Python HTTP Server
+                    "http://127.0.0.1:5500",  # VS Code Live Server (dev only)
+                    "http://localhost:5500",  # VS Code Live Server (dev only)
+                    "http://127.0.0.1:8080",  # Python HTTP Server (dev only)
+                    "http://localhost:8080",  # Python HTTP Server (dev only)
                 ],
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"],
@@ -120,41 +119,9 @@ def create_app(test_config=None):
 
         init_admin()
 
-    # -----------------------------
-    # AUTO-MIGRATE: Add missing columns
-    # -----------------------------
-    with app.app_context():
-        try:
-            from sqlalchemy import text, inspect
-
-            inspector = inspect(db.engine)
-
-            # Check if trail table exists
-            if "trail" in inspector.get_table_names():
-                existing_columns = [
-                    col["name"] for col in inspector.get_columns("trail")
-                ]
-
-                columns_to_add = {
-                    "features": "JSON",
-                    "equipment": "JSON",
-                    "warning": "TEXT",
-                    "contact": "VARCHAR(100)",
-                }
-
-                with db.engine.connect() as conn:
-                    for col_name, col_type in columns_to_add.items():
-                        if col_name not in existing_columns:
-                            conn.execute(
-                                text(
-                                    f"ALTER TABLE trail ADD COLUMN {col_name} {col_type}"
-                                )
-                            )
-                            conn.commit()
-                            app.logger.info(
-                                f"✅ Auto-migrated: Added column '{col_name}' to trail table"
-                            )
-        except Exception as e:
-            app.logger.warning(f"⚠️ Auto-migration check failed (non-critical): {e}")
+    # Note: Auto-migration removed for safety. Use Alembic migrations instead.
+    # If trail table is missing columns, create a proper migration:
+    # flask db migrate -m "Add columns to trail table"
+    # flask db upgrade
 
     return app

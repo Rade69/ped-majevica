@@ -1,6 +1,6 @@
 import pytest
 from app import create_app
-from app.extensions import db
+from app.extensions import db, bcrypt
 from app.models.user import User
 
 
@@ -11,6 +11,8 @@ def client():
             "TESTING": True,
             "SECRET_KEY": "test-secret-key",
             "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "WTF_CSRF_ENABLED": False,  # Disable CSRF for tests
+            "RATELIMIT_ENABLED": False,  # Disable rate limiting for tests
         }
     )
 
@@ -20,9 +22,10 @@ def client():
 
             user = User(
                 username="admin",
-                password_hash="$2b$12$pPCud2zJesGxLFYNzBJ6AuXKU5cdpD5hul6hCMEZKQNZW6JunlXFS",
+                email="admin@pedmajevica.ba",
                 role="admin",
             )
+            user.set_password("admin123")
             db.session.add(user)
             db.session.commit()
 
@@ -34,7 +37,7 @@ def client():
 
 def test_login_success(client):
     response = client.post(
-        "/login",
+        "/api/login",
         json={"username": "admin", "password": "admin123"},
     )
 
@@ -44,7 +47,7 @@ def test_login_success(client):
 
 def test_login_fail_wrong_password(client):
     response = client.post(
-        "/login",
+        "/api/login",
         json={"username": "admin", "password": "wrongpassword"},
     )
 
@@ -62,12 +65,12 @@ def test_admin_requires_login(client):
 def test_login_rate_limited(client):
     for _ in range(5):
         client.post(
-            "/login",
+            "/api/login",
             json={"username": "admin", "password": "wrongpassword"},
         )
 
     response = client.post(
-        "/login",
+        "/api/login",
         json={"username": "admin", "password": "wrongpassword"},
     )
 

@@ -38,6 +38,14 @@ def validate_csrf_token(token):
     return secrets.compare_digest(token, session_token)
 
 
+def rotate_csrf_token():
+    """Generate a new CSRF token and replace the old one"""
+    new_token = secrets.token_hex(CSRF_TOKEN_LENGTH)
+    session["csrf_token"] = new_token
+    logger.debug("CSRF token rotated")
+    return new_token
+
+
 def csrf_required(f):
     """
     Decorator to require valid CSRF token for POST/PUT/DELETE requests
@@ -70,6 +78,9 @@ def csrf_required(f):
                 ),
                 403,
             )
+        
+        # Rotate token after successful validation (prevents token reuse)
+        rotate_csrf_token()
 
         return f(*args, **kwargs)
 

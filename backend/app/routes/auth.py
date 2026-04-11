@@ -2,6 +2,11 @@
 from flask import Blueprint, request, jsonify, redirect, make_response, session
 from flask_login import login_user, logout_user, current_user, login_required
 from app.services.user_service import get_user_by_username
+from app.services.password_reset_service import (
+    request_password_reset,
+    reset_password_with_token,
+    change_password as change_password_service
+)
 from app.extensions import db, bcrypt, limiter
 from app.models.user import User
 from app.utils.responses import success_response, error_response
@@ -52,6 +57,7 @@ def api_login():
 
         # Ažuriraj last_login timestamp
         user.update_last_login()
+        db.session.commit()
 
         # CRITICAL: Explicitly set session data to force Flask to send Set-Cookie header
         session["user_id"] = user.id
@@ -114,20 +120,13 @@ def password_reset_request():
     if not email:
         return error_response("Email adresa je obavezna", status_code=400)
 
-    # Pronađi korisnika po email-u
-    user = User.query.filter_by(email=email).first()
-
-    # NE otkrivaj da li email postoji ili ne (security)
-    # Uvek vrati uspešan odgovor
-    logger.info(f"🔑 PASSWORD RESET REQUEST: email={email}")
-
-    # TODO: Implementirati slanje email-a
-    # Za sada samo logujemo
-    # U produkciji ovde ide send_reset_email(user)
-
-    return success_response(
-        message="Ako email postoji u sistemu, poslali smo link za resetovanje lozinke."
-    )
+    # Use password reset service
+    result = request_password_reset(email)
+    
+    if result["success"]:
+        return success_response(message=result["message"])
+    else:
+        return error_response(result["error"], status_code=result.get("status_code", 400))
 
 
 # --------------------
@@ -137,7 +136,7 @@ def password_reset_request():
 @limiter.limit("5 per hour")  # Maksimalno 5 pokušaja po satu
 def password_reset_confirm():
     """
-    Confirm password reset - set new password
+    Confirm password reset - set new password using secure token
     """
     data = request.get_json(silent=True) or {}
 
@@ -146,10 +145,11 @@ def password_reset_confirm():
     confirm_password = data.get("confirm_password")
 
     # Validacija
-    if not token or not new_password or not confirm_password:
-        return error_response("Svi podaci su obavezni", status_code=400)
-
-    if new_password != confirm_password:
+    if not token or not new_password:
+        return error_response("Token i nova lozinka su obavezni", status_code=400)
+    
+    # Confirm password validation (frontend should do this, but we double-check)
+    if confirm_password and new_password != confirm_password:
         return error_response("Lozinke se ne poklapaju", status_code=400)
 
     if len(new_password) < 8:
@@ -157,28 +157,13 @@ def password_reset_confirm():
             "Lozinka mora imati najmanje 8 karaktera", status_code=400
         )
 
-    # TODO: Implementirati token verifikaciju
-    # Za sada koristimo jednostavan pristup - token je user_id (NE SIGURNO za produkciju!)
-    # U produkciji koristiti itsdangerousURLSafeTimedSerializer
-
-    try:
-        user_id = int(token)
-        user = User.query.get(user_id)
-    except (ValueError, TypeError):
-        return error_response("Nevalidan token", status_code=400)
-
-    if not user:
-        return error_response("Korisnik ne postoji", status_code=404)
-
-    # Postavi novu lozinku
-    user.password_hash = bcrypt.generate_password_hash(new_password).decode("utf-8")
-    db.session.commit()
-
-    logger.info(f"🔑 PASSWORD RESET: user_id={user.id}, username={user.username}")
-
-    return success_response(
-        message="Lozinka je uspešno resetovana. Možete se prijaviti."
-    )
+    # Use password reset service with secure token validation
+    result = reset_password_with_token(token, new_password)
+    
+    if result["success"]:
+        return success_response(message=result["message"])
+    else:
+        return error_response(result["error"], status_code=result.get("status_code", 400))
 
 
 # --------------------
@@ -198,10 +183,11 @@ def change_password():
     confirm_password = data.get("confirm_password")
 
     # Validacija
-    if not current_password or not new_password or not confirm_password:
-        return error_response("Svi podaci su obavezni", status_code=400)
-
-    if new_password != confirm_password:
+    if not current_password or not new_password:
+        return error_response("Trenutna i nova lozinka su obavezne", status_code=400)
+    
+    # Confirm password validation (frontend should do this, but we double-check)
+    if confirm_password and new_password != confirm_password:
         return error_response("Nove lozinke se ne poklapaju", status_code=400)
 
     if len(new_password) < 8:
@@ -209,18 +195,10 @@ def change_password():
             "Nova lozinka mora imati najmanje 8 karaktera", status_code=400
         )
 
-    # Provera trenutne lozinke
-    user = User.query.get(current_user.id)
-    if not bcrypt.check_password_hash(user.password_hash, current_password):
-        logger.warning(
-            f"❌ CHANGE PASSWORD FAILED: Wrong current password for user {current_user.id}"
-        )
-        return error_response("Netačna trenutna lozinka", status_code=401)
-
-    # Postavi novu lozinku
-    user.password_hash = bcrypt.generate_password_hash(new_password).decode("utf-8")
-    db.session.commit()
-
-    logger.info(f"🔑 CHANGE PASSWORD: user_id={user.id}, username={user.username}")
-
-    return success_response(message="Lozinka je uspešno promenjena.")
+    # Use password reset service for authenticated password change
+    result = change_password_service(current_user, current_password, new_password)
+    
+    if result["success"]:
+        return success_response(message=result["message"])
+    else:
+        return error_response(result["error"], status_code=result.get("status_code", 400))

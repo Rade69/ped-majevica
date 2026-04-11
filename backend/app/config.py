@@ -52,16 +52,18 @@ class Config:
 
     # CRITICAL: For SameSite=None to work, browser MUST receive Set-Cookie header
     # Flask must send session cookie with these exact settings:
-    SESSION_COOKIE_SECURE = True  # Required for SameSite=None
+    # In production: Secure=True, SameSite=None for cross-origin
+    # In development: Secure=False (for HTTP), SameSite=Lax
+    SESSION_COOKIE_SECURE = ENV == "production"  # Required for SameSite=None in production
     SESSION_COOKIE_HTTPONLY = True  # Security
-    SESSION_COOKIE_SAMESITE = "None"  # Allow cross-origin
+    SESSION_COOKIE_SAMESITE = "None" if ENV == "production" else "Lax"  # Allow cross-origin only in production
     SESSION_COOKIE_NAME = "session"  # Explicit session cookie name
     SESSION_COOKIE_PATH = "/"  # Available for all paths
 
     # Remember me cookie settings (Flask-Login)
-    REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = ENV == "production"
     REMEMBER_COOKIE_HTTPONLY = True
-    REMEMBER_COOKIE_SAMESITE = "None"
+    REMEMBER_COOKIE_SAMESITE = "None" if ENV == "production" else "Lax"
     REMEMBER_COOKIE_DURATION = 2592000  # 30 days in seconds
 
     # -----------------------------
@@ -75,6 +77,15 @@ class Config:
     # Use Redis in production, memory for development
     RATELIMIT_STORAGE_URL = os.getenv("RATELIMIT_STORAGE_URL", "memory://")
     RATELIMIT_ENABLED = os.getenv("RATELIMIT_ENABLED", "true").lower() == "true"
+
+    # -----------------------------
+    # CSRF PROTECTION
+    # -----------------------------
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_METHODS = {'POST', 'PUT', 'DELETE', 'PATCH'}  # Only state-changing
+    WTF_CSRF_TIME_LIMIT = None
+    WTF_CSRF_SSL_STRICT = False
+    WTF_CSRF_HEADERS = ['X-CSRFToken', 'X-CSRF-Token']
 
     @staticmethod
     def init_logging(app):

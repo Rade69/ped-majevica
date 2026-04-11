@@ -15,9 +15,23 @@ async function initBlog() {
     console.log('📚 Blog: Inicijalizacija...');
     try {
         // Use API_CONFIG for correct backend URL
-        const apiUrl = window.API_CONFIG ? window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.POSTS) : '/api/posts';
+        let apiUrl;
+        if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
+            apiUrl = window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.POSTS);
+        } else {
+            // Development fallback
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost) {
+                apiUrl = 'http://localhost:5000/api/posts';
+            } else {
+                apiUrl = '/api/posts';
+            }
+        }
         console.log('📚 Blog: Fetching from:', apiUrl);
-        const response = await fetch(apiUrl);
+        // Use credentials for cross-origin requests
+        const response = await fetch(apiUrl, {
+          credentials: window.API_CONFIG ? window.API_CONFIG.getCredentials() : 'include'
+        });
         console.log('📚 Blog: Response status:', response.status);
         const data = await response.json();
         console.log('📚 Blog: Data received:', data);

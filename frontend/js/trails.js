@@ -12,7 +12,14 @@ const TRAILS_API = (function() {
         return window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.TRAILS);
     }
     
-    // Fallback za razvojno okruženje - koristi relativni put
+    // Fallback za razvojno okruženje - koristi absolutni URL za localhost
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost) {
+        console.log('⚠️ trails.js: API_CONFIG nije dostupan, koristim development URL (localhost:5000)');
+        return 'http://localhost:5000/api/trails';
+    }
+    
+    // Fallback za produkciju - relativni put
     console.log('⚠️ trails.js: API_CONFIG nije dostupan, koristim relativni put');
     return '/api/trails';
 })();
@@ -27,7 +34,14 @@ let currentPage = 1;
 async function loadTrails() {
   try {
     console.log('🏔️ Učitavanje staza sa:', TRAILS_API);
-    const response = await fetch(TRAILS_API);
+    // Use credentials for cross-origin requests
+    const fetchOptions = {};
+    if (window.API_CONFIG && window.API_CONFIG.getCredentials) {
+      fetchOptions.credentials = window.API_CONFIG.getCredentials();
+    } else {
+      fetchOptions.credentials = 'include';
+    }
+    const response = await fetch(TRAILS_API, fetchOptions);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);

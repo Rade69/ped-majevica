@@ -1,5 +1,6 @@
-// frontend/js/admin/api.js
-// Centralizovani API sloj za admin panel
+// frontend/js/api.js
+// Centralizovani API sloj za PED Majevica
+// Koristi Config iz config.js za podešavanja
 
 /**
  * Custom error klasa za API greške
@@ -50,15 +51,27 @@ function showNotification(message, type = 'info') {
 
 /**
  * Centralizovana request funkcija sa poboljšanim error handling-om
+ * Koristi API_CONFIG za base URL, credentials i CSRF token
  */
-async function request(url, options = {}) {
+async function request(endpoint, options = {}) {
   try {
+    // Get URL from API_CONFIG (handles absolute/relative paths)
+    const url = endpoint.startsWith('http') 
+      ? endpoint  // Absolute URL
+      : window.API_CONFIG?.getUrl(endpoint) || endpoint; // Use API_CONFIG or fallback
+    
+    // Get headers from API_CONFIG (includes CSRF token)
+    const headers = window.API_CONFIG?.getHeaders(options.headers) || {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    
+    // Use credentials from API_CONFIG (defaults to 'include' for cross-origin)
+    const credentials = window.API_CONFIG?.getCredentials() || 'include';
+    
     const res = await fetch(url, {
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      credentials,
+      headers,
       ...options,
     });
 
@@ -70,7 +83,7 @@ async function request(url, options = {}) {
       const statusCode = res.status;
       
       // Logovanje greške
-      console.error(`API Greška [${statusCode}]:`, errorMessage);
+      console.error(`API Greška [${statusCode}]:`, errorMessage, 'URL:', url);
       
       // Prikazivanje korisničkih poruka za specifične status code-ove
       if (statusCode === 401) {
@@ -115,25 +128,25 @@ async function request(url, options = {}) {
 ====================== */
 export const PostsAPI = {
   list() {
-    return request("/api/posts/");
+    return request("posts/");
   },
 
   create(data) {
-    return request("/api/posts/", {
+    return request("posts/", {
       method: "POST",
       body: JSON.stringify(data),
     });
   },
 
   update(id, data) {
-    return request(`/api/posts/${id}`, {
+    return request(`posts/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     });
   },
 
   remove(id) {
-    return request(`/api/posts/${id}`, {
+    return request(`posts/${id}`, {
       method: "DELETE",
     });
   },
@@ -144,7 +157,7 @@ export const PostsAPI = {
 ====================== */
 export const TrailsAPI = {
   list() {
-    return request("/api/trails/");
+    return request("trails/");
   },
 };
 
@@ -153,6 +166,96 @@ export const TrailsAPI = {
 ====================== */
 export const EventsAPI = {
   list() {
-    return request("/api/events/");
+    return request("events/");
   },
 };
+
+/* ======================
+   AUTH API
+====================== */
+export const AuthAPI = {
+  login(username, password) {
+    return request("login", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    });
+  },
+  
+  logout() {
+    return request("logout", { method: "GET" });
+  },
+  
+  changePassword(currentPassword, newPassword, confirmPassword) {
+    return request("change-password", {
+      method: "POST",
+      body: JSON.stringify({ 
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword 
+      }),
+    });
+  },
+  
+  requestPasswordReset(email) {
+    return request("password-reset-request", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  },
+  
+  resetPassword(token, newPassword, confirmPassword) {
+    return request("password-reset-confirm", {
+      method: "POST",
+      body: JSON.stringify({ 
+        token, 
+        new_password: newPassword,
+        confirm_password: confirmPassword 
+      }),
+    });
+  },
+};
+
+/* ======================
+   UTILITY FUNCTIONS
+====================== */
+/**
+ * Fetch CSRF token from server
+ * @returns {Promise<string>} CSRF token
+ */
+export async function fetchCsrfToken() {
+  try {
+    // Use API_CONFIG's fetchCsrfToken method if available
+    if (window.API_CONFIG && window.API_CONFIG.fetchCsrfToken) {
+      return await window.API_CONFIG.fetchCsrfToken();
+    }
+    
+    // Fallback to direct request
+    const response = await request("csrf-token", { method: "GET" });
+    return response.csrf_token;
+  } catch (error) {
+    console.error('Failed to fetch CSRF token:', error);
+    return null;
+  }
+}
+
+/**
+ * Initialize CSRF token and store it globally
+ * Should be called early in application startup
+ */
+export async function initCsrfToken() {
+  const token = await fetchCsrfToken();
+  if (token) {
+    // Store in global CSRF object (compatible with app.js)
+    if (!window.CSRF) window.CSRF = {};
+    window.CSRF.token = token;
+    
+    // Also set in API_CONFIG for consistency
+    if (window.API_CONFIG && window.API_CONFIG.setCsrfToken) {
+      window.API_CONFIG.setCsrfToken(token);
+    }
+    
+    console.log('CSRF token initialized');
+    return token;
+  }
+  return null;
+}

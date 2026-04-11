@@ -100,13 +100,18 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: frontend/dist
-          retention-days: 7
+        
+      - name: Verify build output
+        working-directory: frontend
+        run: |
+          # Check if CSS files were generated
+          if [ -f "assets/css/output.min.css" ]; then
+            echo "✅ Frontend build successful"
+            ls -la assets/css/
+          else
+            echo "❌ Frontend build failed - output.min.css not found"
+            exit 1
+          fi
 
   # Security Audit
   security:
@@ -130,12 +135,14 @@ jobs:
         working-directory: backend
         run: |
           pip install safety
-          safety check --json > security-report.json || true
+          # Fail on high/critical vulnerabilities only
+          safety check --json > security-report.json
 
       - name: Node Security Audit
         working-directory: frontend
         run: |
-          npm audit --audit-level=high || true
+          # Fail on high/critical vulnerabilities
+          npm audit --audit-level=high
 
   # Deploy to Staging (on develop branch)
   deploy-staging:
@@ -148,20 +155,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download frontend build
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: frontend-build
-          path: frontend/dist
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Deploy to staging
+      - name: Deploy Frontend to Netlify (Staging)
         env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          STAGING_SERVER: ${{ secrets.STAGING_SERVER }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
         run: |
-          echo "Deploying to staging server..."
-          # Add deployment commands here
-          # Example: rsync, scp, or custom deploy script
+          # Install Netlify CLI
+          npm install -g netlify-cli
+          
+          # Deploy to Netlify with staging context
+          cd frontend
+          netlify deploy --prod --dir=. --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN" --message="Staging deploy: ${{ github.sha }}"
+
+      - name: Trigger Render Backend Deploy (Staging)
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID_STAGING: ${{ secrets.RENDER_SERVICE_ID_STAGING }}
+        run: |
+          # Trigger Render deploy via API
+          if [ -n "$RENDER_API_KEY" ] && [ -n "$RENDER_SERVICE_ID_STAGING" ]; then
+            curl -X POST \
+              -H "Authorization: Bearer $RENDER_API_KEY" \
+              https://api.render.com/v1/services/$RENDER_SERVICE_ID_STAGING/deploys
+            echo "Render staging deploy triggered"
+          else
+            echo "Render API key or service ID not set, skipping backend deploy"
+          fi
 
   # Deploy to Production (on main branch)
   deploy-production:
@@ -174,16 +198,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download frontend build
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: frontend-build
-          path: frontend/dist
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Deploy to production
+      - name: Deploy Frontend to Netlify (Production)
         env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-          PRODUCTION_SERVER: ${{ secrets.PRODUCTION_SERVER }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          echo "Deploying to production server..."
-          # Add deployment commands here
+          # Install Netlify CLI
+          npm install -g netlify-cli
+          
+          # Deploy to Netlify production
+          cd frontend
+          netlify deploy --prod --dir=. --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN" --message="Production deploy: ${{ github.sha }}"
+
+      - name: Trigger Render Backend Deploy (Production)
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+        run: |
+          # Trigger Render deploy via API
+          if [ -n "$RENDER_API_KEY" ] && [ -n "$RENDER_SERVICE_ID" ]; then
+            curl -X POST \
+              -H "Authorization: Bearer $RENDER_API_KEY" \
+              https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys
+            echo "Render production deploy triggered"
+          else
+            echo "Render API key or service ID not set, skipping backend deploy"
+          fi

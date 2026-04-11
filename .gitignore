@@ -64,6 +64,9 @@ Thumbs.db
 # Claude settings
 .claude/
 
+# Qwen Code settings
+.qwen/
+
 # Uploads (user generated content)
 uploads/
 backend/uploads/

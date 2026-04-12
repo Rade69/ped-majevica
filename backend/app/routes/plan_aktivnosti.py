@@ -80,12 +80,21 @@ def create():
     try:
         data = request.get_json()
 
+        # Basic validation
+        activity = (data.get('activity') or '').strip()
+        if not activity:
+            return jsonify({'success': False, 'error': 'Naziv aktivnosti je obavezan'}), 400
+
+        month = (data.get('month') or '').strip()
+        if not month:
+            return jsonify({'success': False, 'error': 'Mjesec je obavezan'}), 400
+
         aktivnost = PlanAktivnosti(
-            month=data.get('month', 'JANUAR'),
+            month=month.upper(),
             date=data.get('date', ''),
-            activity=data.get('activity'),
+            activity=activity,
             organizer_guide=data.get('organizer_guide', ''),
-            sort_order=MONTHS_ORDER.get(data.get('month', 'JANUAR'), 1) * 100
+            sort_order=MONTHS_ORDER.get(month.upper(), 1) * 100
         )
 
         db.session.add(aktivnost)

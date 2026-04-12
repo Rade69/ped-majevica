@@ -20,15 +20,10 @@ async function fetchPosts(page = 1, search = '', category = 'sve') {
         if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
             apiUrl = window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.POSTS);
         } else {
-            // Development fallback
-            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            if (isLocalhost) {
-                apiUrl = 'http://localhost:5000/api/posts';
-            } else {
-                apiUrl = '/api/posts';
-            }
+            // Fallback: relative path (works behind same-origin proxy or same-domain deploy)
+            apiUrl = '/api/posts';
         }
-        
+
         // Dodaj query parametre
         const url = new URL(apiUrl);
         url.searchParams.set('page', page);
@@ -447,13 +442,8 @@ async function fetchArticle(articleId) {
         if (window.API_CONFIG && typeof window.API_CONFIG.getUrl === 'function') {
             apiUrl = window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.POSTS + '/' + articleId);
         } else {
-            // Development fallback
-            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            if (isLocalhost) {
-                apiUrl = 'http://localhost:5000/api/posts/' + articleId;
-            } else {
-                apiUrl = '/api/posts/' + articleId;
-            }
+            // Fallback: relative path
+            apiUrl = '/api/posts/' + articleId;
         }
         
         console.log('📚 Blog: Fetching article:', apiUrl);

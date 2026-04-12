@@ -115,47 +115,27 @@ class PasswordResetService:
     @staticmethod
     def send_reset_email(user, reset_url):
         """
-        Send password reset email to user (placeholder implementation)
-        
-        In production, integrate with email service (SMTP, SendGrid, etc.)
-        
+        Send password reset email to user via Flask-Mail SMTP.
+        Falls back to logging if SMTP is not configured.
+
         Args:
             user: User model instance
             reset_url: Full reset URL with token
-            
+
         Returns:
-            bool: True if email would be sent (logged), False on error
+            bool: True if email was sent (or queued), False if fell back to logging
         """
         try:
-            # Since this is an admin-only app with few users, we don't send actual emails
-            # Instead, we log the token and provide CLI alternative
+            from app.services.email_service import send_password_reset_email
+            return send_password_reset_email(user, reset_url)
+        except Exception as e:
+            logger.error(f"Failed to process password reset email: {e}")
+            # Fallback: log the URL so admin can still use it
             logger.warning(
                 f"PASSWORD RESET REQUEST for admin user: {user.username} ({user.email})\n"
-                f"  ===== IMPORTANT: EMAIL NOT SENT (admin-only app) =====\n"
-                f"  Reset token (valid 1 hour): {token}\n"
                 f"  Reset URL: {reset_url}\n"
-                f"  \n"
-                f"  ALTERNATIVE: Use CLI command for password reset:\n"
-                f"    1. Access server via SSH/Render dashboard\n"
-                f"    2. Run: flask reset-admin-password --username {user.username}\n"
-                f"    3. Follow interactive prompts\n"
-                f"  \n"
-                f"  For development, token is logged here and can be used at {reset_url}"
+                f"  CLI alternative: flask reset-admin-password --username {user.username}"
             )
-            
-            # Also print to console for development
-            if current_app.config.get('FLASK_ENV') == 'development':
-                print(f"\n🔐 PASSWORD RESET TOKEN for {user.username}:")
-                print(f"   Token: {token}")
-                print(f"   URL: {reset_url}")
-                print(f"   CLI alternative: flask reset-admin-password --username {user.username}")
-                print()
-            
-            # Return True to indicate "reset process initiated"
-            return True
-            
-        except Exception as e:
-            logger.error(f"Failed to process password reset request: {e}")
             return False
     
     @staticmethod

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, redirect, url_for, request
 from app.config import Config
 from app.extensions import db, migrate, login_manager, bcrypt, limiter, cors, csrf
 from app.models.user import User
+from app.services.email_service import init_mail
 
 
 def create_app(test_config=None):
@@ -25,6 +26,7 @@ def create_app(test_config=None):
     login_manager.init_app(app)
     limiter.init_app(app)
     csrf.init_app(app)
+    init_mail(app)
 
     # CORS - Allow Netlify frontend to access API
     # Environment-based CORS origins
@@ -57,7 +59,7 @@ def create_app(test_config=None):
         },
     )
 
-    login_manager.login_view = "auth.login_page"
+    login_manager.login_view = "frontend.login"
 
     # Custom unauthorized handler for API endpoints
     @login_manager.unauthorized_handler
@@ -74,8 +76,8 @@ def create_app(test_config=None):
                 ),
                 401,
             )
-        # For non-API routes, redirect to login
-        return redirect(url_for("auth.login_page"))
+        # For non-API routes, redirect to login page
+        return redirect("/login")
 
     # -----------------------------
     # USER LOADER

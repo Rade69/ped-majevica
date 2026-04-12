@@ -59,10 +59,24 @@ def create_event():
     try:
         data = request.get_json()
 
+        # Basic validation
+        title = (data.get("title") or "").strip()
+        if not title:
+            return jsonify({"success": False, "error": "Naslov je obavezan"}), 400
+
+        event_date_str = data.get("event_date")
+        if not event_date_str:
+            return jsonify({"success": False, "error": "Datum je obavezan"}), 400
+
+        try:
+            event_date = datetime.strptime(str(event_date_str), "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "error": "Neispravan format datuma (očekivan: YYYY-MM-DD)"}), 400
+
         event = Event(
-            title=data.get("title"),
+            title=title,
             description=data.get("description"),
-            event_date=datetime.strptime(data.get("event_date"), "%Y-%m-%d").date(),
+            event_date=event_date,
             start_time=data.get("start_time"),
             end_time=data.get("end_time"),
             max_participants=data.get("max_participants"),

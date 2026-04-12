@@ -58,8 +58,13 @@ def create_trail():
     try:
         data = request.get_json()
 
+        # Basic validation
+        name = (data.get("name") or "").strip()
+        if not name:
+            return jsonify({"success": False, "error": "Naziv staze je obavezan"}), 400
+
         trail = Trail(
-            name=data.get("name"),
+            name=name,
             description=data.get("description"),
             difficulty=data.get("difficulty", "Srednja"),
             distance_km=data.get("distance_km"),

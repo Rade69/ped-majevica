@@ -33,10 +33,22 @@ def get_csrf_token():
     return jsonify({"csrf_token": generate_csrf()})
 
 
-# DEBUG ENDPOINT - Check auth status
+# DEBUG ENDPOINT - Check auth status (PROTECTED)
 @api_bp.get("/debug/auth")
 def debug_auth():
-    """Debug endpoint to check authentication status"""
+    """Debug endpoint to check authentication status.
+    Requires authentication in development, blocked in production.
+    """
+    from flask import current_app
+
+    # Block in production
+    if current_app.config.get("FLASK_ENV") == "production":
+        return jsonify({"error": "Debug endpoints disabled in production"}), 403
+
+    # Require authentication in development
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Authentication required for debug endpoints"}), 401
+
     return jsonify(
         {
             "authenticated": current_user.is_authenticated,
@@ -73,7 +85,7 @@ def get_posts():
                 or_(
                     Post.title.ilike(search_term),
                     Post.content_text.ilike(search_term),
-                    Post.excerpt.ilike(search_term)
+                    Post.preview.ilike(search_term)
                 )
             )
 

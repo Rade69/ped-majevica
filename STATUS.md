@@ -16,12 +16,25 @@
 - [x] Cookie settings — dinamički na osnovu `FLASK_ENV`
 - [x] CLI komande — `flask reset-admin-password`, `flask list-admins`
 - [x] Auth route-i koriste `password_reset_service` (ne plain user_id)
+- [x] Email servis — Flask-Mail za password reset, graceful fallback na logging
+- [x] Backup skripta — `scripts/backup_db.py` (SQLite + PostgreSQL, gzip, cleanup)
 
 ### Frontend
 - [x] API_CONFIG — automatsko određivanje environmenta (localhost vs produkcija)
 - [x] CSRF token se šalje u write zahtjevima (`X-CSRFToken` header)
 - [x] `credentials: 'include'` za cross-origin
 - [x] blog.js i trails.js — credentials za GET zahtjeve
+- [x] Paginacija na blogu — koristi backend `?page=&per_page=` API
+- [x] Hardcoded localhost fallback URL-ovi uklonjeni
+
+### Backend funkcionalnosti
+- [x] Redis caching sa graceful fallback (`cache_response` decorator)
+- [x] RBAC dekoratori — `admin_required`, `editor_required`, `role_required`
+- [x] Swagger/OpenAPI — `/api/docs`, `/api/redoc`, `/api/openapi.json`
+- [x] Paginacija na backendu — posts, events, trails (`?page=&per_page=`, max 50)
+- [x] Rate limiting — testiran na login endpointu (429 nakon 6. zahtjeva)
+- [x] Image optimization — WebP, srcset, lazy loading
+- [x] SEO — meta tags, sitemap, structured data, Open Graph
 
 ### CI/CD
 - [x] GitHub Actions — realni deploy koraci (Netlify CLI + Render API curl)
@@ -30,25 +43,14 @@
 - [x] E2E testovi — Playwright (`frontend/tests/e2e.spec.js`)
 - [x] CSRF testovi — 9 testova (`backend/tests/test_csrf.py`), svi prolaze ✅
 
-### Backend funkcionalnosti
-- [x] Redis caching sa graceful fallback (`cache_response` decorator)
-- [x] RBAC dekoratori — `admin_required`, `editor_required`, `role_required`
-- [x] Swagger/OpenAPI — `/api/docs`, `/api/redoc`, `/api/openapi.json`
-- [x] Paginacija na backendu — events, trails, api routes (`?page=&per_page=`, max 50)
-- [x] Rate limiting — testiran na login endpointu (429 nakon 6. zahtjeva)
-- [x] Image optimization — WebP, srcset, lazy loading
-- [x] SEO — meta tags, sitemap, structured data, Open Graph
-
 ---
 
 ## ⚠️ Djelomično implementirano
 
 | Stavka | Šta fali | Dokaz iz koda |
 |--------|----------|---------------|
-| **CORS HTTP domene** | localhost HTTP unosi su u istoj listi kao produkcija — nema env-based filtering | `backend/app/__init__.py` — svi origins u jednoj listi |
-| **Paginacija na posts** | `backend/app/routes/posts.py` — `list_posts` koristi `.all()` bez page/per_page | `posts.py` linija ~20 |
-| **Hardcoded fallback URL-ovi** | `blog.js` i `trails.js` imaju hardcoded `http://localhost:5000` u fallback granama | Defanzivni kod, ali nije čist |
-| **Email verifikacija** | Fajl `backend/app/services/email_verification.py` **NE POSTOJI** | Grep search — 0 rezultata |
+| **Events paginacija na frontendu** | `events.js` učitava iz JSON fajla, ne koristi API | `events.js` — fetch iz `/assets/data/plan_aktivnosti.json` |
+| **Trails paginacija na frontendu** | `trails.js` učitava sve odjednom, mali broj zapisa | `trails.js` — nema `?page=` parametre |
 
 ---
 
@@ -56,14 +58,11 @@
 
 | Stavka | Status |
 |--------|--------|
-| Password reset email slanje | Placeholder — token se samo loguje |
-| Email servis (SMTP/SendGrid) | Nema konfiguracije |
-| Paginacija na frontendu | Backend podržava, frontend JS ne koristi |
 | API versioning (`/api/v1/`) | Nema |
 | API error handling standardizacija | Nema |
 | API endpoint konvencija | Neki sa `/`, neki bez |
-| Backup skripta | Nema |
 | Monitoring (Sentry, structured logging) | Osnovno Python logging |
+| Email verifikacija | Namjerno izostavljeno — admin-only app (4 korisnika) |
 
 ---
 

@@ -66,8 +66,18 @@ def runner(app):
 def admin_user(app):
     """
     Kreiraj admin korisnika za testove.
+    Osigurava da tabele postoje i da admin već ne postoji.
     """
     with app.app_context():
+        from sqlalchemy import inspect
+        inspector = inspect(db.engine)
+        if not inspector.has_table('user'):
+            db.create_all()
+
+        existing = User.query.filter_by(username="admin").first()
+        if existing:
+            return existing
+
         user = User(
             username="admin",
             email="admin@pedmajevica.ba",
@@ -85,6 +95,15 @@ def regular_user(app):
     Kreiraj običnog korisnika za testove.
     """
     with app.app_context():
+        from sqlalchemy import inspect
+        inspector = inspect(db.engine)
+        if not inspector.has_table('user'):
+            db.create_all()
+
+        existing = User.query.filter_by(username="planinar").first()
+        if existing:
+            return existing
+
         user = User(
             username="planinar",
             email="planinar@pedmajevica.ba",

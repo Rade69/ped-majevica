@@ -13,9 +13,10 @@
 - [x] Password reset endpoint-i (token generacija i validacija)
 - [x] Hardcodovane lozinke — uklonjene
 - [x] CSRF zaštita + rotacija tokena
-- [x] CORS — HTTP domene uklonjene iz produkcije (localhost ostavljen za dev)
+- [x] CORS — env-based filtering
 - [x] Cookie settings — environment-sensitive
-- [ ] Email verifikacija — fajl ne postoji u kodu, TODO_PLAN lažno označen ✅
+- [x] Email servis — Flask-Mail za password reset
+- [x] Email verifikacija — nije potrebna (admin-only app, 4 korisnika)
 
 ### API Sigurnost
 - [x] Rate limiting na write operacije
@@ -30,6 +31,8 @@
 - [x] `credentials: 'include'` za cross-origin
 - [x] Image optimization (WebP, srcset, lazy loading)
 - [x] CDN konfiguracija
+- [x] Hardcoded localhost fallback URL-ovi uklonjeni
+- [x] Paginacija na blogu — koristi backend API
 
 ### Testiranje
 - [x] Backend testovi — 10 fajlova (auth, API, integration, admin, routes, **csrf**)
@@ -63,64 +66,35 @@
 - [x] Deployment guide
 - [x] Admin password guide
 - [x] Security fixes pregled
+- [x] Backup skripta — `scripts/backup_db.py`
 
 ---
 
-## 🟡 DJELOMIČNO / PLACEHOLDER
+## 🟡 DJELOMIČNO
 
-### CORS — nema env-based filtering
-- **Status:** Svi origins (uključujući HTTP localhost) su u jednoj listi
-- **Potrebno:** Razdvojiti development i production origins na osnovu `FLASK_ENV`
-- **Fajl:** `backend/app/__init__.py`
+### Events paginacija na frontendu
+- **Status:** `events.js` učitava iz JSON fajla, ne koristi API
+- **Napomena:** Mali broj događaja, paginacija nije kritična
 
-### Password reset email slanje
-- **Status:** Token se generiše i loguje, ali se **ne šalje email**
-- **Razlog:** Nije potrebno za 4 admina — CLI komande su alternativa
-- **Ako zatreba:** Integrisati SMTP ili SendGrid
-
-### Paginacija na posts route-u
-- **Status:** `backend/app/routes/posts.py` koristi `.all()` bez paginacije
-- **Potrebno:** Dodati `?page=` i `?per_page=` parametre kao u events/trails
-
-### Paginacija na frontendu
-- **Status:** Backend podržava `?page=&per_page=`, frontend JS ne koristi
-- **Potrebno:** Ažurirati `api.js`, `blog.js`, `events.js` da podržavaju paginaciju
-
-### CI/CD deployment
-- **Status:** Koraci su dodani u `.github/workflows/ci.yml` ali **nisu testirani u produkciji**
-- **Potrebno:** Čuvati Netlify i Render tokene u GitHub Secrets, testirati push na main
-
-### Hardcoded fallback URL-ovi
-- **Status:** `blog.js` i `trails.js` imaju hardcoded `http://localhost:5000` u fallback granama
-- **Potrebno:** Ukloniti ili zamijeniti sa `window.API_CONFIG?.DEVELOPMENT_API`
+### Trails paginacija na frontendu
+- **Status:** `trails.js` učitava sve odjednom, nema `?page=` parametre
+- **Napomena:** Mali broj staza (< 20), paginacija nije kritična
 
 ### API standardizacija
 - **Status:** Neki endpointi sa `/`, neki bez
 - **Potrebno:** Ujednačiti konvenciju (`/api/posts/` vs `/api/posts`)
-
-### Email verifikacija
-- **Status:** `backend/app/services/email_verification.py` **ne postoji**
-- **Potrebno:** Kreirati servis ili ukloniti iz dokumentacije
 
 ---
 
 ## 🔴 PREOSTALO ZA RAD
 
 ### Srednji prioritet
-- [ ] **Email servis** — SMTP / SendGrid integracija za password reset
-- [ ] **Paginacija na posts.py** — dodati `?page=&per_page=` u `list_posts`
-- [ ] **Frontend paginacija** — koristiti backend paginaciju u JS modulima
-- [ ] **CORS env-based filtering** — razdvojiti dev/production origins
-- [ ] **Backup strategija** — skripta za backup baze + automatizacija
-- [ ] **Email verifikacija** — kreirati servis ili maknuti iz TODO liste
-- [ ] **CI/CD testiranje** — verificirati deploy sa pravim tokenima
+- [ ] **CI/CD testiranje** — verificirati deploy sa pravim Netlify/Render tokenima
+- [ ] **Monitoring** — Sentry za error tracking, structured logging
 
 ### Nizak prioritet
 - [ ] **API versioning** — `/api/v1/` šema
 - [ ] **API error handling** — standardizovani error response-i
-- [ ] **Monitoring** — Sentry za error tracking, structured logging
-- [ ] **CDN za backend** — Cloudflare za API i statičke fajlove
-- [ ] **Ukloniti hardcoded fallback URL-ove** — iz blog.js i trails.js
 - [ ] **Newsletter** — double opt-in sistem
 - [ ] **User profili** — istorija aktivnosti
 - [ ] **GPX hosting** — download GPX fajlova za staze
@@ -132,12 +106,12 @@
 ## 📊 Redosled realizacije (preporuka)
 
 ```
-FAZA 1 (odmah):        FAZA 2 (1-2 sedmice):     FAZA 3 (1-2 mjeseca):
+FAZA 1 (završeno):       FAZA 2 (preostalo):        FAZA 3 (budućnost):
 ┌─────────────────┐    ┌─────────────────┐       ┌─────────────────┐
-│ CORS filtering  │    │ Email servis    │       │ Monitoring      │
-│ Posts paginacija│    │ Backup skripta  │       │ API versioning  │
-│ Frontend pagin. │    │ Email verific.  │       │ Novi feature-i  │
-│ CI/CD test      │    │                 │       │                 │
+│ CORS filtering  │    │ CI/CD test      │       │ Monitoring      │
+│ Email servis    │    │                 │       │ API versioning  │
+│ Backup skripta  │    │                 │       │ Novi feature-i  │
+│ Paginacija      │    │                 │       │                 │
 │ Hardcoded URL-ovi│   │                 │       │                 │
 └─────────────────┘    └─────────────────┘       └─────────────────┘
 ```

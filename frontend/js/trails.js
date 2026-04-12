@@ -11,15 +11,8 @@ const TRAILS_API = (function() {
         console.log('✅ trails.js: Koristim API_CONFIG');
         return window.API_CONFIG.getUrl(window.API_CONFIG.ENDPOINTS.TRAILS);
     }
-    
-    // Fallback za razvojno okruženje - koristi absolutni URL za localhost
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    if (isLocalhost) {
-        console.log('⚠️ trails.js: API_CONFIG nije dostupan, koristim development URL (localhost:5000)');
-        return 'http://localhost:5000/api/trails';
-    }
-    
-    // Fallback za produkciju - relativni put
+
+    // Fallback: relativni put (radi iza istog domena ili reverse proxy-a)
     console.log('⚠️ trails.js: API_CONFIG nije dostupan, koristim relativni put');
     return '/api/trails';
 })();

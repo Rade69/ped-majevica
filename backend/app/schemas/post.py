@@ -60,13 +60,13 @@ class PostSchema(Schema):
         return data
     
     @validates('title')
-    def validate_title(self, value):
+    def validate_title(self, value, **kwargs):
         """Provera da naslov nije prazan ili samo whitespace"""
         if not value or not value.strip():
             raise ValidationError('Naslov ne može biti prazan')
     
     @validates('content')
-    def validate_content(self, value):
+    def validate_content(self, value, **kwargs):
         """Provera da sadržaj nije prazan"""
         if not value or not value.strip():
             raise ValidationError('Sadržaj ne može biti prazan')

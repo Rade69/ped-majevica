@@ -6,6 +6,7 @@ from app.utils.responses import success_response, error_response, validation_err
 import os
 import uuid
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import HTTPException
 from io import BytesIO
 from PIL import Image
 
@@ -99,6 +100,8 @@ def serve_image(image_id):
             mimetype=mimetype,
             as_attachment=False
         )
+    except HTTPException:
+        raise
     except Exception as e:
         current_app.logger.error(f"Greška pri serviranju slike {image_id}: {e}")
         import traceback
@@ -124,6 +127,8 @@ def serve_thumbnail(image_id):
         # Inače vrati originalnu sliku
         return serve_image(image_id)
         
+    except HTTPException:
+        raise
     except Exception as e:
         current_app.logger.error(f"Greška pri serviranju thumbnail-a: {e}")
         # Fallback na originalnu sliku

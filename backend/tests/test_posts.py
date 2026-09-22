@@ -12,6 +12,7 @@ def client():
             "TESTING": True,
             "SECRET_KEY": "test-secret-key",
             "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "WTF_CSRF_ENABLED": False,
         }
     )
 
@@ -30,7 +31,7 @@ def client():
 
             # login user (session-based)
             client.post(
-                "/login",
+                "/api/login",
                 json={"username": "admin", "password": "admin123"},
             )
 
@@ -45,31 +46,33 @@ def test_create_post(client):
         "/api/posts/",
         json={
             "title": "Prvi post",
+            "slug": "prvi-post",
             "content": "Ovo je sadržaj posta",
             "published": True,
         },
     )
 
     assert response.status_code == 201
-    assert "id" in response.json
+    assert "id" in response.json["data"]
 
 
 def test_list_posts(client):
     with client.application.app_context():
-        post = Post(title="Test", content="Content")
+        post = Post(title="Test", slug="test", content="Content")
         db.session.add(post)
         db.session.commit()
 
     response = client.get("/api/posts/")
 
     assert response.status_code == 200
-    assert len(response.json) == 1
-    assert response.json[0]["title"] == "Test"
+    posts = response.json["data"]["posts"]
+    assert len(posts) == 1
+    assert posts[0]["title"] == "Test"
 
 
 def test_update_post(client):
     with client.application.app_context():
-        post = Post(title="Old title", content="Old content")
+        post = Post(title="Old title", slug="old-title", content="Old content")
         db.session.add(post)
         db.session.commit()
         post_id = post.id
@@ -88,7 +91,7 @@ def test_update_post(client):
 
 def test_delete_post(client):
     with client.application.app_context():
-        post = Post(title="To delete", content="Delete me")
+        post = Post(title="To delete", slug="to-delete", content="Delete me")
         db.session.add(post)
         db.session.commit()
         post_id = post.id

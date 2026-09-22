@@ -67,7 +67,7 @@ class TestCSRFTokenEndpoint:
 class TestPasswordHashExposure:
     """Password hashes must never appear in API responses."""
 
-    def test_login_response_does_not_expose_password(self, client):
+    def test_login_response_does_not_expose_password(self, client, admin_user):
         """Login response should not include password hash."""
         resp = client.post(
             "/api/login",

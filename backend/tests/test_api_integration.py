@@ -41,9 +41,8 @@ def auth_client(client, app):
 
         # Login
         client.post(
-            "/login",
-            data={"username": "testuser", "password": "password123"},
-            follow_redirects=True,
+            "/api/login",
+            json={"username": "testuser", "password": "password123"},
         )
 
     return client
@@ -65,7 +64,7 @@ class TestPostsAPI:
         with app.app_context():
             # Create test posts
             for i in range(15):
-                post = Post(title=f"Test Post {i}", content=f"Content {i}")
+                post = Post(title=f"Test Post {i}", slug=f"test-post-{i}", content=f"Content {i}")
                 db.session.add(post)
             db.session.commit()
 
@@ -79,7 +78,7 @@ class TestPostsAPI:
     def test_get_post_by_id(self, client, app):
         """Test getting single post"""
         with app.app_context():
-            post = Post(title="Test", content="Content")
+            post = Post(title="Test", slug="test", content="Content")
             db.session.add(post)
             db.session.commit()
             post_id = post.id
@@ -101,7 +100,7 @@ class TestLikesAPI:
     def test_like_requires_auth(self, client, app):
         """Test that liking requires authentication"""
         with app.app_context():
-            post = Post(title="Test", content="Content")
+            post = Post(title="Test", slug="test", content="Content")
             db.session.add(post)
             db.session.commit()
             post_id = post.id
@@ -112,7 +111,7 @@ class TestLikesAPI:
     def test_like_post(self, auth_client, app):
         """Test liking a post"""
         with app.app_context():
-            post = Post(title="Test", content="Content")
+            post = Post(title="Test", slug="test", content="Content")
             db.session.add(post)
             db.session.commit()
             post_id = post.id
@@ -125,7 +124,7 @@ class TestLikesAPI:
     def test_unlike_post(self, auth_client, app):
         """Test unliking a post"""
         with app.app_context():
-            post = Post(title="Test", content="Content")
+            post = Post(title="Test", slug="test", content="Content")
             post.likes_count = 1
             db.session.add(post)
             db.session.commit()
@@ -133,9 +132,9 @@ class TestLikesAPI:
 
             # Add like
             from app.models.like import Like
-            from flask_login import current_user
 
-            like = Like(user_id=current_user.id, post_id=post_id)
+            user = User.query.filter_by(username="testuser").first()
+            like = Like(user_id=user.id, post_id=post_id)
             db.session.add(like)
             db.session.commit()
 
@@ -188,7 +187,8 @@ class TestTrailsAPI:
 
             for i in range(8):
                 trail = Trail(
-                    name=f"Trail {i}", description="Test trail", distance_km=10
+                    name=f"Trail {i}", description="Test trail", distance_km=10,
+                    difficulty="Srednja",
                 )
                 db.session.add(trail)
             db.session.commit()

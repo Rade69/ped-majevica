@@ -20,9 +20,10 @@ from app.models.trail import Trail
 from app.models.gallery import GalleryImage
 from pathlib import Path
 import os
+from datetime import date
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     """
     Kreiraj Flask aplikaciju za testiranje.
@@ -36,11 +37,17 @@ def app():
         "WTF_CSRF_ENABLED": False,  # Onemogući CSRF za testove
         "RATELIMIT_ENABLED": False,  # Onemogući rate limiting za testove
         "SERVER_NAME": "localhost:5000",
+        "SESSION_COOKIE_SECURE": False,
+        "SESSION_COOKIE_HTTPONLY": True,
+        "SESSION_COOKIE_SAMESITE": "Lax",
+        "SESSION_COOKIE_NAME": "session",
     })
     
     with app.app_context():
+        db.session.configure(expire_on_commit=False)
         db.create_all()
         yield app
+        db.session.remove()
         db.drop_all()
 
 
@@ -154,7 +161,7 @@ def sample_event(app):
         event = Event(
             title="Test Događaj",
             description="Opis testnog događaja",
-            event_date="2026-04-15",
+            event_date=date(2026, 4, 15),
             location="Majevica",
             published=True
         )
@@ -191,6 +198,8 @@ def sample_gallery_image(app):
         image = GalleryImage(
             title="Test Slika",
             description="Opis testne slike",
+            image_data=b"test-image-data",
+            image_mime="image/jpeg",
             category="priroda",
             published=True,
             order=1

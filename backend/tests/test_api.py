@@ -16,6 +16,7 @@ Ovi testovi verifikuju da:
 """
 
 import pytest
+from datetime import date
 from app.extensions import db
 from app.models.post import Post
 from app.models.event import Event
@@ -104,7 +105,7 @@ class TestEventsAPI:
             unpublished = Event(
                 title="Neobjavljen",
                 description="Test",
-                date="2026-05-01",
+                event_date=date(2026, 5, 1),
                 published=False
             )
             db.session.add(unpublished)
@@ -224,6 +225,7 @@ class TestPostsAPI:
         with client.application.app_context():
             unpublished = Post(
                 title="Neobjavljen",
+                slug="neobjavljen",
                 content="Test",
                 category="vesti",
                 published=False

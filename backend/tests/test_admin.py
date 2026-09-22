@@ -28,26 +28,26 @@ class TestAdminDashboard:
     
     def test_admin_dashboard_loads(self, logged_in_client):
         """Admin dashboard se učitava."""
-        response = logged_in_client.get("/admin")
+        response = logged_in_client.get("/admin/dashboard")
         assert response.status_code == 200
         assert b"Admin" in response.data or b"admin" in response.data
     
     def test_admin_dashboard_requires_auth(self, client):
         """Admin dashboard zahteva autentifikaciju."""
-        response = client.get("/admin", follow_redirects=False)
+        response = client.get("/admin/dashboard", follow_redirects=False)
         assert response.status_code == 302
         assert "/login" in response.headers.get("Location", "")
     
     def test_admin_dashboard_has_stats(self, logged_in_client):
         """Dashboard ima statistiku."""
-        response = logged_in_client.get("/admin")
+        response = logged_in_client.get("/admin/dashboard")
         assert response.status_code == 200
         # Proveri da postoje statistike
         assert b"count" in response.data.lower() or b"broj" in response.data.lower()
     
     def test_admin_dashboard_has_navigation(self, logged_in_client):
         """Dashboard ima navigaciju."""
-        response = logged_in_client.get("/admin")
+        response = logged_in_client.get("/admin/dashboard")
         assert response.status_code == 200
         assert b"Posts" in response.data or b"Staze" in response.data or b"Kalendar" in response.data
 
@@ -57,7 +57,7 @@ class TestAdminPosts:
     
     def test_admin_posts_page_loads(self, logged_in_client):
         """Admin posts stranica se učitava."""
-        response = logged_in_client.get("/admin/posts")
+        response = logged_in_client.get("/admin/posts/")
         assert response.status_code in [200, 404]
     
     def test_admin_create_post(self, logged_in_client):

@@ -13,7 +13,7 @@ class TestIDORPosts:
         """Anyone can read a published post."""
         resp = logged_in_client.post(
             "/admin/posts/",
-            json={"title": "Public Post", "content": "Content"},
+            json={"title": "Public Post", "slug": "public-post", "content": "Content"},
         )
         assert resp.status_code in (200, 201)
         data = resp.get_json()

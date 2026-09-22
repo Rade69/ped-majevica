@@ -59,13 +59,13 @@ class TestSessionManagement:
 
     def test_unauthorized_access_redirects_to_login(self, client):
         """Neautorizovani pristup redirectuje na login."""
-        response = client.get("/admin", follow_redirects=False)
+        response = client.get("/admin/dashboard", follow_redirects=False)
         assert response.status_code == 302
         assert "/login" in response.headers.get("Location", "")
 
     def test_api_unauthorized_returns_json(self, client):
         """Neautorizovani API zahtev vraca JSON."""
-        response = client.get("/api/posts/1")
+        response = client.delete("/api/posts/1")
         assert response.status_code == 401
 
 

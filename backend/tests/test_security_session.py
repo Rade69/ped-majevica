@@ -9,7 +9,7 @@ import pytest
 class TestSessionCookieAttributes:
     """Session cookies must have security attributes set."""
 
-    def test_session_cookie_exists_after_login(self, client):
+    def test_session_cookie_exists_after_login(self, client, admin_user):
         """Login should set a session cookie."""
         resp = client.post(
             "/api/login",
@@ -17,11 +17,11 @@ class TestSessionCookieAttributes:
         )
         assert resp.status_code == 200
 
-        # Check for session cookie
-        cookies = [c for c in client.cookie_jar if c.name == "session"]
-        assert len(cookies) >= 1, "No session cookie set after login"
+        # Check for session cookie via test client cookie jar
+        session_cookie = client.get_cookie("session")
+        assert session_cookie is not None, "No session cookie set after login"
 
-    def test_session_cookie_httponly(self, client):
+    def test_session_cookie_httponly(self, client, admin_user):
         """Session cookie should have HttpOnly flag (if testable)."""
         resp = client.post(
             "/api/login",
@@ -36,7 +36,7 @@ class TestSessionCookieAttributes:
             # But we should at least check the cookie exists
             pass
 
-    def test_session_cookie_samesite(self, app, client):
+    def test_session_cookie_samesite(self, app, client, admin_user):
         """Session cookie should have SameSite attribute."""
         # In production, this should be "None" (with Secure=True)
         # In development, "Lax" is acceptable
@@ -59,7 +59,7 @@ class TestSessionCookieAttributes:
 class TestSessionManagement:
     """Session lifecycle management."""
 
-    def test_session_cleared_after_logout(self, client):
+    def test_session_cleared_after_logout(self, client, admin_user):
         """Logout should clear the session."""
         # Login
         resp = client.post(
@@ -86,7 +86,7 @@ class TestSessionManagement:
             f"Admin after logout: {resp.status_code} — session not cleared"
         )
 
-    def test_access_protected_after_logout(self, client):
+    def test_access_protected_after_logout(self, client, admin_user):
         """After logout, protected endpoints should reject access."""
         # Login
         client.post(
@@ -103,7 +103,7 @@ class TestSessionManagement:
             f"Admin posts after logout: {resp.status_code}"
         )
 
-    def test_session_persists_across_requests(self, client):
+    def test_session_persists_across_requests(self, client, admin_user):
         """Session should persist across multiple requests after login."""
         # Login
         resp = client.post(
@@ -141,7 +141,7 @@ class TestSessionManagement:
 class TestSessionSecurity:
     """Session security features."""
 
-    def test_session_cookie_name(self, app, client):
+    def test_session_cookie_name(self, app, client, admin_user):
         """Session cookie should use configured name (default: 'session')."""
         expected_name = app.config.get("SESSION_COOKIE_NAME", "session")
 
@@ -161,7 +161,7 @@ class TestSessionSecurity:
         # The session cookie should be present
         # (This test is lenient as the exact cookie name may vary in tests)
 
-    def test_no_multiple_session_cookies(self, client):
+    def test_no_multiple_session_cookies(self, client, admin_user):
         """Login should not set multiple session cookies."""
         resp = client.post(
             "/api/login",
@@ -181,7 +181,7 @@ class TestSessionSecurity:
 class TestRememberMeCookie:
     """Remember me cookie security (if implemented)."""
 
-    def test_remember_cookie_on_login(self, client):
+    def test_remember_cookie_on_login(self, client, admin_user):
         """Check if remember me cookie is set with security flags."""
         resp = client.post(
             "/api/login",

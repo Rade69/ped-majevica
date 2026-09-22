@@ -25,6 +25,7 @@ instance/
 .env.local
 .env.production
 .venv
+.venv-win/
 
 # IDEs
 .vscode/

@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required
 from app.extensions import db
 from app.models.plan_aktivnosti import PlanAktivnosti
+from app.utils.responses import error_response
+
 
 plan_bp = Blueprint('plan_aktivnosti', __name__, url_prefix='/api/plan-aktivnosti')
 
@@ -41,7 +43,7 @@ def get_all():
             'total': len(aktivnosti)
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.get('/flat')
@@ -59,7 +61,7 @@ def get_flat():
             'total': len(aktivnosti)
         })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.get('/<int:id>')
@@ -108,7 +110,7 @@ def create():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.put('/<int:id>')
@@ -136,7 +138,7 @@ def update(id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.delete('/<int:id>')
@@ -155,7 +157,7 @@ def delete(id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.post('/import')
@@ -195,7 +197,7 @@ def import_json():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.delete('/all')
@@ -214,4 +216,4 @@ def delete_all():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return error_response('Greška na serveru', status_code=500)

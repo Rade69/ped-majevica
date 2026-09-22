@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, redirect, url_for, request
+import uuid
+from flask import Flask, jsonify, redirect, url_for, request, g
 from app.config import Config
 from app.extensions import db, migrate, login_manager, bcrypt, limiter, cors, csrf
 from app.models.user import User
@@ -60,6 +61,19 @@ def create_app(test_config=None):
     )
 
     login_manager.login_view = "frontend.login"
+
+    # -----------------------------
+    # REQUEST ID (za praćenje grešaka)
+    # -----------------------------
+    @app.before_request
+    def assign_request_id():
+        rid = request.headers.get("X-Request-ID") or uuid.uuid4().hex[:12]
+        g.request_id = rid
+
+    @app.after_request
+    def set_request_id_header(response):
+        response.headers["X-Request-ID"] = getattr(g, "request_id", "")
+        return response
 
     # Custom unauthorized handler for API endpoints
     @login_manager.unauthorized_handler

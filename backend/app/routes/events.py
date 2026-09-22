@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from app.extensions import db
 from app.models.event import Event
+from app.utils.responses import error_response
+
 from datetime import datetime
 
 events_bp = Blueprint("events", __name__, url_prefix="/api/events")
@@ -38,7 +40,7 @@ def get_events():
             }
         )
     except Exception as e:
-        return jsonify({"error": str(e), "events": []}), 500
+        return error_response("Greška pri učitavanju događaja", status_code=500)
 
 
 @events_bp.get("/<int:event_id>")
@@ -98,7 +100,7 @@ def create_event():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return error_response("Greška na serveru", status_code=500)
 
 
 @events_bp.put("/<int:event_id>")
@@ -131,7 +133,7 @@ def update_event(event_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return error_response("Greška na serveru", status_code=500)
 
 
 @events_bp.delete("/<int:event_id>")
@@ -147,4 +149,4 @@ def delete_event(event_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return error_response("Greška na serveru", status_code=500)

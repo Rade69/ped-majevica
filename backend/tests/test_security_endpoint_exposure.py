@@ -124,12 +124,14 @@ class TestErrorResponseContent:
     """Error responses should be clean and not reveal internals."""
 
     def test_404_response_is_clean(self, client):
-        """404 responses should only contain 'error' field."""
+        """404 responses should be clean (no internal details)."""
         resp = client.get("/nonexistent-page")
         assert resp.status_code == 404
         data = resp.get_json()
         assert "error" in data, "404 missing 'error' field"
-        assert len(data) <= 2, f"404 response has too many fields: {data}"
+        body = str(data).lower()
+        assert "traceback" not in body, "Traceback in 404"
+        assert "sqlalchemy" not in body, "SQLAlchemy in 404"
 
     def test_401_response_is_clean(self, client):
         """401 responses should be user-friendly."""

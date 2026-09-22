@@ -68,7 +68,7 @@ def get_gallery():
         )
         
     except Exception as e:
-        return error_response(f"Greška pri preuzimanju galerije: {str(e)}", status_code=500)
+        return error_response("Greška pri preuzimanju galerije", status_code=500)
 
 
 @gallery_bp.get('/<int:image_id>')
@@ -106,7 +106,7 @@ def serve_image(image_id):
         current_app.logger.error(f"Greška pri serviranju slike {image_id}: {e}")
         import traceback
         current_app.logger.error(traceback.format_exc())
-        return error_response("Greška pri serviranju slike: " + str(e), status_code=500)
+        return error_response("Greška pri serviranju slike", status_code=500)
 
 
 @gallery_bp.get('/<int:image_id>/thumbnail')
@@ -213,7 +213,7 @@ def create_image():
         
     except Exception as e:
         db.session.rollback()
-        return error_response(f"Greška pri dodavanju slike: {str(e)}", status_code=500)
+        return error_response("Greška pri dodavanju slike", status_code=500)
 
 
 @gallery_bp.put('/<int:image_id>')
@@ -281,7 +281,7 @@ def update_image(image_id):
         
     except Exception as e:
         db.session.rollback()
-        return error_response(f"Greška pri ažuriranju slike: {str(e)}", status_code=500)
+        return error_response("Greška pri ažuriranju slike", status_code=500)
 
 
 @gallery_bp.delete('/<int:image_id>')
@@ -299,7 +299,7 @@ def delete_image(image_id):
         
     except Exception as e:
         db.session.rollback()
-        return error_response(f"Greška pri brisanju slike: {str(e)}", status_code=500)
+        return error_response("Greška pri brisanju slike", status_code=500)
 
 
 @gallery_bp.get('/categories')
@@ -314,4 +314,4 @@ def get_categories():
             message=f"Pronađeno {len(categories_list)} kategorija"
         )
     except Exception as e:
-        return error_response(f"Greška pri preuzimanju kategorija: {str(e)}", status_code=500)
+        return error_response("Greška pri preuzimanju kategorija", status_code=500)

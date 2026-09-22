@@ -297,7 +297,7 @@ def create_post():
                 # Marshmallow validation error
                 return validation_error_response(e.messages)
             else:
-                return error_response(f"Greška u validaciji: {str(e)}", status_code=400)
+                return error_response("Greška u validaciji", status_code=400)
 
         # Create new post with validated data
         # Support both content and content_markdown/content_html

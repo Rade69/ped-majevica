@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required
 from app.extensions import db
 from app.models.trail import Trail
+from app.utils.responses import error_response
 
 trails_bp = Blueprint("trails", __name__, url_prefix="/api/trails")
 
@@ -37,7 +38,7 @@ def get_trails():
             }
         )
     except Exception as e:
-        return jsonify({"error": str(e), "trails": []}), 500
+        return error_response("Greška pri učitavanju staza", status_code=500)
 
 
 @trails_bp.get("/<int:trail_id>")
@@ -97,7 +98,7 @@ def create_trail():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return error_response("Greška na serveru", status_code=500)
 
 
 @trails_bp.put("/<int:trail_id>")
@@ -134,7 +135,7 @@ def update_trail(trail_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return error_response("Greška na serveru", status_code=500)
 
 
 @trails_bp.delete("/<int:trail_id>")
@@ -150,4 +151,4 @@ def delete_trail(trail_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+        return error_response("Greška na serveru", status_code=500)

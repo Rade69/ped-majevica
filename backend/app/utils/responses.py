@@ -1,7 +1,11 @@
 """
 Utility funkcije za standardizovane API response-e.
 """
-from flask import jsonify
+from flask import jsonify, g
+
+
+def _request_id():
+    return getattr(g, 'request_id', None)
 
 
 def success_response(data=None, message="Uspešno", status_code=200):
@@ -21,6 +25,9 @@ def success_response(data=None, message="Uspešno", status_code=200):
         'message': message,
         'data': data if data is not None else {}
     }
+    rid = _request_id()
+    if rid:
+        response['request_id'] = rid
     return jsonify(response), status_code
 
 
@@ -44,6 +51,10 @@ def error_response(message, status_code=400, errors=None):
     
     if errors:
         response['errors'] = errors
+    
+    rid = _request_id()
+    if rid:
+        response['request_id'] = rid
     
     return jsonify(response), status_code
 

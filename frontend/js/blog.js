@@ -120,9 +120,6 @@ async function loadPage(page) {
     }
 }
 
-
-}
-
 // Praćenje promene pisma
 function setupScriptChangeListener() {
     // Slušaj custom event koji će transliterator emitovati

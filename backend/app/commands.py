@@ -224,3 +224,14 @@ def list_admins_command():
         click.echo(f"   🔐 Zadnja prijava: {user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else 'nikad'}")
         click.echo(f"   ✅ Aktivan: {'DA' if user.is_active else 'NE'}")
         click.echo()
+
+
+@click.command('init-admin')
+@with_appcontext
+def init_admin_command():
+    """Inicijalizuj admin korisnike iz ADMIN_*_PASSWORD env varijabli."""
+    from app.services.user_service import init_admin
+
+    click.echo("🔐 Inicijalizacija admin korisnika...")
+    init_admin()
+    click.echo("✅ Admin inicijalizacija završena")

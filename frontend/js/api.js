@@ -90,7 +90,7 @@ async function request(endpoint, options = {}) {
         showNotification('Vaša sesija je istekla. Molimo vas da se ponovo prijavite.', 'error');
         // Redirect na login stranicu nakon 2 sekunde
         setTimeout(() => {
-          window.location.href = '/pages/login.html';
+          window.location.href = '/login';
         }, 2000);
       } else if (statusCode === 403) {
         showNotification('Nemate dozvolu za ovu operaciju.', 'error');

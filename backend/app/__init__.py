@@ -120,22 +120,18 @@ def create_app(test_config=None):
     from app.commands import (
         migrate_json_command,
         reset_admin_password_command,
-        list_admins_command
+        list_admins_command,
+        init_admin_command,
     )
 
     app.cli.add_command(migrate_json_command)
     app.cli.add_command(reset_admin_password_command)
     app.cli.add_command(list_admins_command)
+    app.cli.add_command(init_admin_command)
 
-    # -----------------------------
-    # INIT ADMIN USER
-    # -----------------------------
-    with app.app_context():
-        from app.services.user_service import init_admin
-
-        init_admin()
-
-    # Note: Auto-migration removed for safety. Use Alembic migrations instead.
+    # Note: Admin users are initialized explicitly via the `flask init-admin`
+    # CLI command (see app/commands.py), not implicitly at startup.
+    # Auto-migration removed for safety. Use Alembic migrations instead.
     # If trail table is missing columns, create a proper migration:
     # flask db migrate -m "Add columns to trail table"
     # flask db upgrade

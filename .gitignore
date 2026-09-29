@@ -42,7 +42,6 @@ ped-majevica-baza-podataka.png
 
 # Node modules
 node_modules/
-package-lock.json
 yarn.lock
 
 # Logs

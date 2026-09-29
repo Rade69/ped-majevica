@@ -24,7 +24,12 @@ instance/
 .env
 .env.local
 .env.production
+*.env
 .venv
+
+# Agent reports (local session artifacts)
+agent_reports/
+ped-majevica-baza-podataka.png
 
 # IDEs
 .vscode/

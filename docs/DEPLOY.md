@@ -11,6 +11,15 @@ sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh   # migracije, CSS 
 Admin lozinke se prikazuju samo jednom na kraju `server-setup.sh` (cuvaju se i u `backend/.env`, chmod 600).
 Prvi admini se kreiraju sa: `cd /var/www/ped-majevica/backend && sudo -u pedmajevica env FLASK_APP=wsgi.py venv/bin/flask init-admin`.
 
+## Pocetni sadrzaj (jednom, nakon prvog deploya)
+Provjereno na praznoj PostgreSQL bazi: 25 clanaka, 3 staze, 5 dogadjaja; sve stranice vracaju 200.
+```bash
+cd /var/www/ped-majevica/backend
+sudo -u pedmajevica env FLASK_APP=wsgi.py PYTHONPATH=. venv/bin/python scripts/import_blog_posts.py     # 25 clanaka (preskace duplikate)
+sudo -u pedmajevica env FLASK_APP=wsgi.py PYTHONPATH=. venv/bin/python scripts/seed_trails_events.py     # 3 staze + 5 PRIMJERA dogadjaja (zamijeniti kroz admin)
+```
+Plan aktivnosti na javnoj stranici dolazi iz `frontend/assets/data/plan_aktivnosti.json` (ide s kodom); DB tabela se puni iz admina.
+
 ## HTTPS (kad domena pokazuje na 169.58.208.91)
 ```bash
 sudo certbot --nginx -d pedmajevica.org -d www.pedmajevica.org

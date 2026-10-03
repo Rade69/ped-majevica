@@ -1,3 +1,4 @@
+import os
 import uuid
 from flask import Flask, jsonify, redirect, url_for, request, g
 from app.config import Config
@@ -17,6 +18,13 @@ def create_app(test_config=None):
     else:
         app.config.from_object(Config)
         Config.init_logging(app)
+
+    # Behind nginx: trust X-Forwarded-* so request.remote_addr (rate limiter),
+    # scheme and host reflect the real client, not 127.0.0.1.
+    if app.config.get("FLASK_ENV", os.getenv("FLASK_ENV")) == "production":
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # -----------------------------
     # EXTENSIONS

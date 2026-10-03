@@ -1,53 +1,36 @@
 #!/bin/bash
-#
-# Deploy/Update Application
-# Povlači najnoviji kod sa GitHub-a i restartuje aplikaciju
-#
+# ========================================
+# PED Majevica - deploy/update (pokrenuti na serveru kao root)
+#   sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh
+# ========================================
+set -euo pipefail
 
-set -e
+APP_DIR="/var/www/ped-majevica"
+APP_USER="pedmajevica"
+BRANCH="${BRANCH:-main}"
+run() { sudo -u "$APP_USER" "$@"; }
 
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
+cd "$APP_DIR"
+echo "==> git pull ($BRANCH)"
+run git fetch origin "$BRANCH"
+run git checkout "$BRANCH"
+run git merge --ff-only "origin/$BRANCH"
 
-APP_DIR="/var/www/pedmajevica"
+echo "==> Python zavisnosti"
+run backend/venv/bin/pip install -r backend/requirements.txt -q
 
-echo -e "${YELLOW}🚀 Deploying application update...${NC}"
+echo "==> Frontend CSS"
+( cd frontend && run npm ci --silent && run npm run build )
 
-# Navigate to app directory
-cd $APP_DIR
+echo "==> Migracije baze"
+( cd backend && FLASK_APP=wsgi.py run venv/bin/flask db upgrade )
 
-# Pull latest code
-echo -e "${YELLOW}📥 Pulling latest code from GitHub...${NC}"
-git pull origin master
+echo "==> Restart"
+cp deployment/configs/pedmajevica.service /etc/systemd/system/pedmajevica.service
+systemctl daemon-reload
+systemctl restart pedmajevica
+nginx -t && systemctl reload nginx
 
-# Activate virtual environment
-source venv/bin/activate
-
-# Update Python dependencies
-echo -e "${YELLOW}📦 Updating Python dependencies...${NC}"
-cd backend
-pip install -r requirements.txt --upgrade
-
-# Run database migrations
-echo -e "${YELLOW}🗄️  Running database migrations...${NC}"
-export FLASK_APP=wsgi.py
-flask db upgrade
-
-# Build frontend
-echo -e "${YELLOW}🎨 Building frontend CSS...${NC}"
-cd $APP_DIR
-npm install
-npm run build
-
-# Restart application
-echo -e "${YELLOW}🔄 Restarting application...${NC}"
-sudo systemctl restart pedmajevica
-
-# Check status
-echo -e "${YELLOW}📊 Checking application status...${NC}"
-sudo systemctl status pedmajevica --no-pager
-
-echo ""
-echo -e "${GREEN}✅ Deployment complete!${NC}"
-echo ""
+sleep 3
+systemctl is-active pedmajevica
+curl -fsS -o /dev/null -w "HTTP %{http_code}\n" http://127.0.0.1:8000/ || echo "UPOZORENJE: aplikacija ne odgovara"

@@ -1,84 +1,24 @@
-# ⚡ BRZA DEPLOY REFERENCA
+# Deploy na VPS (Contabo, Ubuntu)
 
-**Za kompletan deploy - idi u `deployment/` folder!**
+Server: 169.58.208.91. Aplikacija: `/var/www/ped-majevica`, servis `pedmajevica` (gunicorn na 127.0.0.1:8000), nginx ispred, PostgreSQL lokalno.
 
----
-
-## 🚀 5 KORAKA DO PRODUKCIJE
-
-### 1️⃣ VPS (10 min)
-```
-https://console.hetzner.cloud/
-→ CPX11, Ubuntu 22.04, Falkenstein
-```
-
-### 2️⃣ Deploy (5 min)
+## Prvi put (kao root na serveru)
 ```bash
-cd deployment
-./scripts/deploy-to-vps.sh <VPS_IP> pedadmin
+curl -fsSLO https://raw.githubusercontent.com/Rade69/ped-majevica/main/deployment/scripts/server-setup.sh
+sudo bash server-setup.sh      # paketi, korisnik, baza, .env (sa generisanim lozinkama), venv, nginx, ufw
+sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh   # migracije, CSS build, start
 ```
+Admin lozinke se prikazuju samo jednom na kraju `server-setup.sh` (cuvaju se i u `backend/.env`, chmod 600).
+Prvi admini se kreiraju sa: `cd /var/www/ped-majevica/backend && sudo -u pedmajevica env FLASK_APP=wsgi.py venv/bin/flask init-admin`.
 
-### 3️⃣ Konfiguracija (5 min)
+## HTTPS (kad domena pokazuje na 169.58.208.91)
 ```bash
-ssh pedadmin@<VPS_IP>
-cd /var/www/ped-majevica/backend
-cp .env.production .env
-nano .env  # SECRET_KEY, DATABASE_URL
+sudo certbot --nginx -d pedmajevica.org -d www.pedmajevica.org
 ```
+Bez HTTPS-a login ne radi: produkcijski cookie-ji su `Secure`.
 
-### 4️⃣ SSL (5 min)
+## Update
 ```bash
-sudo certbot --nginx -d pedmajevica.org
+sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh
 ```
-
-### 5️⃣ Test (10 min)
-```
-https://pedmajevica.org
-→ Login, Admin, Upload
-```
-
----
-
-## 📁 GDJE ŠTA NAĆI
-
-| Šta Trebaš | Folder | Fajl |
-|------------|--------|------|
-| **Deploy skripta** | `deployment/scripts/` | `deploy-to-vps.sh` ⭐ |
-| **Backup skripta** | `deployment/scripts/` | `backup-production.sh` |
-| **Gunicorn config** | `deployment/configs/` | `gunicorn.conf.py` |
-| **Nginx config** | `deployment/configs/` | `pedmajevica.nginx.conf` |
-| **Systemd config** | `deployment/configs/` | `pedmajevica.service` |
-| **Brza checklista** | `deployment/docs/` | `DEPLOY_CHECKLIST.md` ⭐ |
-| **Detaljno uputstvo** | `deployment/docs/` | `DEPLOYMENT_COMPLETE_GUIDE.md` |
-
----
-
-## 🔧 KOMANDE
-
-### Deploy:
-```bash
-cd deployment
-./scripts/deploy-to-vps.sh <IP> pedadmin
-```
-
-### Backup:
-```bash
-./scripts/backup-production.sh
-```
-
-### SSL:
-```bash
-./scripts/setup-ssl.sh pedmajevica.org
-```
-
----
-
-## 📞 HELP
-
-- **Detaljno:** `deployment/docs/DEPLOYMENT_COMPLETE_GUIDE.md`
-- **Brzo:** `deployment/docs/DEPLOY_CHECKLIST.md`
-- **Center:** `deployment/README.md`
-
----
-
-**SREĆAN DEPLOY! 🚀**
+`.env`, baza i `backend/uploads` se ne diraju. Logovi: `journalctl -u pedmajevica -n 50`, `/var/log/pedmajevica/`, `/var/log/nginx/pedmajevica-error.log`.

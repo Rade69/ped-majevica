@@ -17,8 +17,8 @@ bind = "127.0.0.1:8000"  # Bind to localhost only (Nginx will proxy)
 # Workers
 # -----------------------------
 # Formula: workers = (2 x CPU) + 1
-# For CPX11 (2 vCPU): 2-3 workers
-# For CPX21 (4 vCPU): 5-7 workers
+# 
+# 
 workers = 2
 worker_class = "sync"
 threads = 2

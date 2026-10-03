@@ -28,6 +28,11 @@ class Config:
     if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+    # Pin the psycopg2 driver explicitly: newer SQLAlchemy may default bare
+    # "postgresql://" to psycopg (v3), which is not what requirements.txt installs.
+    if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+        DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+
     # Fallback to SQLite for local development
     # Use absolute path for SQLite database based on app root
     if not DATABASE_URL:

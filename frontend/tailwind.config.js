@@ -30,6 +30,20 @@ module.exports = {
       fontFamily: {
         'sans': ['Montserrat', 'Inter', 'sans-serif'],
       },
+      keyframes: {
+        'scale-in': {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'slide-in': {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+      },
+      animation: {
+        'scale-in': 'scale-in 0.2s ease-out',
+        'slide-in': 'slide-in 0.3s ease-out',
+      },
     },
   },
   plugins: [],

@@ -24,8 +24,8 @@ Pillow>=10.0.0
 # Production Server
 gunicorn>=21.2.0
 
-# Database Drivers (commented for local dev - uncomment for production)
-# psycopg2-binary>=2.9.10
+# Database Drivers (PostgreSQL - required in production and CI)
+psycopg2-binary>=2.9.10
 
 # ========================================
 # Install: pip install -r requirements.txt

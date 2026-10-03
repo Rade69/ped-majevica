@@ -134,15 +134,15 @@ jobs:
       - name: Python Security Audit
         working-directory: backend
         run: |
-          pip install safety
-          # Fail on high/critical vulnerabilities only
-          safety check --json > security-report.json
+          pip install pip-audit
+          # Fails on any known vulnerability in production dependencies
+          pip-audit -r requirements.txt
 
       - name: Node Security Audit
         working-directory: frontend
         run: |
-          # Fail on high/critical vulnerabilities
-          npm audit --audit-level=high
+          # Fail on high/critical vulnerabilities in production dependencies (devDependencies are not shipped)
+          npm audit --omit=dev --audit-level=high
 
   # Deploy to Staging (on develop branch)
   deploy-staging:

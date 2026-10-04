@@ -39,7 +39,9 @@ sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh
 
 ## Poruke iz kontakt forme
 Poruke se uvijek cuvaju u bazi i vide se u admin panelu, tab **Poruke** (znacka pokazuje broj neprocitanih).
-Obavjestenje na e-mail radi tek kad se podesi slanje posta. Na serveru dodati u `/var/www/ped-majevica/backend/.env`:
+Obavjestenje na e-mail radi tek kad se podesi slanje posta. Najlakse: na serveru pokrenuti
+`sudo bash /var/www/ped-majevica/deployment/scripts/setup-mail.sh` (trazi Gmail adresu i lozinku za aplikacije, lozinka se unosi skriveno,
+upisuje u `.env`, restartuje aplikaciju i salje probni e-mail). Rucno, u `/var/www/ped-majevica/backend/.env`:
 ```
 MAIL_SERVER=smtp.gmail.com
 MAIL_PORT=587

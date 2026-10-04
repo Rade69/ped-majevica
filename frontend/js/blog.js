@@ -76,7 +76,11 @@ async function initBlog() {
         currentSearch = '';
         currentCategory = 'sve';
         currentPage = 1;
-        
+
+        // Pretraga, filter po kategoriji, zatvaranje modala i praćenje pisma
+        setupEventListeners();
+        setupScriptChangeListener();
+
         // Učitaj prvu stranicu
         await loadPage(1);
         

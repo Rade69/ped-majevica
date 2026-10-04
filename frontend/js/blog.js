@@ -321,7 +321,7 @@ function renderArticles() {
                     ${hasImages ? `
                         <img src="${article.images[0]}" alt="${article.title}"
                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'absolute inset-0 flex items-center justify-center\\'><i class=\\'${categoryInfo.icon} text-white/20 text-8xl\\'></i></div>';">
+                            onerror="this.onerror=null; this.outerHTML='<div class=\\'absolute inset-0 flex items-center justify-center\\'><i class=\\'${categoryInfo.icon} text-white/20 text-8xl\\'></i></div>';">
                     ` : `
                         <div class="absolute inset-0 flex items-center justify-center">
                             <i class="${categoryInfo.icon} text-white/20 text-8xl"></i>

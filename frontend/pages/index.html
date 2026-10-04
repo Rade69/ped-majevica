@@ -12,26 +12,18 @@
     <meta property="og:email" content="pedmajevica88@gmail.com">
 
     <!-- Performance optimizations -->
-    <link rel="preload"
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap"
-        as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="https://images.unsplash.com">
-    <noscript>
-        <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap">
-    </noscript>
+    <!-- Fontovi se poslužuju sa našeg servera (bez Google Fonts) -->
+    <link rel="preload" href="/assets/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
 
     <!-- Tailwind CSS - Local Build -->
     <link rel="stylesheet" href="/assets/css/output.min.css">
 
     <!-- Font Awesome za ikone -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/vendor/fontawesome/fa-subset.css">
 
     <!-- AOS - Animate On Scroll -->
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="/assets/vendor/aos/aos.css">
 
     <!-- Favicon -->
     <link rel="canonical" href="https://pedmajevica.org/">
@@ -41,10 +33,10 @@
     <meta property="og:url" content="https://pedmajevica.org/">
     <meta property="og:title" content="PED Majevica 1988 - Planinarsko Društvo">
     <meta property="og:description" content="Planinsko ekološko društvo Majevica osnovano 1988 - vodič kroz planinske staze, saveti za planinarenje i zajednica ljubitelja prirode">
-    <meta property="og:image" content="https://pedmajevica.org/assets/images/icons/logo-2.png">
+    <meta property="og:image" content="https://pedmajevica.org/assets/images/icons/og-image.png">
     <meta name="twitter:card" content="summary">
     <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/assets/images/icons/logo-2.png">
 
 
     <!-- Custom Styles -->
@@ -693,7 +685,7 @@
                 <div class="flex flex-col md:flex-row items-center justify-between">
                     <div class="mb-6 md:mb-0 text-center md:text-left">
                         <h3 class="text-2xl font-bold mb-2 flex items-center justify-center md:justify-start">
-                            <i class="fas fa-calendar-star mr-3 text-secondary-gold"></i>
+                            <i class="fas fa-calendar-check mr-3 text-secondary-gold"></i>
                             Godišnja članarina za 2026
                         </h3>
                         <p class="text-secondary-blue">Pridruži se društvu i učestvuj u svim aktivnostima cele godine!
@@ -1308,7 +1300,7 @@
     </script>
 
     <!-- AOS (Animate On Scroll) Library -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/assets/vendor/aos/aos.js"></script>
 
     <!-- Initialize AOS -->
     <script>

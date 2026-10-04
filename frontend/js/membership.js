@@ -76,7 +76,7 @@ async function fillTemplate(data) {
 
         console.log('📝 Učitavam font...');
 
-        const fontUrl = 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5WZLCzYlKw.ttf';
+        const fontUrl = '/assets/fonts/roboto-regular.ttf';
         const fontBytes = await fetch(fontUrl).then(res => res.arrayBuffer());
         const font = await pdfDoc.embedFont(fontBytes);
 

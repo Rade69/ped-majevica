@@ -75,3 +75,31 @@ def test_single_post_still_returns_full_text(app, client):
     data = data.get("data", data)
     data = data.get("post", data)
     assert data["content_html"] and len(data["content_text"]) == 1000
+
+
+def test_vendored_assets_are_served(client):
+    for path in (
+        "/assets/css/fonts.css",
+        "/assets/vendor/fontawesome/fa-subset.css",
+        "/assets/vendor/fontawesome/webfonts/fa-solid-900.woff2",
+        "/assets/vendor/aos/aos.css",
+        "/assets/vendor/aos/aos.js",
+        "/assets/vendor/pdf-lib/pdf-lib.min.js",
+        "/assets/fonts/montserrat-latin.woff2",
+        "/assets/fonts/roboto-regular.ttf",
+    ):
+        assert client.get(path).status_code == 200, path
+
+
+def test_pages_do_not_load_third_party_resources():
+    """Fontovi, ikone i biblioteke se poslužuju sa našeg servera (brzina i privatnost posjetilaca)."""
+    import re
+    from pathlib import Path
+    frontend = Path(__file__).resolve().parents[2] / "frontend"
+    banned = re.compile(r"https://(cdnjs\.cloudflare\.com|unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|"
+                        r"images\.unsplash\.com|cdn\.jsdelivr\.net)")
+    offenders = []
+    for path in list((frontend / "pages").glob("*.html")) + list((frontend / "js").glob("*.js")):
+        if banned.search(path.read_text(encoding="utf-8", errors="ignore")):
+            offenders.append(path.name)
+    assert not offenders, f"vanjski resursi u: {offenders}"

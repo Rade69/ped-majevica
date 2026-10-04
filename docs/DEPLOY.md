@@ -31,3 +31,9 @@ Bez HTTPS-a login ne radi: produkcijski cookie-ji su `Secure`.
 sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh
 ```
 `.env`, baza i `backend/uploads` se ne diraju. Logovi: `journalctl -u pedmajevica -n 50`, `/var/log/pedmajevica/`, `/var/log/nginx/pedmajevica-error.log`.
+
+## Backup baze
+Automatski, nedjeljom u 03:30 (systemd timer `pedmajevica-backup.timer`); cuva se zadnjih 8 kopija u `/var/backups/pedmajevica/`.
+Rucno: `sudo bash /var/www/ped-majevica/deployment/scripts/backup-db.sh`. Provjera rasporeda: `systemctl list-timers pedmajevica-backup.timer`.
+Vracanje (u praznu bazu): `gunzip -c FAJL.sql.gz | sudo -u postgres psql ped_majevica`.
+Napomena: kopije su na istom serveru; za zastitu od gubitka servera povremeno ih preuzmite na svoj racunar (`scp root@169.58.208.91:/var/backups/pedmajevica/*.gz .`).

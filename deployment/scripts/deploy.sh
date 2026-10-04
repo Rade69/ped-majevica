@@ -27,7 +27,9 @@ echo "==> Migracije baze"
 
 echo "==> Restart"
 cp deployment/configs/pedmajevica.service /etc/systemd/system/pedmajevica.service
+cp deployment/configs/pedmajevica-backup.service deployment/configs/pedmajevica-backup.timer /etc/systemd/system/
 systemctl daemon-reload
+systemctl enable --now pedmajevica-backup.timer
 systemctl restart pedmajevica
 nginx -t && systemctl reload nginx
 

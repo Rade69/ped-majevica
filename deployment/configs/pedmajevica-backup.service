@@ -1,0 +1,7 @@
+[Unit]
+Description=PED Majevica - backup baze podataka
+After=postgresql.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /var/www/ped-majevica/deployment/scripts/backup-db.sh

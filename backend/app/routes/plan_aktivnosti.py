@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
+from werkzeug.exceptions import HTTPException
 from flask_login import login_required
+from app.utils.decorators import admin_required, editor_required
 from app.extensions import db
 from app.models.plan_aktivnosti import PlanAktivnosti
 from app.utils.responses import error_response
@@ -70,13 +72,15 @@ def get_one(id):
     try:
         aktivnost = PlanAktivnosti.query.get_or_404(id)
         return jsonify({'success': True, 'aktivnost': aktivnost.to_dict()})
+    except HTTPException:
+        raise
     except Exception as e:
         return jsonify({'success': False, 'error': 'Aktivnost nije pronađena'}), 404
 
 
 @plan_bp.post('/')
 @plan_bp.post('')
-@login_required
+@editor_required
 def create():
     """Kreiraj novu aktivnost"""
     try:
@@ -114,7 +118,7 @@ def create():
 
 
 @plan_bp.put('/<int:id>')
-@login_required
+@editor_required
 def update(id):
     """Ažuriraj aktivnost"""
     try:
@@ -136,13 +140,15 @@ def update(id):
             'message': 'Aktivnost ažurirana uspješno'
         })
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.delete('/<int:id>')
-@login_required
+@editor_required
 def delete(id):
     """Obriši aktivnost"""
     try:
@@ -155,13 +161,15 @@ def delete(id):
             'message': 'Aktivnost obrisana uspješno'
         })
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response('Greška na serveru', status_code=500)
 
 
 @plan_bp.post('/import')
-@login_required
+@admin_required
 def import_json():
     """Importuj aktivnosti iz JSON strukture (briše postojeće!)"""
     try:
@@ -201,7 +209,7 @@ def import_json():
 
 
 @plan_bp.delete('/all')
-@login_required
+@admin_required
 def delete_all():
     """Obriši sve aktivnosti"""
     try:

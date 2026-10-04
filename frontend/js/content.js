@@ -17,7 +17,17 @@
     ? window.API_CONFIG.getUrl('/api/content/' + encodeURIComponent(page))
     : '/api/content/' + encodeURIComponent(page);
 
+  // Godine od osnivanja se racunaju same: <span data-years-since="1988" data-years-suffix="+">
+  function fillYears() {
+    const year = new Date().getFullYear();
+    document.querySelectorAll('[data-years-since]').forEach((el) => {
+      const since = parseInt(el.dataset.yearsSince, 10);
+      if (since) el.textContent = (year - since) + (el.dataset.yearsSuffix || '');
+    });
+  }
+
   async function apply() {
+    fillYears();
     let blocks;
     try {
       const res = await fetch(url, { credentials: 'same-origin' });
@@ -36,6 +46,8 @@
         changed = true;
       }
     });
+
+    if (changed) fillYears(); // sacuvani blokovi mogu sadrzavati data-years-since
 
     // Ako je korisnik izabrao ćirilicu, preslovi i novi sadržaj
     if (changed && typeof transliterator !== 'undefined' && transliterator.applyPreference) {

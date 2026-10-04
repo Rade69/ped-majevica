@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, session
+from werkzeug.exceptions import HTTPException
 from flask_login import login_required, current_user
 from flask_wtf.csrf import generate_csrf
 from app.extensions import db, limiter
@@ -31,6 +32,17 @@ post_schema = PostSchema()
 def get_csrf_token():
     """Return CSRF token for frontend forms"""
     return jsonify({"csrf_token": generate_csrf()})
+
+
+@api_bp.get("/health")
+def health():
+    """Provjera zdravlja za nadzor: aplikacija i baza odgovaraju (bez osjetljivih podataka)."""
+    try:
+        db.session.execute(db.text("SELECT 1"))
+        return jsonify({"status": "ok", "database": "ok"}), 200
+    except Exception:
+        db.session.rollback()
+        return jsonify({"status": "error", "database": "error"}), 503
 
 
 # DEBUG ENDPOINT - Check auth status (PROTECTED)
@@ -125,6 +137,8 @@ def get_post(post_id):
     try:
         post = Post.query.get_or_404(post_id)
         return success_response(data=post.to_dict(), message="Post pronađen")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Greška pri preuzimanju posta {post_id}: {str(e)}")
         return error_response("Post nije pronađen", status_code=404)
@@ -137,6 +151,8 @@ def get_post_by_slug(slug):
     try:
         post = Post.query.filter_by(slug=slug, published=True).first_or_404()
         return success_response(data=post.to_dict(), message="Post pronađen")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Greška pri preuzimanju posta po slug-u {slug}: {str(e)}")
         return error_response("Post nije pronađen", status_code=404)
@@ -191,6 +207,8 @@ def like_post(post_id):
             message="Post lajkovan",
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         logger.error(f"Greška pri lajkovanju posta {post_id}: {str(e)}")
@@ -242,6 +260,8 @@ def unlike_post(post_id):
             message="Post unlajkovan",
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         logger.error(f"Greška pri unlajkovanju posta {post_id}: {str(e)}")
@@ -271,6 +291,8 @@ def get_post_likes(post_id):
             },
             message="Broj lajkova pronađen",
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Greška pri preuzimanju lajkova za post {post_id}: {str(e)}")
         return error_response("Post nije pronađen", status_code=404)
@@ -283,7 +305,7 @@ def get_post_likes(post_id):
 
 @api_bp.post("/posts")
 @api_bp.post("/posts/")
-@login_required
+@editor_required
 def create_post():
     """Create new blog post"""
     try:
@@ -351,7 +373,7 @@ def create_post():
 
 @api_bp.put("/posts/<int:post_id>")
 @api_bp.put("/posts/<int:post_id>/")
-@login_required
+@editor_required
 def update_post(post_id):
     """Update existing blog post"""
     logger.info(
@@ -395,6 +417,8 @@ def update_post(post_id):
 
         return success_response(data={"id": post.id}, message="Post ažuriran uspješno")
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         logger.error(f"Greška pri ažuriranju posta {post_id}: {str(e)}", exc_info=True)
@@ -403,7 +427,7 @@ def update_post(post_id):
 
 @api_bp.delete("/posts/<int:post_id>")
 @api_bp.delete("/posts/<int:post_id>/")
-@login_required
+@editor_required
 def delete_post(post_id):
     """Delete blog post"""
     try:
@@ -417,6 +441,8 @@ def delete_post(post_id):
 
         return success_response(message="Post obrisan uspješno")
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         logger.error(f"Greška pri brisanju posta {post_id}: {str(e)}", exc_info=True)

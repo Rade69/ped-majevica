@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
+from werkzeug.exceptions import HTTPException
 from flask_login import login_required, current_user
+from app.utils.decorators import editor_required
 from app.extensions import db
 from app.models.event import Event
 from app.utils.responses import error_response
@@ -49,13 +51,15 @@ def get_event(event_id):
     try:
         event = Event.query.get_or_404(event_id)
         return jsonify(event.to_dict())
+    except HTTPException:
+        raise
     except Exception as e:
         return jsonify({"error": "Event not found"}), 404
 
 
 @events_bp.post("/")
 @events_bp.post("")
-@login_required
+@editor_required
 def create_event():
     """Create new event"""
     try:
@@ -104,7 +108,7 @@ def create_event():
 
 
 @events_bp.put("/<int:event_id>")
-@login_required
+@editor_required
 def update_event(event_id):
     """Update event"""
     try:
@@ -131,13 +135,15 @@ def update_event(event_id):
 
         return jsonify({"success": True, "message": "Event ažuriran uspješno"})
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response("Greška na serveru", status_code=500)
 
 
 @events_bp.delete("/<int:event_id>")
-@login_required
+@editor_required
 def delete_event(event_id):
     """Delete event"""
     try:
@@ -147,6 +153,8 @@ def delete_event(event_id):
 
         return jsonify({"success": True, "message": "Event obrisan uspješno"})
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response("Greška na serveru", status_code=500)

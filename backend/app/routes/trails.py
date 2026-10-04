@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
+from werkzeug.exceptions import HTTPException
 from flask_login import login_required
+from app.utils.decorators import editor_required
 from app.extensions import db
 from app.models.trail import Trail
 from app.utils.responses import error_response
@@ -47,13 +49,15 @@ def get_trail(trail_id):
     try:
         trail = Trail.query.get_or_404(trail_id)
         return jsonify(trail.to_dict())
+    except HTTPException:
+        raise
     except Exception as e:
         return jsonify({"error": "Trail not found"}), 404
 
 
 @trails_bp.post("/")
 @trails_bp.post("")
-@login_required
+@editor_required
 def create_trail():
     """Create new trail"""
     try:
@@ -102,7 +106,7 @@ def create_trail():
 
 
 @trails_bp.put("/<int:trail_id>")
-@login_required
+@editor_required
 def update_trail(trail_id):
     """Update trail"""
     try:
@@ -133,13 +137,15 @@ def update_trail(trail_id):
 
         return jsonify({"success": True, "message": "Trail ažuriran uspješno"})
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response("Greška na serveru", status_code=500)
 
 
 @trails_bp.delete("/<int:trail_id>")
-@login_required
+@editor_required
 def delete_trail(trail_id):
     """Delete trail"""
     try:
@@ -149,6 +155,8 @@ def delete_trail(trail_id):
 
         return jsonify({"success": True, "message": "Trail obrisan uspješno"})
 
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response("Greška na serveru", status_code=500)

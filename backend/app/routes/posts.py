@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
+from werkzeug.exceptions import HTTPException
 from flask_login import login_required, current_user
+from app.utils.decorators import editor_required
 from app.extensions import db
 from app.models.post import Post
 from app.schemas.post import PostSchema
@@ -16,7 +18,7 @@ post_schema = PostSchema()
 
 
 @posts_bp.get("/")
-@login_required
+@editor_required
 def list_posts():
     try:
         # Pagination parameters
@@ -65,7 +67,7 @@ def list_posts():
 
 
 @posts_bp.post("/")
-@login_required
+@editor_required
 def create_post():
     try:
         data = request.get_json() or {}
@@ -115,7 +117,7 @@ def create_post():
 
 
 @posts_bp.put("/<int:post_id>")
-@login_required
+@editor_required
 def update_post(post_id):
     try:
         post = Post.query.get_or_404(post_id)
@@ -153,6 +155,8 @@ def update_post(post_id):
             message="Post je uspešno ažuriran"
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         logger.error(f"Greška pri ažuriranju posta: {str(e)}", exc_info=True)
@@ -163,7 +167,7 @@ def update_post(post_id):
 
 
 @posts_bp.delete("/<int:post_id>")
-@login_required
+@editor_required
 def delete_post(post_id):
     try:
         post = Post.query.get_or_404(post_id)
@@ -178,6 +182,8 @@ def delete_post(post_id):
             message=f"Post '{post_title}' je uspešno obrisan"
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         logger.error(f"Greška pri brisanju posta: {str(e)}", exc_info=True)

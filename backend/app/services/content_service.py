@@ -18,6 +18,7 @@ ALLOWED_TAGS = {
 }
 ALLOWED_ATTRIBUTES = {
     "*": {"class"},
+    "span": {"data-years-since", "data-years-suffix"},
     "a": {"href", "title", "target"},
     "img": {"src", "alt", "width", "height", "loading"},
 }

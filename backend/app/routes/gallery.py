@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify, send_file, current_app
+from werkzeug.exceptions import HTTPException
 from flask_login import login_required
+from app.utils.decorators import editor_required
 from app.extensions import db
 from app.models.gallery import GalleryImage
 from app.utils.responses import success_response, error_response, validation_error_response
@@ -77,6 +79,8 @@ def get_image(image_id):
     try:
         image = GalleryImage.query.get_or_404(image_id)
         return success_response(data=image.to_dict())
+    except HTTPException:
+        raise
     except Exception as e:
         return error_response("Slika nije pronađena", status_code=404)
 
@@ -100,6 +104,8 @@ def serve_image(image_id):
             mimetype=mimetype,
             as_attachment=False
         )
+    except HTTPException:
+        raise
     except HTTPException:
         raise
     except Exception as e:
@@ -129,6 +135,8 @@ def serve_thumbnail(image_id):
         
     except HTTPException:
         raise
+    except HTTPException:
+        raise
     except Exception as e:
         current_app.logger.error(f"Greška pri serviranju thumbnail-a: {e}")
         # Fallback na originalnu sliku
@@ -136,7 +144,7 @@ def serve_thumbnail(image_id):
 
 
 @gallery_bp.post('/')
-@login_required
+@editor_required
 def create_image():
     """Dodaj novu sliku u galeriju (čuvanje u bazi)"""
     try:
@@ -217,7 +225,7 @@ def create_image():
 
 
 @gallery_bp.put('/<int:image_id>')
-@login_required
+@editor_required
 def update_image(image_id):
     """Izmeni podatke o slici (ne i binary)"""
     try:
@@ -279,13 +287,15 @@ def update_image(image_id):
             message="Slika je uspešno ažurirana"
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response("Greška pri ažuriranju slike", status_code=500)
 
 
 @gallery_bp.delete('/<int:image_id>')
-@login_required
+@editor_required
 def delete_image(image_id):
     """Obriši sliku iz galerije"""
     try:
@@ -297,6 +307,8 @@ def delete_image(image_id):
         
         return success_response(message="Slika je uspešno obrisana")
         
+    except HTTPException:
+        raise
     except Exception as e:
         db.session.rollback()
         return error_response("Greška pri brisanju slike", status_code=500)

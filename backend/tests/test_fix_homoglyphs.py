@@ -41,3 +41,11 @@ def test_html_markup_is_not_changed():
     html = '<p class="Kontakt"><a href="https://example.com/Koh">Kоњух</a></p>'
     out, _ = fix(html, html=True)
     assert out == '<p class="Kontakt"><a href="https://example.com/Koh">Коњух</a></p>'
+
+
+def test_html_tags_in_any_field_are_never_converted():
+    # <p> ispred cirilice se ne smije pretvoriti u cirilicno "р" (polje 'content' moze sadrzavati HTML)
+    html = "<p><strong>Ујед змије</strong></p><p>Знаци</p>"
+    out, report = fix(html, html=False)
+    assert out == html
+    assert report == []

@@ -76,6 +76,8 @@ def fix_segment(text, report):
 def fix_field(value, is_html, report):
     if not value:
         return value
+    # polje koje sadrzi HTML oznake (npr. <p>) obradjuje se samo izvan oznaka, bez obzira na ime polja
+    is_html = is_html or bool(TAG.search(value))
     if not is_html:
         return fix_segment(value, report)
     return ''.join(part if TAG.fullmatch(part) else fix_segment(part, report) for part in TAG.split(value))

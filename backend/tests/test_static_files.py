@@ -45,3 +45,33 @@ def test_public_pages_have_canonical_and_open_graph(client):
         html = client.get(path).get_data(as_text=True)
         assert f'<link rel="canonical" href="{canonical}">' in html, path
         assert 'property="og:title"' in html and 'property="og:image"' in html, path
+
+
+def _make_post(app):
+    from app.extensions import db
+    from app.models.post import Post
+    with app.app_context():
+        post = Post(title="Dugacak clanak", slug="dugacak-clanak", content="x" * 1000,
+                    content_html="<p>" + "x" * 1000 + "</p>", content_text="x" * 1000,
+                    preview="Kratak izvod", category="savjeti", published=True)
+        db.session.add(post)
+        db.session.commit()
+        return post.id
+
+
+def test_posts_list_lite_omits_full_text(app, client):
+    _make_post(app)
+    full = client.get("/api/posts?per_page=5").get_json()["data"]["posts"][0]
+    lite = client.get("/api/posts?per_page=5&lite=1").get_json()["data"]["posts"][0]
+    assert full["content_html"] and full["content"]
+    assert lite["content"] is None and lite["content_html"] is None
+    assert len(lite["content_text"]) <= 300
+    assert lite["title"] == full["title"] and lite["id"] == full["id"] and lite["preview"] == "Kratak izvod"
+
+
+def test_single_post_still_returns_full_text(app, client):
+    post_id = _make_post(app)
+    data = client.get(f"/api/posts/{post_id}").get_json()
+    data = data.get("data", data)
+    data = data.get("post", data)
+    assert data["content_html"] and len(data["content_text"]) == 1000

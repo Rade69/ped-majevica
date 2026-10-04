@@ -38,15 +38,19 @@ class Post(db.Model):
     def __repr__(self):
         return f"<Post {self.id} {self.title!r}>"
 
-    def to_dict(self):
-        """Convert Post to dictionary for JSON serialization"""
+    def to_dict(self, lite=False):
+        """Convert Post to dictionary for JSON serialization.
+
+        lite=True (lista clanaka na pocetnoj): bez punog teksta, samo kratak izvod,
+        da odgovor bude mali. Cijeli clanak se dohvata zasebno po id-u.
+        """
         return {
             'id': self.id,
             'title': self.title,
             'slug': self.slug,
-            'content': self.content,
-            'content_html': self.content_html,
-            'content_text': self.content_text,
+            'content': None if lite else self.content,
+            'content_html': None if lite else self.content_html,
+            'content_text': (self.content_text or '')[:300] if lite else self.content_text,
             'preview': self.preview,
             'category': self.category,
             'word_count': self.word_count,

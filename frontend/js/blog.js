@@ -28,6 +28,7 @@ async function fetchPosts(page = 1, search = '', category = 'sve') {
         const url = new URL(apiUrl, window.location.href);
         url.searchParams.set('page', page);
         url.searchParams.set('per_page', articlesPerPage);
+        url.searchParams.set('lite', '1'); // lista bez punog teksta clanaka (manji odgovor)
         
         if (search && search.trim() !== '') {
             url.searchParams.set('search', search.trim());

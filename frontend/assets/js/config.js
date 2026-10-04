@@ -11,8 +11,8 @@ const API_CONFIG = (function() {
 
   // Default configuration
   const config = {
-    // Production backend URL (Render.com)
-    PRODUCTION_API: 'https://ped-majevica-backend.onrender.com',
+    // Production: frontend i API se serviraju sa istog servera (VPS), pa su pozivi relativni
+    PRODUCTION_API: '',
 
     // Development backend URL (local Flask server)
     DEVELOPMENT_API: 'http://127.0.0.1:5000',

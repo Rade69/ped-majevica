@@ -42,7 +42,7 @@ const trailsData = {
             "Piknik zona na polovini puta",
             "Edukativne table o lokalnoj flori",
             "Sigurna za decu",
-            "Dostupna tokom cele godine"
+            "Dostupna tokom cijele godine"
         ],
         equipment: [
             "Udobna sportska obuća",

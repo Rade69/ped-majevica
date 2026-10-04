@@ -103,3 +103,24 @@ def test_pages_do_not_load_third_party_resources():
         if banned.search(path.read_text(encoding="utf-8", errors="ignore")):
             offenders.append(path.name)
     assert not offenders, f"vanjski resursi u: {offenders}"
+
+
+def test_privacy_and_terms_pages(client):
+    for path, title in (("/privatnost", "Privatnost i kolačići"), ("/uslovi", "Uslovi korišćenja")):
+        r = client.get(path)
+        assert r.status_code == 200
+        assert title in r.get_data(as_text=True)
+    assert 'id="kolacici"' in client.get("/privatnost").get_data(as_text=True)
+
+
+def test_sitemap_contains_legal_pages(client):
+    body = client.get("/sitemap.xml").get_data(as_text=True)
+    assert "https://pedmajevica.org/privatnost" in body and "https://pedmajevica.org/uslovi" in body
+
+
+def test_public_pages_have_no_dead_links():
+    """Linkovi 'href="#"' vode nigdje: u javnim stranicama ih ne smije biti."""
+    from pathlib import Path
+    pages = Path(__file__).resolve().parents[2] / "frontend" / "pages"
+    for name in ("index.html", "galerija.html", "uclanite-se.html", "privatnost.html", "uslovi.html"):
+        assert 'href="#"' not in (pages / name).read_text(encoding="utf-8"), name

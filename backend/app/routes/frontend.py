@@ -83,6 +83,18 @@ def js(path):
     return send_from_directory(JS_DIR, path)
 
 
+@frontend_bp.route("/privatnost")
+@frontend_bp.route("/privatnost.html")
+def privatnost():
+    return send_from_directory(PAGES_DIR, "privatnost.html")
+
+
+@frontend_bp.route("/uslovi")
+@frontend_bp.route("/uslovi.html")
+def uslovi():
+    return send_from_directory(PAGES_DIR, "uslovi.html")
+
+
 @frontend_bp.route("/uclanite-se")
 @frontend_bp.route("/uclanite-se.html")
 def uclanite_se():

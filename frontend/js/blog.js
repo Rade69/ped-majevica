@@ -8,7 +8,9 @@ let currentPosts = [];          // Postovi za trenutnu stranicu
 let currentPagination = {};     // Paginacioni podaci od API-ja
 let currentPage = 1;
 const articlesPerPage = 6;      // Mora da se podudara sa backend per_page
-let currentScript = 'cyrillic'; // default
+// Pismo prati izbor posjetioca (zadano: latinica), da se članci ne pojave u drugom pismu od ostatka stranice
+let currentScript = (typeof transliterator !== 'undefined' && transliterator.getPreference)
+    ? transliterator.getPreference() : 'latin';
 let currentSearch = '';         // Trenutni search termin
 let currentCategory = 'sve';    // Trenutna kategorija ('sve' za sve)
 
@@ -605,7 +607,7 @@ function showError() {
     if (!container) return;
     
     const errorText = currentScript === 'latin'
-        ? 'Greška pri učitavanju članaka. Molimo osvežite stranicu.'
+        ? 'Greška pri učitavanju članaka. Molimo osvježite stranicu.'
         : 'Грешка при учитавању чланака. Молимо освежите страницу.';
     
     container.innerHTML = `

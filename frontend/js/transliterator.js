@@ -129,35 +129,9 @@ class SerbianTransliterator {
         const walk = document.createTreeWalker(
             document.body,
             NodeFilter.SHOW_TEXT,
-            {
-                acceptNode: function(node) {
-                    // Skip script, style, and code tags
-                    const parent = node.parentElement;
-                    if (!parent) return NodeFilter.FILTER_REJECT;
-                    
-                    const tagName = parent.tagName;
-                    if (tagName === 'SCRIPT' || 
-                        tagName === 'STYLE' || 
-                        tagName === 'CODE' ||
-                        tagName === 'PRE') {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    
-                    // Skip script toggle buttons - FIKSIRAN TEKST!
-                    if (parent.classList.contains('script-btn')) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    
-                    // 🔒 Skip .no-translate elements
-                    if (parent.closest('.no-translate')) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    
-                    return NodeFilter.FILTER_ACCEPT;
-                }
-            }
+            { acceptNode: (node) => this._acceptNode(node) }
         );
-        
+
         let node;
         while (node = walk.nextNode()) {
             if (node.nodeValue && node.nodeValue.trim()) {
@@ -171,11 +145,67 @@ class SerbianTransliterator {
     }
     
     /**
+     * Koji tekstualni cvorovi se prevode (isto pravilo za cijelu stranicu i za naknadno dodate dijelove)
+     */
+    _acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+
+        const tagName = parent.tagName;
+        if (tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'CODE' || tagName === 'PRE' ||
+            tagName === 'TEXTAREA') {
+            return NodeFilter.FILTER_REJECT;
+        }
+        // dugmad za izbor pisma imaju fiksan tekst
+        if (parent.classList.contains('script-btn')) return NodeFilter.FILTER_REJECT;
+        // .no-translate i translate="no" (e-mail, telefon...) se ne diraju
+        if (parent.closest('.no-translate')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+    }
+
+    /**
+     * Stranice sa data-script-sync: pismo prati izbor posjetioca (zadano: latinica) i za sadrzaj
+     * koji se ucita naknadno (clanci, staze, dogadjaji, izmjene iz admina).
+     */
+    isSyncEnabled() {
+        return document.documentElement.hasAttribute('data-script-sync');
+    }
+
+    convertSubtree(root) {
+        if (!root) return;
+        if (root.nodeType === Node.TEXT_NODE) {
+            if (root.nodeValue && root.nodeValue.trim() && this._acceptNode(root) === NodeFilter.FILTER_ACCEPT) {
+                root.nodeValue = this.transliterate(root.nodeValue, this.currentScript);
+            }
+            return;
+        }
+        if (root.nodeType !== Node.ELEMENT_NODE) return;
+        const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: (n) => this._acceptNode(n) });
+        let node;
+        while ((node = walk.nextNode())) {
+            if (node.nodeValue && node.nodeValue.trim()) {
+                node.nodeValue = this.transliterate(node.nodeValue, this.currentScript);
+            }
+        }
+    }
+
+    startObserver() {
+        if (this._observer || !document.body) return;
+        this._observer = new MutationObserver((mutations) => {
+            for (const m of mutations) m.addedNodes.forEach((n) => this.convertSubtree(n));
+        });
+        this._observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    /**
      * Get stored script preference
      * @returns {string} 'latin' or 'cyrillic'
      */
     getPreference() {
-        return localStorage.getItem('ped-script-preference') || 'cyrillic';
+        // Javne stranice (data-script-sync): zadano je latinica, kao ostatak teksta; ćirilica je izbor posjetioca.
+        // Ostale stranice (admin) zadržavaju staro ponašanje.
+        const fallback = this.isSyncEnabled() ? 'latin' : 'cyrillic';
+        return localStorage.getItem('ped-script-preference') || fallback;
     }
     
     /**
@@ -183,11 +213,19 @@ class SerbianTransliterator {
      */
     applyPreference() {
         const pref = this.getPreference();
+        if (this.isSyncEnabled()) {
+            // oba pisma: stranica (i sadrzaj koji se tek ucitava) prati izbor posjetioca
+            if (document.body) {
+                this.togglePageScript(pref);
+                this.startObserver();
+            }
+            return;
+        }
         if (pref === 'latin') {
             this.togglePageScript('latin');
         }
     }
-    
+
     /**
      * Get current script
      * @returns {string} 'latin' or 'cyrillic'

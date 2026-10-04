@@ -124,3 +124,16 @@ def test_public_pages_have_no_dead_links():
     pages = Path(__file__).resolve().parents[2] / "frontend" / "pages"
     for name in ("index.html", "galerija.html", "uclanite-se.html", "privatnost.html", "uslovi.html"):
         assert 'href="#"' not in (pages / name).read_text(encoding="utf-8"), name
+
+
+def test_homepage_has_valid_structured_data(client):
+    import json
+    import re
+    html = client.get("/").get_data(as_text=True)
+    blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+    assert len(blocks) == 1
+    data = json.loads(blocks[0])
+    assert data["@type"] == "SportsOrganization" and data["foundingDate"] == "1988"
+    assert data["email"] == "pedmajevica88@gmail.com"
+    assert data["address"]["addressLocality"] == "Bijeljina"
+    assert all(u.startswith("https://") for u in data["sameAs"])

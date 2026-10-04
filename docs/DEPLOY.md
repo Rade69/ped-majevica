@@ -37,6 +37,31 @@ sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh
 ```
 `.env`, baza i `backend/uploads` se ne diraju. Logovi: `journalctl -u pedmajevica -n 50`, `/var/log/pedmajevica/`, `/var/log/nginx/pedmajevica-error.log`.
 
+## Poruke iz kontakt forme
+Poruke se uvijek cuvaju u bazi i vide se u admin panelu, tab **Poruke** (znacka pokazuje broj neprocitanih).
+Obavjestenje na e-mail radi tek kad se podesi slanje posta. Na serveru dodati u `/var/www/ped-majevica/backend/.env`:
+```
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=true
+MAIL_USERNAME=adresa@gmail.com
+MAIL_PASSWORD=<lozinka za aplikacije>      # Google nalog -> Sigurnost -> Potvrda u 2 koraka -> Lozinke za aplikacije
+MAIL_DEFAULT_SENDER=adresa@gmail.com
+CONTACT_NOTIFY_EMAIL=pedmajevica88@gmail.com   # neobavezno; ovo je podrazumijevano
+```
+Zatim `systemctl restart pedmajevica`. Odgovor posjetiocu ide direktno (Reply-To je njegov e-mail).
+
+## Brzina (Lighthouse, mobilni, spora mreza)
+Performanse 99, pristupacnost 96, najbolje prakse 100, SEO 100. Fontovi (Montserrat, Playfair), ikone (podskup Font Awesome),
+AOS i PDF biblioteke se posluzuju sa nase adrese (`frontend/assets/fonts`, `frontend/assets/vendor`). Nginx komprimuje CSS/JS/JSON i koristi HTTP/2.
+Nova ikona (`fa-...`) u stranici ili JS-u: ponovo napraviti podskup alatom `frontend/tools/build_fontawesome_subset.py` (uputa u samom fajlu).
+
+## Sigurnosne napomene
+- Izmjena clanaka, staza, dogadjaja, galerije, plana i poruka dozvoljena je samo ulogama admin/editor (testovi: `backend/tests/test_authorization.py`).
+- Testovi i produkcija koriste iste verzije biblioteka (`requirements-dev.txt` uvlaci `requirements.txt`), Python 3.12.
+- SSH: samo kljucem; kolacic sesije je `Secure`, `HttpOnly`. HSTS i Permissions-Policy postavlja nginx.
+- Poznato i odlozeno: `SameSite=None` kolacic (nepotrebno poslije prelaska na isti origin) i CSP zaglavlje (stranica koristi inline skripte); oba traze dogovor/ vece izmjene.
+
 ## Backup baze
 Automatski, nedjeljom u 03:30 (systemd timer `pedmajevica-backup.timer`); cuva se zadnjih 8 kopija u `/var/backups/pedmajevica/`.
 Rucno: `sudo bash /var/www/ped-majevica/deployment/scripts/backup-db.sh`. Provjera rasporeda: `systemctl list-timers pedmajevica-backup.timer`.

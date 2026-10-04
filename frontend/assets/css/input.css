@@ -577,3 +577,10 @@
   color: var(--color-secondary-gold);
   text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
 }
+
+/* Dok je otvoren meni ili iskocni prozor (JS postavlja overflow:hidden na body),
+   zakljucaj i <html>, inace iOS Safari pomjera stranicu iza prozora. */
+html:has(body[style*="overflow: hidden"]) {
+  overflow: hidden;
+  overscroll-behavior: none;
+}

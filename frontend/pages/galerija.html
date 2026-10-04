@@ -225,7 +225,11 @@
         // Mobile Menu Toggle
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
+            const nav = menu.closest('nav');
+            const open = menu.classList.toggle('hidden') === false;
+            // Otvoreni meni popunjava cijeli ekran
+            ['h-[100dvh]', 'overflow-y-auto', 'overscroll-contain'].forEach(c => nav.classList.toggle(c, open));
+            document.body.style.overflow = open ? 'hidden' : '';
         }
 
         // Script Toggle - koristi transliterator.js

@@ -597,8 +597,8 @@
 
     <!-- MODAL ZA PRIKAZ ČLANKA -->
     <div id="articleModal"
-        class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="modal-inner bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] shadow-2xl transform transition-all duration-300 flex flex-col"
+        class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/80 md:backdrop-blur-sm overscroll-contain">
+        <div class="modal-inner bg-white rounded-2xl max-w-4xl w-full max-h-[90dvh] shadow-2xl transform transition-all duration-300 flex flex-col"
             style="transform: translateY(20px); opacity: 0;">
 
             <!-- Modal Header - Fixed -->
@@ -625,7 +625,7 @@
             </div>
 
             <!-- Modal Content - Scrollable -->
-            <div class="flex-1 overflow-y-auto px-8 py-8 min-h-0">
+            <div class="flex-1 overflow-y-auto overscroll-contain px-8 py-8 min-h-0">
                 <div id="modalContent" class="prose prose-lg max-w-none leading-relaxed"
                     style="line-height: 1.8; word-spacing: 0.05em;">
                     <!-- Content will be loaded here -->
@@ -1195,8 +1195,8 @@
 
     <!-- MODAL ZA SEKCIJU "O DRUŠTVU" -->
     <div id="aboutModal"
-        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-4 border-primary-blue/20">
+        class="fixed inset-0 bg-black/80 md:backdrop-blur-sm overscroll-contain z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90dvh] overflow-y-auto overscroll-contain border-4 border-primary-blue/20">
             <div class="p-6">
                 <!-- Header -->
                 <div class="flex justify-between items-center mb-6">
@@ -1224,8 +1224,8 @@
 
     <!-- MODAL ZA DETALJE STAZE -->
     <div id="trailModal"
-        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-4 border-primary-red/20">
+        class="fixed inset-0 bg-black/80 md:backdrop-blur-sm overscroll-contain z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90dvh] overflow-y-auto overscroll-contain border-4 border-primary-red/20">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-8">
                     <h3 class="text-2xl font-bold text-primary-blue font-serif" id="modalTrailName">Naziv staze</h3>
@@ -1245,9 +1245,9 @@
 
     <!-- MODAL ZA DETALJE DOGAĐAJA -->
     <div id="eventModal"
-        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        class="fixed inset-0 bg-black/80 md:backdrop-blur-sm overscroll-contain z-[100] hidden items-center justify-center p-4">
         <div
-            class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-4 border-secondary-gold/20">
+            class="bg-white rounded-3xl max-w-4xl w-full max-h-[90dvh] overflow-y-auto overscroll-contain border-4 border-secondary-gold/20">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-8">
                     <h3 class="text-2xl font-bold text-primary-blue font-serif" id="modalEventTitle">Naziv događaja</h3>
@@ -1660,7 +1660,7 @@ PED Majevica vjeruje da je edukovana zajednica najjača zaštita prirode. Kroz z
             
             lightbox.innerHTML = `
                 <span class="absolute top-6 right-8 text-white text-5xl font-bold cursor-pointer hover:text-gray-300">&times;</span>
-                <img src="${imageSrc}" alt="${title}" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+                <img src="${imageSrc}" alt="${title}" class="max-w-full max-h-[90dvh] object-contain rounded-lg">
                 <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-center">
                     <h3 class="text-2xl font-bold mb-2">${title}</h3>
                     <p class="text-sm opacity-75">Klikni bilo gde da zatvoriš</p>

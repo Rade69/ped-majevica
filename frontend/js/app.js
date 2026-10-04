@@ -191,13 +191,22 @@ const PEDMajevicaApp = (function () {
 
         init() {
             if (!this.toggle) return;
+            this.nav = this.menu?.closest('nav');
             this.toggle.addEventListener('click', () => this.isOpen ? this.close() : this.open());
             this.menu?.querySelectorAll('a').forEach(l => l.addEventListener('click', () => this.close()));
             document.addEventListener('keydown', e => { if (e.key === 'Escape' && this.isOpen) this.close(); });
+            // Ako se prozor proširi (rotacija telefona, tablet), zatvori mobilni meni
+            window.matchMedia('(min-width: 768px)').addEventListener('change', e => {
+                if (e.matches && this.isOpen) this.close();
+            });
         }
+
+        // Otvoreni meni popunjava cijeli ekran (dinamicka visina: radi i uz iPhone adresnu traku)
+        static FILL = ['h-[100dvh]', 'overflow-y-auto', 'overscroll-contain', '!bg-primary-blue'];
 
         open() {
             this.menu.classList.remove('hidden');
+            this.nav?.classList.add(...MobileMenu.FILL);
             this.icon?.classList.replace('fa-bars', 'fa-times');
             this.isOpen = true;
             document.body.style.overflow = 'hidden';
@@ -205,6 +214,7 @@ const PEDMajevicaApp = (function () {
 
         close() {
             this.menu.classList.add('hidden');
+            this.nav?.classList.remove(...MobileMenu.FILL);
             this.icon?.classList.replace('fa-times', 'fa-bars');
             this.isOpen = false;
             document.body.style.overflow = '';

@@ -25,7 +25,7 @@ async function fetchPosts(page = 1, search = '', category = 'sve') {
         }
 
         // Dodaj query parametre
-        const url = new URL(apiUrl);
+        const url = new URL(apiUrl, window.location.href);
         url.searchParams.set('page', page);
         url.searchParams.set('per_page', articlesPerPage);
         

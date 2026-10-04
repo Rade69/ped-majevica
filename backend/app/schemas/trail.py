@@ -37,13 +37,13 @@ class TrailSchema(Schema):
     updated_at = fields.DateTime(dump_only=True)
     
     @validates('name')
-    def validate_name(self, value):
+    def validate_name(self, value, **kwargs):
         """Provera da naziv staze nije prazan"""
         if not value or not value.strip():
             raise ValidationError('Naziv staze ne može biti prazan')
     
     @validates('difficulty')
-    def validate_difficulty(self, value):
+    def validate_difficulty(self, value, **kwargs):
         """Provera da težina bude jedna od dozvoljenih vrednosti"""
         if value and value not in ['lak', 'srednji', 'težak']:
             raise ValidationError(

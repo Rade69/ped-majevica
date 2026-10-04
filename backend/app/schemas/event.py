@@ -31,13 +31,13 @@ class EventSchema(Schema):
     updated_at = fields.DateTime(dump_only=True)
     
     @validates('title')
-    def validate_title(self, value):
+    def validate_title(self, value, **kwargs):
         """Provera da naslov nije prazan"""
         if not value or not value.strip():
             raise ValidationError('Naslov događaja ne može biti prazan')
     
     @validates('event_date')
-    def validate_event_date(self, value):
+    def validate_event_date(self, value, **kwargs):
         """Provera da datum nije u prošlosti (opciono)"""
         # Ovo je opciona validacija - možete je ukloniti ako želite
         # da dozvolite događaje iz prošlosti

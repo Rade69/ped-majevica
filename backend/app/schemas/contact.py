@@ -25,12 +25,12 @@ class ContactSchema(Schema):
         return {k: _clean(v) for k, v in data.items()}
 
     @validates("name")
-    def no_newlines_in_name(self, value):
+    def no_newlines_in_name(self, value, **kwargs):
         if "\n" in value or "\r" in value:
             raise ValidationError("Ime ne smije imati novi red.")
 
     @validates("subject")
-    def no_newlines_in_subject(self, value):
+    def no_newlines_in_subject(self, value, **kwargs):
         if "\n" in value or "\r" in value:
             raise ValidationError("Tema ne smije imati novi red.")
 

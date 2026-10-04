@@ -57,6 +57,22 @@ def galerija():
 # ======================
 
 
+@frontend_bp.route("/robots.txt")
+def robots():
+    return send_from_directory(FRONTEND_DIR, "robots.txt", mimetype="text/plain")
+
+
+@frontend_bp.route("/sitemap.xml")
+def sitemap():
+    return send_from_directory(FRONTEND_DIR, "sitemap.xml", mimetype="application/xml")
+
+
+@frontend_bp.route("/favicon.png")
+@frontend_bp.route("/favicon.ico")
+def favicon():
+    return send_from_directory(FRONTEND_DIR, "favicon.png", mimetype="image/png")
+
+
 @frontend_bp.route("/assets/<path:path>")
 def assets(path):
     return send_from_directory(ASSETS_DIR, path)

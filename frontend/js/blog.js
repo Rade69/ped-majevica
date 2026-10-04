@@ -375,7 +375,7 @@ function renderPagination() {
     if (hasPrev) {
         const prevPage = currentPagination.prev_page || (currentPageNum - 1);
         html += `
-            <button onclick="changePage(${prevPage})"
+            <button onclick="changePage(${prevPage})" aria-label="Prethodna stranica"
                 class="px-4 py-2 rounded-lg border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white transition-all duration-300">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -406,7 +406,7 @@ function renderPagination() {
     if (hasNext) {
         const nextPage = currentPagination.next_page || (currentPageNum + 1);
         html += `
-            <button onclick="changePage(${nextPage})"
+            <button onclick="changePage(${nextPage})" aria-label="Sljedeća stranica"
                 class="px-4 py-2 rounded-lg border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white transition-all duration-300">
                 <i class="fas fa-chevron-right"></i>
             </button>

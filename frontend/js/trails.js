@@ -73,6 +73,15 @@ async function loadTrails() {
   }
 }
 
+// Ujednači nazive težine (Lagana/laka, Srednja, Teška/teska) da se filter uvijek poklopi
+function normalizeDifficulty(value) {
+  const d = String(value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+  if (d === 'lagana' || d === 'laka' || d === 'lak') return 'laka';
+  if (d === 'srednja' || d === 'srednje') return 'srednja';
+  if (d === 'teska' || d === 'tesko' || d === 'tezak') return 'teska';
+  return d;
+}
+
 // Filter trails by difficulty
 function filterAndRenderTrails(difficulty) {
   currentFilter = difficulty;
@@ -82,10 +91,8 @@ function filterAndRenderTrails(difficulty) {
   if (difficulty === 'all') {
     displayedTrails = [...allTrails];
   } else {
-    displayedTrails = allTrails.filter(trail => {
-      const diff = trail.difficulty.toLowerCase();
-      return diff === difficulty || diff === difficulty.toLowerCase();
-    });
+    const wanted = normalizeDifficulty(difficulty);
+    displayedTrails = allTrails.filter(trail => normalizeDifficulty(trail.difficulty) === wanted);
   }
 
   console.log(`🔍 Filter: ${difficulty}, prikazano: ${displayedTrails.length} staza`);

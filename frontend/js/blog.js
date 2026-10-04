@@ -631,7 +631,7 @@ function getCategoryInfo(category) {
             labelLatin: 'Ishrana',
             icon: 'fas fa-apple-alt',
             gradient: 'from-green-500 to-green-600',
-            bgClass: 'bg-green-600'
+            bgClass: 'bg-green-700'
         },
         'savjeti': {
             label: 'Савјети',

@@ -494,7 +494,7 @@
                     <i class="fas fa-hiking mr-2" aria-hidden="true"></i> Lagane
                 </button>
                 <button type="button"
-                    class="filter-btn px-6 py-2 bg-white border-2 border-orange-500 text-orange-500 rounded-full font-medium hover:bg-orange-500 hover:text-white transition-all"
+                    class="filter-btn px-6 py-2 bg-white border-2 border-orange-700 text-orange-700 rounded-full font-medium hover:bg-orange-700 hover:text-white transition-all"
                     data-filter="srednja">
                     <i class="fas fa-mountain mr-2" aria-hidden="true"></i> Srednje
                 </button>
@@ -552,7 +552,7 @@
                             <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
-                            <input type="text" id="blogSearch" placeholder="Pretraži članke..."
+                            <input type="text" id="blogSearch" aria-label="Pretraži članke" placeholder="Pretraži članke..."
                                 class="w-full pl-14 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-blue focus:outline-none transition-colors duration-300 bg-white">
                         </div>
 
@@ -561,7 +561,7 @@
                             <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                                 <i class="fas fa-filter text-gray-400"></i>
                             </div>
-                            <select id="blogFilter"
+                            <select id="blogFilter" aria-label="Filtriraj članke po kategoriji"
                                 class="w-full pl-14 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-blue focus:outline-none transition-colors duration-300 bg-white appearance-none cursor-pointer">
                                 <option value="sve">Sve kategorije</option>
                                 <option value="oprema">📦 Oprema</option>
@@ -672,7 +672,7 @@
 
             <!-- Load More Events Button -->
             <div class="text-center mt-16">
-                <button type="button" id="loadMoreEvents" aria-label="Učitaj više događaja" style="display: none;"
+                <button type="button" id="loadMoreEvents" style="display: none;"
                     class="px-10 py-4 bg-gradient-to-r from-primary-red to-red-dark hover:from-red-dark hover:to-primary-red text-white font-bold rounded-xl text-lg transition-all transform hover:-translate-y-1 shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] group">
                     Učitaj još događaja
                     <i class="fas fa-arrow-down ml-3 group-hover:translate-y-1 transition-transform"

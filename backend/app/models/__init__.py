@@ -6,5 +6,6 @@ from app.models.trail import Trail
 from app.models.plan_aktivnosti import PlanAktivnosti
 from app.models.gallery import GalleryImage
 from app.models.content_block import ContentBlock, ContentRevision
+from app.models.contact_message import ContactMessage
 
-__all__ = ["User", "Post", "Like", "Event", "Trail", "PlanAktivnosti", "GalleryImage", "ContentBlock", "ContentRevision"]
+__all__ = ["User", "Post", "Like", "Event", "Trail", "PlanAktivnosti", "GalleryImage", "ContentBlock", "ContentRevision", "ContactMessage"]

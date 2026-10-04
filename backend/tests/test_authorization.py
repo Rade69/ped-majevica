@@ -14,6 +14,8 @@ def _write_rules(app):
         if rule.rule.startswith(SKIP_PREFIXES) or any(x in rule.rule for x in OPEN_FOR_LOGGED_IN):
             continue
         for method in sorted(rule.methods - {"GET", "HEAD", "OPTIONS"}):
+            if method == "POST" and rule.rule.rstrip("/") == "/api/contact":
+                continue  # javna kontakt forma (zasticena limitom, honeypot-om i CSRF-om)
             rules.append((method, re.sub(r"<[^>]+>", "1", rule.rule)))
     return rules
 

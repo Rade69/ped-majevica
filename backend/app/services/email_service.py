@@ -36,7 +36,7 @@ def _is_smtp_configured():
     return bool(server and username and password)
 
 
-def send_email_sync(subject, recipients, html_body, text_body=None):
+def send_email_sync(subject, recipients, html_body, text_body=None, reply_to=None):
     """Send email synchronously via Flask-Mail."""
     try:
         from flask_mail import Message
@@ -46,6 +46,7 @@ def send_email_sync(subject, recipients, html_body, text_body=None):
             recipients=recipients if isinstance(recipients, list) else [recipients],
             html=html_body,
             body=text_body or html_body,
+            reply_to=reply_to,
             sender=current_app.config.get(
                 "MAIL_DEFAULT_SENDER", "noreply@pedmajevica.org"
             ),
@@ -59,7 +60,7 @@ def send_email_sync(subject, recipients, html_body, text_body=None):
         return False
 
 
-def send_email_async(subject, recipients, html_body, text_body=None):
+def send_email_async(subject, recipients, html_body, text_body=None, reply_to=None):
     """Send email in a background thread (non-blocking)."""
     if not _is_smtp_configured():
         logger.warning(
@@ -68,11 +69,14 @@ def send_email_async(subject, recipients, html_body, text_body=None):
         logger.info(f"[EMAIL LOG] To: {recipients} | Subject: {subject} | Body: {text_body or html_body}")
         return False
 
-    thread = Thread(
-        target=send_email_sync,
-        args=(subject, recipients, html_body, text_body),
-    )
-    thread.start()
+    # Nit nema vlastiti kontekst aplikacije: proslijedi stvarni app objekat (current_app je proxy)
+    app = current_app._get_current_object()
+
+    def _run():
+        with app.app_context():
+            send_email_sync(subject, recipients, html_body, text_body, reply_to)
+
+    Thread(target=_run, daemon=True).start()
     return True
 
 

@@ -267,6 +267,12 @@
           class="tab-btn flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
           <i class="fas fa-edit mr-2 text-lg"></i>Sadržaj
         </button>
+        <button id="tabPoruke" onclick="switchTab('poruke')"
+          class="tab-btn flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
+          <i class="fas fa-envelope mr-2 text-lg"></i>Poruke
+          <span id="porukeCount"
+            class="hidden ml-2 bg-primary-red text-white px-2.5 py-1 rounded-full text-sm font-semibold">0</span>
+        </button>
       </div>
     </div>
   </div>
@@ -790,6 +796,19 @@
       </div>
     </div><!-- END panelSadrzaj -->
 
+    <!-- PANEL ZA PORUKE IZ KONTAKT FORME -->
+    <div id="panelPoruke" class="tab-panel hidden">
+      <div class="card rounded-2xl p-6 mb-6">
+        <h3 class="font-bold text-lg mb-1">Poruke posjetilaca</h3>
+        <p class="text-sm opacity-70">Poruke iz kontakt forme na početnoj stranici. „Odgovori“ otvara vaš e-mail program.</p>
+      </div>
+      <div id="porukeList"></div>
+      <div class="flex gap-3 mt-4">
+        <button id="porukePrev" type="button" onclick="messagesPage(-1)" class="hidden px-5 py-2 rounded-lg font-bold border border-gray-300">&larr; Novije</button>
+        <button id="porukeNext" type="button" onclick="messagesPage(1)" class="hidden px-5 py-2 rounded-lg font-bold border border-gray-300">Starije &rarr;</button>
+      </div>
+    </div><!-- END panelPoruke -->
+
   </main>
 
   <!-- PREVIEW MODAL -->
@@ -847,6 +866,7 @@
   <!-- API Config -->
   <script src="/assets/js/config.js"></script>
   <script src="/js/admin-content.js"></script>
+  <script src="/js/admin-messages.js"></script>
 
   <script>
     // API URLs - use API_CONFIG to call Render backend
@@ -1229,6 +1249,8 @@
         loadGallery(); // Load gallery images
       } else if (tabName === 'sadrzaj') {
         loadContentEditor(); // Edit page content blocks
+      } else if (tabName === 'poruke') {
+        loadMessages(); // Contact form messages
       }
     }
 

@@ -125,6 +125,7 @@ def create_app(test_config=None):
     from app.routes.plan_aktivnosti import plan_bp
     from app.routes.gallery import gallery_bp
     from app.routes.content import content_bp
+    from app.routes.contact import contact_bp
 
     app.register_blueprint(frontend_bp)  # ← MUST BE FIRST!
     app.register_blueprint(auth_bp)
@@ -137,6 +138,7 @@ def create_app(test_config=None):
     app.register_blueprint(plan_bp)  # ← /api/plan-aktivnosti
     app.register_blueprint(gallery_bp)  # ← /api/gallery
     app.register_blueprint(content_bp)  # ← /api/content (uređivanje sadržaja)
+    app.register_blueprint(contact_bp)  # ← /api/contact (kontakt forma + poruke u adminu)
 
     # -----------------------------
     # CLI COMMANDS

@@ -498,55 +498,83 @@ const PEDMajevicaApp = (function () {
     class FormHandler {
         init() {
             const form = document.getElementById('contactForm');
-            if (form) {
-                form.addEventListener('submit', async e => {
-                    e.preventDefault();
-                    const name = document.getElementById('name')?.value.trim();
-                    const email = document.getElementById('email')?.value.trim();
-                    const msg = document.getElementById('message')?.value.trim();
+            if (!form) return;
 
-                    if (!name || !Utils.isValidEmail(email) || !msg) {
-                        window.NotificationSystem.show('Popunite sva polja!', 'error');
-                        return;
+            const box = document.getElementById('formMessage');
+            const showResult = (ok, text) => {
+                if (!box) return;
+                box.textContent = text;
+                box.className = 'mt-8 p-6 rounded-xl border-2 ' + (ok
+                    ? 'bg-green-50 border-green-500 text-green-800'
+                    : 'bg-red-50 border-red-500 text-red-800');
+                box.setAttribute('role', ok ? 'status' : 'alert');
+                box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            };
+
+            const post = async (payload) => {
+                const url = window.API_CONFIG ? window.API_CONFIG.getUrl('/api/contact') : '/api/contact';
+                const send = () => fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...CSRF.getHeader() },
+                    credentials: 'include',
+                    body: JSON.stringify(payload),
+                });
+                if (!CSRF.token) await CSRF.init();
+                let res = await send();
+                // istekao CSRF token (400 bez opisa polja): osvježi i pokušaj jednom ponovo
+                if (res.status === 400) {
+                    const body = await res.clone().json().catch(() => ({}));
+                    if (!body.errors) {
+                        await CSRF.init();
+                        res = await send();
                     }
+                }
+                return res;
+            };
 
-                    const btn = form.querySelector('button[type="submit"]');
-                    const orig = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Šaljem...';
-                    btn.disabled = true;
+            form.addEventListener('submit', async e => {
+                e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn.disabled) return;
 
-                    await new Promise(r => setTimeout(r, 2000));
+                const payload = {
+                    name: document.getElementById('name')?.value.trim() || '',
+                    email: document.getElementById('email')?.value.trim() || '',
+                    subject: document.getElementById('subject')?.value || '',
+                    message: document.getElementById('message')?.value.trim() || '',
+                    membership_interest: !!document.getElementById('membership')?.checked,
+                    website: document.getElementById('website')?.value || '',
+                };
 
-                    window.NotificationSystem.show('Poruka poslana!', 'success');
-                    form.reset();
+                if (!payload.name || !Utils.isValidEmail(payload.email) || !payload.message) {
+                    showResult(false, 'Popunite ime, ispravnu e-mail adresu i poruku.');
+                    return;
+                }
+
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Šaljem...';
+                btn.disabled = true;
+                try {
+                    const res = await post(payload);
+                    const body = await res.json().catch(() => ({}));
+                    if (res.ok) {
+                        showResult(true, body.message || 'Hvala! Vaša poruka je primljena.');
+                        window.NotificationSystem.show('Poruka poslata!', 'success');
+                        form.reset();
+                    } else if (res.status === 429) {
+                        showResult(false, 'Previše pokušaja slanja. Pokušajte kasnije ili nam pišite na pedmajevica88@gmail.com.');
+                    } else if (body.errors) {
+                        showResult(false, 'Provjerite unesene podatke (poruka mora imati bar 10 znakova).');
+                    } else {
+                        showResult(false, 'Poruka nije poslata. Pokušajte ponovo ili nam pišite na pedmajevica88@gmail.com.');
+                    }
+                } catch (err) {
+                    showResult(false, 'Nema veze sa serverom. Pokušajte ponovo ili nam pišite na pedmajevica88@gmail.com.');
+                } finally {
                     btn.innerHTML = orig;
                     btn.disabled = false;
-                });
-            }
-
-            const subBtn = document.getElementById('subscribeBtn');
-            if (subBtn) {
-                subBtn.addEventListener('click', async () => {
-                    const input = subBtn.previousElementSibling;
-                    const email = input?.value.trim();
-
-                    if (!Utils.isValidEmail(email)) {
-                        window.NotificationSystem.show('Unesite validan email!', 'error');
-                        return;
-                    }
-
-                    const orig = subBtn.innerHTML;
-                    subBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    subBtn.disabled = true;
-
-                    await new Promise(r => setTimeout(r, 1500));
-
-                    window.NotificationSystem.show('Prijavljeni ste!', 'success');
-                    input.value = '';
-                    subBtn.innerHTML = orig;
-                    subBtn.disabled = false;
-                });
-            }
+                }
+            });
         }
     }
 

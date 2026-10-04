@@ -17,6 +17,7 @@ Flask-Mail>=0.10.0
 python-dotenv>=1.0.0
 marshmallow>=3.20.1
 itsdangerous>=2.1.2
+nh3>=0.2.18  # sanitizacija HTML-a u uredivom sadrzaju
 
 # Images (binary - no compilation needed)
 Pillow>=10.0.0

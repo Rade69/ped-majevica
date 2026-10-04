@@ -5,5 +5,6 @@ from app.models.event import Event
 from app.models.trail import Trail
 from app.models.plan_aktivnosti import PlanAktivnosti
 from app.models.gallery import GalleryImage
+from app.models.content_block import ContentBlock, ContentRevision
 
-__all__ = ["User", "Post", "Like", "Event", "Trail", "PlanAktivnosti", "GalleryImage"]
+__all__ = ["User", "Post", "Like", "Event", "Trail", "PlanAktivnosti", "GalleryImage", "ContentBlock", "ContentRevision"]

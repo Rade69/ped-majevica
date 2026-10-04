@@ -263,6 +263,10 @@
           <span id="galerijaCount"
             class="ml-2 bg-primary-red text-white px-2.5 py-1 rounded-full text-sm font-semibold">0</span>
         </button>
+        <button id="tabSadrzaj" onclick="switchTab('sadrzaj')"
+          class="tab-btn flex-1 px-6 py-4 rounded-lg font-bold transition-all text-base">
+          <i class="fas fa-edit mr-2 text-lg"></i>Sadržaj
+        </button>
       </div>
     </div>
   </div>
@@ -701,6 +705,91 @@
       </div>
     </div><!-- END panelGalerija -->
 
+    <!-- PANEL ZA UREĐIVANJE SADRŽAJA STRANICA -->
+    <div id="panelSadrzaj" class="tab-panel hidden">
+      <style>
+        .cms-block-btn { background: #fff; border-color: #e5e7eb; color: #1f2937; }
+        .cms-block-btn:hover { border-color: #1E4A8B; }
+        .cms-block-btn.active { border-color: #D62828; background: #fef2f2; }
+        [data-theme="dark"] .cms-block-btn { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        [data-theme="dark"] .cms-block-btn.active { background: #3b1d1d; border-color: #D62828; }
+        #cmsRich { min-height: 180px; padding: 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; background: #fff; color: #111827; }
+        #cmsRich:focus { outline: 2px solid #1E4A8B; }
+        #cmsRich a { color: #1E4A8B; text-decoration: underline; }
+        #cmsRich h2 { font-size: 1.5rem; font-weight: 700; }
+        #cmsRich h3 { font-size: 1.25rem; font-weight: 700; }
+        #cmsRich ul { list-style: disc; padding-left: 1.5rem; }
+        #cmsRich ol { list-style: decimal; padding-left: 1.5rem; }
+        .cms-tool { padding: 0.4rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: #fff; color: #111827; font-weight: 700; }
+        .cms-tool:hover { background: #f3f4f6; }
+      </style>
+      <div class="card rounded-2xl p-6 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center gap-4">
+          <label for="cmsPageSelect" class="font-bold">Stranica:</label>
+          <select id="cmsPageSelect" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-900"></select>
+          <span class="text-sm opacity-70">Izaberite dio stranice sa liste, izmijenite ga i kliknite „Sačuvaj“. Izmjena je odmah vidljiva posjetiocima.</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card rounded-2xl p-4 lg:col-span-1">
+          <h3 class="font-bold text-lg mb-3">Dijelovi stranice</h3>
+          <div id="cmsBlockList"></div>
+        </div>
+
+        <div class="card rounded-2xl p-6 lg:col-span-2">
+          <p id="cmsEmpty" class="opacity-70">Izaberite dio stranice s lijeve strane.</p>
+          <div id="cmsEditor" class="hidden">
+            <h3 id="cmsBlockTitle" class="font-bold text-xl mb-4"></h3>
+
+            <div id="cmsToolbar" class="flex flex-wrap gap-2 mb-3">
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('bold')" title="Podebljano"><b>B</b></button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('italic')" title="Kurziv"><i>I</i></button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('underline')" title="Podvučeno"><u>U</u></button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('formatBlock','h2')" title="Veliki naslov">H2</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('formatBlock','h3')" title="Manji naslov">H3</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('formatBlock','p')" title="Običan paragraf">¶</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('insertUnorderedList')" title="Lista">• Lista</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('insertOrderedList')" title="Numerisana lista">1. Lista</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsLink()" title="Link"><i class="fas fa-link"></i> Link</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('unlink')" title="Ukloni link">Bez linka</button>
+              <button type="button" class="cms-tool" onmousedown="event.preventDefault()" onclick="cmsFormat('removeFormat')" title="Ukloni formatiranje">Očisti</button>
+            </div>
+
+            <div id="cmsRich" contenteditable="true"></div>
+            <textarea id="cmsSource" rows="10" class="hidden w-full p-3 rounded-xl border border-gray-300 font-mono text-sm text-gray-900" spellcheck="false"></textarea>
+            <textarea id="cmsText" rows="3" class="hidden w-full p-3 rounded-xl border border-gray-300 text-gray-900"></textarea>
+
+            <div class="flex flex-wrap gap-3 mt-5">
+              <button id="cmsSaveBtn" type="button" onclick="cmsSave()"
+                class="px-6 py-3 rounded-xl font-bold bg-primary-red text-white hover:bg-red-dark disabled:opacity-50">
+                <i class="fas fa-save mr-2"></i>Sačuvaj
+              </button>
+              <button id="cmsHtmlToggle" type="button" onclick="cmsToggleHtml()"
+                class="px-6 py-3 rounded-xl font-bold border border-gray-300 hover:bg-gray-100 hover:text-gray-900">
+                <i class="fas fa-code mr-2"></i>HTML prikaz
+              </button>
+              <button type="button" onclick="cmsShowHistory()"
+                class="px-6 py-3 rounded-xl font-bold border border-gray-300 hover:bg-gray-100 hover:text-gray-900">
+                <i class="fas fa-history mr-2"></i>Ranije verzije
+              </button>
+              <button id="cmsResetBtn" type="button" onclick="cmsReset()"
+                class="hidden px-6 py-3 rounded-xl font-bold border border-red-300 text-red-600 hover:bg-red-50">
+                <i class="fas fa-undo mr-2"></i>Vrati na original
+              </button>
+              <a id="cmsPreviewLink" href="/" target="_blank" rel="noopener"
+                class="px-6 py-3 rounded-xl font-bold underline">Otvori stranicu <i class="fas fa-external-link-alt ml-1"></i></a>
+            </div>
+
+            <div id="cmsHistory" class="hidden mt-6">
+              <h4 class="font-bold mb-2">Ranije verzije</h4>
+              <div id="cmsHistoryList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- END panelSadrzaj -->
+
   </main>
 
   <!-- PREVIEW MODAL -->
@@ -757,6 +846,7 @@
 
   <!-- API Config -->
   <script src="/assets/js/config.js"></script>
+  <script src="/js/admin-content.js"></script>
 
   <script>
     // API URLs - use API_CONFIG to call Render backend
@@ -1137,6 +1227,8 @@
         loadEvents(); // Load events data
       } else if (tabName === 'galerija') {
         loadGallery(); // Load gallery images
+      } else if (tabName === 'sadrzaj') {
+        loadContentEditor(); // Edit page content blocks
       }
     }
 

@@ -144,4 +144,42 @@ jobs:
           # Fail on high/critical vulnerabilities in production dependencies (devDependencies are not shipped)
           npm audit --omit=dev --audit-level=high
 
-  # Deploy: rucno na VPS (deployment/scripts/deploy.sh), nije dio CI-a.
+  # Automatski deploy na VPS: samo push na main, tek kad svi testovi prodju.
+  # SSH kljuc na serveru smije pokrenuti iskljucivo deployment/scripts/deploy.sh.
+  deploy:
+    needs: [backend-test, frontend-build, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      DEPLOY_HOST: 169.58.208.91
+      SITE_URL: https://pedmajevica.org/
+
+    steps:
+      - name: Prepare SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Deploy (git pull, migracije, build, restart, provjera, auto-vracanje)
+        run: |
+          ssh -i ~/.ssh/id_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              -o ServerAliveInterval=30 "root@$DEPLOY_HOST"
+
+      - name: Provjera javne stranice
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -m 15 -w '%{http_code}' "$SITE_URL" || true)
+            echo "pokusaj $i: HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "Stranica ne odgovara nakon deploya" >&2
+          exit 1

@@ -23,12 +23,12 @@ Nikad ne mijenjajte: `backend/.env` na serveru (lozinke), niti fajlove u `backen
 3. Dolje kliknite **Commit changes** i izaberite **Create a new branch** (npr. `moja-izmjena`) pa **Propose changes** i **Create pull request**.
 4. Sačekajte oko 3 minute da zelena kvačica pokaže da su testovi prošli (kartica **Checks** na pull requestu). Ako je crveno, **ne objavljujte**.
 5. Kliknite **Merge pull request**.
-6. Objava na server (jedna komanda, PowerShell):
-   ```
-   ssh root@169.58.208.91 "bash /var/www/ped-majevica/deployment/scripts/deploy.sh"
-   ```
-   Na kraju treba da piše `OK: deploy gotov`. Ako aplikacija poslije objave ne odgovara, skripta sama vraća staru verziju i piše `GRESKA`.
+6. **Objava je automatska.** Poslije spajanja GitHub ponovo pokrene testove (kartica **Actions**), i ako prođu, sam objavi izmjenu na server i provjeri da sajt radi. Traje oko 4–5 minuta. Zeleno = objavljeno, crveno = nije objavljeno (sajt ostaje na staroj verziji).
 7. Otvorite sajt i uradite **Ctrl+F5**.
+
+Direktna izmjena na grani `main` (bez pull requesta) također se automatski objavljuje poslije uspješnih testova. Zato koristite pull request za sve što niste sigurni da je ispravno: testovi tada prođu prije nego što išta stigne na sajt.
+
+Ručna objava (ako je automatika u kvaru): `ssh root@169.58.208.91 "bash /var/www/ped-majevica/deployment/scripts/deploy.sh"`. Na kraju treba da piše `OK: deploy gotov`. Ako aplikacija poslije objave ne odgovara, skripta sama vraća staru verziju.
 
 ## 3. Prije veće izmjene
 

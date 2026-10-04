@@ -26,6 +26,11 @@ sudo certbot --nginx -d pedmajevica.org -d www.pedmajevica.org
 ```
 Bez HTTPS-a login ne radi: produkcijski cookie-ji su `Secure`.
 
+## Automatski deploy
+Push na `main` pokrece CI (testovi); ako prodju, posao `deploy` u `.github/workflows/ci.yml` se SSH-om spaja na server i pokrece `deploy.sh`.
+SSH kljuc za to (`github-actions-deploy-ped-majevica` u `/root/.ssh/authorized_keys`) je ogranicen sa `restrict,command=...` i smije pokrenuti iskljucivo `deploy.sh`.
+Tajne u GitHub-u: `DEPLOY_SSH_KEY`, `DEPLOY_KNOWN_HOSTS`. Za iskljucivanje: obrisati taj red iz `authorized_keys` i obje tajne.
+
 ## Update
 ```bash
 sudo bash /var/www/ped-majevica/deployment/scripts/deploy.sh

@@ -84,6 +84,11 @@ def sitemap():
     return send_from_directory(FRONTEND_DIR, "sitemap.xml", mimetype="application/xml")
 
 
+@frontend_bp.route("/manifest.webmanifest")
+def manifest():
+    return send_from_directory(FRONTEND_DIR, "manifest.webmanifest", mimetype="application/manifest+json")
+
+
 @frontend_bp.route("/favicon.png")
 @frontend_bp.route("/favicon.ico")
 def favicon():

@@ -137,3 +137,23 @@ def test_homepage_has_valid_structured_data(client):
     assert data["email"] == "pedmajevica88@gmail.com"
     assert data["address"]["addressLocality"] == "Bijeljina"
     assert all(u.startswith("https://") for u in data["sameAs"])
+
+
+def test_web_app_manifest_is_valid_and_icons_exist(client):
+    import json
+    r = client.get("/manifest.webmanifest")
+    assert r.status_code == 200 and r.mimetype == "application/manifest+json"
+    manifest = json.loads(r.get_data(as_text=True))
+    assert manifest["start_url"] == "/" and manifest["display"] == "standalone"
+    sizes = {(i["sizes"], i["purpose"]) for i in manifest["icons"]}
+    assert ("192x192", "any") in sizes and ("512x512", "any") in sizes and ("512x512", "maskable") in sizes
+    for icon in manifest["icons"]:
+        assert client.get(icon["src"]).status_code == 200, icon["src"]
+    assert client.get("/assets/images/icons/apple-touch-icon.png").status_code == 200
+
+
+def test_pages_link_manifest_and_icons(client):
+    for path in ("/", "/galerija", "/uclanite-se", "/privatnost", "/uslovi"):
+        html = client.get(path).get_data(as_text=True)
+        assert '<link rel="manifest" href="/manifest.webmanifest">' in html, path
+        assert 'name="theme-color"' in html and html.count('rel="apple-touch-icon"') == 1, path

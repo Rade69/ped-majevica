@@ -157,3 +157,11 @@ def test_pages_link_manifest_and_icons(client):
         html = client.get(path).get_data(as_text=True)
         assert '<link rel="manifest" href="/manifest.webmanifest">' in html, path
         assert 'name="theme-color"' in html and html.count('rel="apple-touch-icon"') == 1, path
+
+
+def test_install_guide_link_and_script(client):
+    for path in ("/", "/uclanite-se"):
+        html = client.get(path).get_data(as_text=True)
+        assert html.count("data-install-open") == 1, path
+        assert '<script src="/js/install.js" defer></script>' in html, path
+    assert client.get("/js/install.js").status_code == 200

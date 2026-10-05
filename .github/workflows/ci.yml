@@ -69,6 +69,8 @@ jobs:
           pytest -v --cov=app --cov-report=xml
 
       - name: Upload coverage
+        # izvjestaj za vanjski servis; njegov kvar ne smije blokirati objavu
+        continue-on-error: true
         uses: codecov/codecov-action@v4
         with:
           file: ./backend/coverage.xml

@@ -53,10 +53,23 @@ class TestFrontendRoutes:
         response = client.get("/admin")
         assert response.status_code in [200, 302]
 
-    def test_admin_html_page_loads(self, client):
-        """Admin.html panel se ucitava."""
+    def test_admin_html_page_requires_login(self, client):
+        """Admin stranica nije javna: neprijavljen korisnik ide na prijavu."""
         response = client.get("/admin.html")
-        assert response.status_code == 200
+        assert response.status_code == 302 and response.headers["Location"].endswith("/login")
+
+    def test_admin_html_page_loads_for_admin(self, logged_in_client):
+        assert logged_in_client.get("/admin.html").status_code == 200
+        assert logged_in_client.get("/admin").status_code == 302  # na /admin.html
+
+    def test_admin_html_page_forbidden_for_regular_user(self, client, regular_user):
+        client.post("/api/login", json={"username": "planinar", "password": "user123"})
+        assert client.get("/admin.html").status_code == 302
+
+    def test_logout_redirects_to_existing_login_page(self, logged_in_client):
+        r = logged_in_client.get("/logout")
+        assert r.status_code == 302 and r.headers["Location"].endswith("/login")
+        assert logged_in_client.get("/admin.html").status_code == 302  # stvarno odjavljen
 
     def test_uclanite_se_page_loads(self, client):
         """Uclanite-se stranica se ucitava."""

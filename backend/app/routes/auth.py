@@ -101,8 +101,7 @@ def api_login():
 @auth_bp.get("/logout")
 def logout():
     logout_user()
-    # Redirect to Netlify login page (frontend)
-    return redirect("https://pedmajevica.org/pages/login.html")
+    return redirect("/login")
 
 
 # --------------------

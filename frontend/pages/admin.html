@@ -898,7 +898,14 @@
           ...window.CSRF.getHeader()
         };
       }
-      return _originalFetch(url, options);
+      const response = await _originalFetch(url, options);
+      // Sesija je istekla ili ste odjavljeni: vrati na prijavu umjesto da svaka radnja prijavljuje gresku
+      if (response.status === 401 && !window.__sessionExpired) {
+        window.__sessionExpired = true;
+        alert('Sesija je istekla ili niste prijavljeni. Prijavite se ponovo.');
+        window.location.href = '/login';
+      }
+      return response;
     };
 
     // Fetch CSRF token on page load

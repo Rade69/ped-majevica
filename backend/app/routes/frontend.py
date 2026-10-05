@@ -29,21 +29,38 @@ def login():
 
 
 # ======================
-# ADMIN HTML (BEZ AUTH)
-# ⚠️ NEMA /admin !
+# ADMIN STRANICA
+# Samo za prijavljene admine/urednike; ostali idu na prijavu.
 # ======================
+
+
+def _admin_shell():
+    from flask import redirect
+    from flask_login import current_user
+
+    if not current_user.is_authenticated or current_user.role not in ("admin", "editor"):
+        return redirect("/login")
+    return send_from_directory(PAGES_DIR, "admin.html")
 
 
 @frontend_bp.route("/admin.html")
 def admin_html():
-    return send_from_directory(PAGES_DIR, "admin.html")
+    return _admin_shell()
 
 
 @frontend_bp.route("/admin")
 def admin_redirect():
-    from flask import redirect, url_for
+    from flask import redirect
 
-    return redirect(url_for("frontend.admin_html"))
+    if not _admin_allowed():
+        return redirect("/login")
+    return redirect("/admin.html")
+
+
+def _admin_allowed():
+    from flask_login import current_user
+
+    return current_user.is_authenticated and current_user.role in ("admin", "editor")
 
 
 @frontend_bp.route("/galerija")

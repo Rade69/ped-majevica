@@ -37,10 +37,16 @@ class PostSchema(Schema):
     )
     category = fields.String(
         validate=validate.OneOf([
+            'oprema',
+            'ishrana',
+            'savjeti',
+            'putopisi',
+            'sjecanja',
+            'ostalo',
+            # stari nazivi (kompatibilnost)
             'vesti',
             'izvestaji',
             'saveti',
-            'ostalo'
         ])
     )
     word_count = fields.Integer(dump_only=True)

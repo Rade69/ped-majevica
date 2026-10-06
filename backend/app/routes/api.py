@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, session
 from werkzeug.exceptions import HTTPException
 from flask_login import login_required, current_user
+from marshmallow import EXCLUDE
 from flask_wtf.csrf import generate_csrf
 from app.extensions import db, limiter
 from app.models.post import Post
@@ -312,9 +313,14 @@ def create_post():
     try:
         data = request.get_json() or {}
 
-        # Validacija inputa pomoću Marshmallow schema
+        # Validacija inputa pomoću Marshmallow schema. Admin forma šalje content_markdown/content_html,
+        # a ne "content", i dodatna polja (word_count...), pa se sadržaj preslikava, a nepoznata polja ignorišu.
+        payload = dict(data)
+        payload["content"] = (
+            data.get("content") or data.get("content_markdown") or data.get("content_html") or ""
+        )
         try:
-            validated_data = post_schema.load(data)
+            validated_data = post_schema.load(payload, unknown=EXCLUDE)
         except Exception as e:
             if hasattr(e, "messages"):
                 # Marshmallow validation error

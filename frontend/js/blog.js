@@ -649,6 +649,13 @@ function getCategoryInfo(category) {
             gradient: 'from-purple-500 to-purple-600',
             bgClass: 'bg-purple-600'
         },
+        'sjecanja': {
+            label: 'Сјећања',
+            labelLatin: 'Sjećanja',
+            icon: 'fas fa-dove',
+            gradient: 'from-slate-500 to-slate-700',
+            bgClass: 'bg-slate-700'
+        },
         'ostalo': {
             label: 'Остало',
             labelLatin: 'Ostalo',

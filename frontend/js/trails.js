@@ -189,10 +189,10 @@ function createTrailCard(trail) {
           <div class="flex space-x-2">
             ${trail.gpx_file_url ? `
               <a href="${trail.gpx_file_url}" download
-                class="w-10 h-10 rounded-full border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white transition-all flex items-center justify-center"
+                class="h-10 px-4 rounded-full border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white transition-all flex items-center justify-center gap-2 text-sm font-bold"
                 aria-label="Preuzmi GPX fajl za ${trail.name}"
-                title="Preuzmi GPS podatke">
-                <i class="fas fa-download" aria-hidden="true"></i>
+                title="Preuzmi GPX fajl (za GPS i aplikacije za planinarenje)">
+                <i class="fas fa-download" aria-hidden="true"></i> GPX
               </a>
             ` : ''}
             <button type="button"

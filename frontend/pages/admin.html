@@ -491,6 +491,25 @@
                     <span>Panorama</span>
                   </label>
                 </div>
+
+                <!-- GPX fajl -->
+                <div id="gpxBox" class="mb-4 p-4 rounded-xl border-2 border-dashed">
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">GPX fajl staze (za GPS uređaje i aplikacije)</label>
+                  <p id="gpxStatus" class="text-sm mb-3"></p>
+                  <input type="file" id="gpxFile" accept=".gpx,application/gpx+xml" class="block w-full text-sm mb-3">
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" id="gpxUploadBtn" onclick="gpxUpload()"
+                      class="px-4 py-2 rounded-lg font-bold bg-primary-blue text-white">
+                      <i class="fas fa-upload mr-2"></i>Dodaj / zamijeni GPX
+                    </button>
+                    <a id="gpxDownload" href="#gpx" download class="hidden px-4 py-2 rounded-lg font-bold border border-gray-300">
+                      <i class="fas fa-download mr-2"></i>Preuzmi
+                    </a>
+                    <button type="button" id="gpxRemoveBtn" onclick="gpxRemove()"
+                      class="hidden px-4 py-2 rounded-lg font-bold border border-red-300 text-red-600">Ukloni GPX</button>
+                  </div>
+                  <p id="gpxHint" class="text-xs opacity-70 mt-2">GPX se dodaje uz već sačuvanu stazu: sačuvajte stazu, pa je izaberite za izmjenu.</p>
+                </div>
               </div>
 
               <button onclick="saveTrail()" id="saveTrailBtn"
@@ -869,6 +888,7 @@
   <script src="/assets/js/config.js"></script>
   <script src="/js/admin-content.js"></script>
   <script src="/js/admin-messages.js"></script>
+  <script src="/js/admin-gpx.js"></script>
 
   <script>
     // API URLs - use API_CONFIG to call Render backend
@@ -1543,7 +1563,7 @@
               <span class="mx-2">•</span>
               ${t.distance_km} km
               <span class="mx-2">•</span>
-              ${t.duration_hours}h
+              ${t.duration_hours ? t.duration_hours + 'h' : '-'}
             </div>
           </td>
           <td class="p-4 text-right whitespace-nowrap min-w-[200px]">
@@ -1657,6 +1677,7 @@
       document.getElementById('trailShelters').checked = t.shelters || false;
       document.getElementById('trailScenicViews').checked = t.scenic_views || false;
 
+      if (window.gpxOnEdit) gpxOnEdit(t);
       window.scrollTo(0, 0);
     }
 
@@ -1700,6 +1721,7 @@
       document.getElementById('trailWaterSources').checked = false;
       document.getElementById('trailShelters').checked = false;
       document.getElementById('trailScenicViews').checked = false;
+      if (window.gpxOnClear) gpxOnClear();
     }
 
     // ========================================

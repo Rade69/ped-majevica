@@ -1,10 +1,12 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, request
 from werkzeug.exceptions import HTTPException
-from flask_login import login_required
+from flask_login import current_user, login_required
 from app.utils.decorators import editor_required
 from app.extensions import db
 from app.models.trail import Trail
-from app.utils.responses import error_response
+from app.services import gpx_service
+from app.services.gpx_service import GpxError
+from app.utils.responses import error_response, success_response
 
 trails_bp = Blueprint("trails", __name__, url_prefix="/api/trails")
 
@@ -160,3 +162,57 @@ def delete_trail(trail_id):
     except Exception as e:
         db.session.rollback()
         return error_response("Greška na serveru", status_code=500)
+
+
+# ----------------------------------------------------------------------------
+# GPX fajl staze
+# ----------------------------------------------------------------------------
+
+
+@trails_bp.get("/<int:trail_id>/gpx")
+def download_gpx(trail_id):
+    """Javno: preuzimanje GPX fajla (samo objavljene staze; urednici vide i neobjavljene)."""
+    trail = db.session.get(Trail, trail_id)
+    visible = trail is not None and (trail.published or (current_user.is_authenticated and current_user.role in ("admin", "editor")))
+    if not visible or not trail.has_gpx or not trail.gpx_data:
+        return error_response("GPX nije dostupan", status_code=404)
+    filename = trail.gpx_filename or gpx_service.safe_filename(trail.name)
+    return Response(
+        trail.gpx_data,
+        mimetype="application/gpx+xml",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Cache-Control": "no-cache",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
+
+
+@trails_bp.post("/<int:trail_id>/gpx")
+@editor_required
+def upload_gpx(trail_id):
+    """Urednik/admin: dodaj ili zamijeni GPX fajl staze (multipart, polje 'file')."""
+    trail = db.session.get(Trail, trail_id)
+    if trail is None:
+        return error_response("Staza nije pronađena", status_code=404)
+    upload = request.files.get("file")
+    if upload is None or not upload.filename:
+        return error_response("Izaberite GPX fajl.", status_code=400)
+    if not upload.filename.lower().endswith(".gpx"):
+        return error_response("Fajl mora imati nastavak .gpx", status_code=400)
+    data = upload.read(gpx_service.MAX_GPX_BYTES + 1)
+    try:
+        summary = gpx_service.save_gpx(trail, data)
+    except GpxError as e:
+        return error_response(str(e), status_code=400)
+    return success_response(summary, message="GPX sačuvan")
+
+
+@trails_bp.delete("/<int:trail_id>/gpx")
+@editor_required
+def delete_gpx(trail_id):
+    trail = db.session.get(Trail, trail_id)
+    if trail is None:
+        return error_response("Staza nije pronađena", status_code=404)
+    gpx_service.remove_gpx(trail)
+    return success_response(message="GPX uklonjen")

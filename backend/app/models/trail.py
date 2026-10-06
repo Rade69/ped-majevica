@@ -25,7 +25,11 @@ class Trail(db.Model):
 
     # Media
     images = db.Column(db.JSON, nullable=True)  # Lista putanja do slika
-    gpx_file = db.Column(db.String(500), nullable=True)  # Putanja do GPX fajla
+    gpx_file = db.Column(db.String(500), nullable=True)  # (staro) putanja/adresa do GPX fajla
+    # GPX se cuva u bazi (ulazi u backup); sadrzaj se ucitava tek kad zatreba (deferred)
+    gpx_data = db.deferred(db.Column(db.LargeBinary, nullable=True))
+    gpx_filename = db.Column(db.String(200), nullable=True)
+    has_gpx = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
 
     # Features (boolean checkboxes)
     water_sources = db.Column(db.Boolean, default=False)
@@ -64,7 +68,9 @@ class Trail(db.Model):
             'images': images_list,
             'image_url': images_list[0] if images_list else None,  # Prva slika za karticu
             'gpx_file': self.gpx_file,
-            'gpx_file_url': self.gpx_file,  # Alias za frontend
+            'has_gpx': bool(self.has_gpx),
+            # adresa za preuzimanje: sopstveni GPX iz baze ima prednost nad starim poljem
+            'gpx_file_url': f'/api/trails/{self.id}/gpx' if self.has_gpx else self.gpx_file,
             'water_sources': self.water_sources,
             'shelters': self.shelters,
             'scenic_views': self.scenic_views,
